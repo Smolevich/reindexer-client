@@ -1,0 +1,15 @@
+{
+    "name": "shupilkin/reindexer-client",
+    "description": "PHP client for using database reindexer",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^7.1"
+    },
+    "authors": [
+        {
+            "name": "Stanislav Shupilkin",
+            "email": "smolevich90@gmail.com"
+        }
+    ],
+    "require": {}
+}

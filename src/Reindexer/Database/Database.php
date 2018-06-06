@@ -28,6 +28,13 @@ class Database extends Entity {
         );
     }
 
-    public function drop() {
+    public function drop(string $name) {
+        $uri = sprintf('/api/%s/db/%s', $this->version, $name);
+        return $this->client->request(
+            'DELETE',
+            $uri,
+            null,
+            $this->defaultHeaders
+        );
     }
 }

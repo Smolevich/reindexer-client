@@ -1,1 +1,1 @@
-FROM php:7.2-alpine-cli
+FROM php:7.2-cli-alpine

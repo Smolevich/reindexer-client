@@ -1,0 +1,6 @@
+install:
+  - docker --version
+  - docker-compose --version
+
+script:
+  - docker build -t reindexer-client .

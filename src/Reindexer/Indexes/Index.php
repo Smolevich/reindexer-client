@@ -5,15 +5,29 @@ namespace Reindexer\Indexes;
 use Reindexer\Entity;
 
 class Index extends Entity {
-    protected $name;
-    protected $jsonPath;
-    protected $fieldType;
-    protected $isPk = true;
-    protected $isArray = false;
-    protected $isDense = false;
-    protected $isAppendable = false;
-    protected $collateMode = false;
-    protected $sortOrderLetters;
+    private $name;
+    private $jsonPath;
+    private $fieldType;
+    private $indexType;
+    private $isPk = true;
+    private $isArray = false;
+    private $isDense = false;
+    private $isAppendable = false;
+    private $collateMode = 'none';
+    private $sortOrderLetters;
+
+    protected $mapJsonFields = [
+        'name' => 'name',
+        'jsonPath'  => 'json_path',
+        'fieldType'  => 'field_type',
+        'indexType' => 'index_type',
+        'isPk'  => 'is_pk',
+        'isArray' => 'is_array',
+        'isDense' => 'is_dense',
+        'isAppendable' => 'is_appendable',
+        'collateMode' => 'collate_mode',
+        'sortOrderLetters' => 'sort_order_letters',
+    ];
 
     public function getName() {
         return $this->name;
@@ -41,6 +55,8 @@ class Index extends Entity {
 
     public function setFieldType($fieldType): self {
         $this->fieldType = $fieldType;
+
+        return $this;
     }
 
     public function isPk() {
@@ -83,7 +99,7 @@ class Index extends Entity {
         return $this;
     }
 
-    public function isCollateMode(): string {
+    public function getCollateMode(): string {
         return $this->collateMode;
     }
 
@@ -99,6 +115,16 @@ class Index extends Entity {
 
     public function setSortOrderLetters(string $sortOrderLetters): self {
         $this->sortOrderLetters = $sortOrderLetters;
+
+        return $this;
+    }
+
+    public function getIndexType(): string {
+        return $this->indexType;
+    }
+
+    public function setIndexType(string $indexType): self {
+        $this->indexType = $indexType;
 
         return $this;
     }

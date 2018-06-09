@@ -4,8 +4,9 @@ namespace Tests\Reindexer\Client;
 
 use GuzzleHttp\Client;
 use Reindexer\Client\Api;
+use \PHPUnit\Framework\TestCase;
 
-class ApiTest extends \PHPUnit\Framework\TestCase
+class ApiTest extends TestCase
 {
 
     public function setUp() {

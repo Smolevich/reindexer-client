@@ -1,11 +1,10 @@
 <?php
 
-namespace Reindexer\Database;
+namespace Reindexer\Services;
 
-use Reindexer\BaseClient;
-use Reindexer\Entity;
+use Reindexer\BaseService;
 
-class Database extends Entity {
+class Database extends BaseService {
     public function create(string $name) {
         $uri = sprintf('/api/%s/db', $this->version);
         return $this->client->request(

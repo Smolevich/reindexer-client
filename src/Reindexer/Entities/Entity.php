@@ -1,29 +1,10 @@
 <?php
 
-namespace Reindexer;
+namespace Reindexer\Entities;
 
-use Reindexer\Client\BaseApi;
 use \ReflectionProperty;
 
 abstract class Entity {
-    protected $client;
-    protected $version = 'v1';
-    protected $mapJsonFields = [];
-
-    protected $defaultHeaders = [
-        'Content-Type' => 'application/json;charset=utf-8'
-    ];
-
-    public function __construct(BaseApi $client) {
-        $this->client = $client;
-    }
-
-    public function setVersion(string $version): self {
-        $this->version = $version;
-
-        return $this;
-    }
-
     public function getBody(): array {
         return $this->parseValue($this);
     }

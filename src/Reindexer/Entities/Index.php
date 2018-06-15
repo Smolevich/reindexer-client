@@ -1,10 +1,10 @@
 <?php
 
-namespace Reindexer\Indexes;
+namespace Reindexer\Entities;
 
-use Reindexer\Entity;
+use Reindexer\Entities\Entity;
 
-class Index extends Entity {
+class Index extends Entity{
     private $name;
     private $jsonPath;
     private $fieldType;

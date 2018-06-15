@@ -1,11 +1,10 @@
 <?php
 
-namespace Reindexer\Namespaces;
+namespace Reindexer\Services;
 
-use Reindexer\Entity;
-use Reindexer\Indexes\Index;
+use Reindexer\BaseService;
 
-class Namespaces extends Entity {
+class Namespaces extends BaseService {
 
     public function getList(string $database, string $sortOrder = 'asc') {
         $uri = sprintf('/api/%s/db/%s/namespaces', $this->version, $database);

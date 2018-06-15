@@ -5,7 +5,7 @@ namespace Tests\Reindexer\Indexes;
 use Reindexer\Client\Api;
 use Reindexer\Enum\FieldType;
 use Reindexer\Enum\IndexType;
-use Reindexer\Indexes\Index;
+use Reindexer\Entities\Index;
 use PHPUnit\Framework\TestCase;
 
 class IndexTest extends TestCase {

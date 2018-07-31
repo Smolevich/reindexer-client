@@ -3,6 +3,7 @@
 namespace Reindexer\Services;
 
 use Reindexer\BaseService;
+use Reindexer\Entities\Index as IndexEntity;
 
 class Namespaces extends BaseService {
 
@@ -31,7 +32,7 @@ class Namespaces extends BaseService {
         ];
 
         foreach ($indexes as $index) {
-            if ($index instanceof Index) {
+            if ($index instanceof IndexEntity) {
                 $body['indexes'][] = $index->getBody();
             }
         }

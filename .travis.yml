@@ -8,3 +8,4 @@ before_script:
 script:
   - docker build -t reindexer-client .
   - docker run --rm -v $(pwd):/app reindexer-client vendor/bin/phpunit
+  - docker run --rm -v $(pwd):/app reindexer-client vendor/bin/php-cs-fixer style-fix

@@ -6,7 +6,6 @@ use Reindexer\BaseService;
 use Reindexer\Entities\Index as IndexEntity;
 
 class Namespaces extends BaseService {
-
     public function getList(string $database, string $sortOrder = 'asc') {
         $uri = sprintf('/api/%s/db/%s/namespaces', $this->version, $database);
 

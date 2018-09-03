@@ -2,13 +2,11 @@
 
 namespace Tests\Reindexer\Client;
 
+use \PHPUnit\Framework\TestCase;
 use GuzzleHttp\Client;
 use Reindexer\Client\Api;
-use \PHPUnit\Framework\TestCase;
 
-class ApiTest extends TestCase
-{
-
+class ApiTest extends TestCase {
     public function setUp() {
         $this->config = [
             'host' => 'reindexer:9800'

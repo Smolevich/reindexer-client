@@ -2,17 +2,17 @@
 
 namespace Reindexer\Client;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\TransferStats;
 use Reindexer\Response;
-use GuzzleHttp\Client;
 
 class Api extends BaseApi {
     protected $client;
     protected $info;
     protected $error;
 
-    public function __construct(string $host, array $config = []){
+    public function __construct(string $host, array $config = []) {
         parent::__construct($host);
         $this->client = new Client($config);
     }
@@ -30,7 +30,8 @@ class Api extends BaseApi {
             $request = $request->withBody($stream);
         }
 
-        $response = $this->client->send($request,
+        $response = $this->client->send(
+            $request,
             [
                 'on_stats' => function (TransferStats $stats) use ($instance) {
                     $instance->info = $stats->getHandlerStats();
@@ -56,5 +57,4 @@ class Api extends BaseApi {
 
         return $apiResponse;
     }
-
 }

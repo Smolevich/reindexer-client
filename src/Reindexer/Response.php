@@ -3,7 +3,6 @@
 namespace Reindexer;
 
 class Response {
-
     protected $requestHeaders;
     protected $responseHeaders;
     protected $requestParams;

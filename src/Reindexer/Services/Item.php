@@ -5,9 +5,9 @@ namespace Reindexer\Services;
 use Reindexer\BaseService;
 
 class Item extends BaseService {
-
     public function add(string $database, string $namespace, array $data = []) {
-        $uri = sprintf('/api/%s/db/%s/namespaces/%s/items',
+        $uri = sprintf(
+            '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
             $database,
             $namespace
@@ -22,7 +22,8 @@ class Item extends BaseService {
     }
 
     public function update(string $database, string $namespace, array $data = []) {
-        $uri = sprintf('/api/%s/db/%s/namespaces/%s/items',
+        $uri = sprintf(
+            '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
             $database,
             $namespace
@@ -37,7 +38,8 @@ class Item extends BaseService {
     }
 
     public function delete(string $database, string $namespace, array $data = []) {
-        $uri = sprintf('/api/%s/db/%s/namespaces/%s/items',
+        $uri = sprintf(
+            '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
             $database,
             $namespace
@@ -52,7 +54,8 @@ class Item extends BaseService {
     }
 
     public function get(string $database, string $namespace, int $limit = 0, int $offset = 0, string $sortField = '', string $sortOrder = '') {
-        $uri = sprintf('/api/%s/db/%s/namespaces/%s/items',
+        $uri = sprintf(
+            '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
             $database,
             $namespace

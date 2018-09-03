@@ -21,5 +21,5 @@ abstract class BaseApi {
         $this->host = $host;
     }
 
-    abstract function request(string $method, string $uri, string $body = null, array $headers = []): Response;
+    abstract public function request(string $method, string $uri, string $body = null, array $headers = []): Response;
 }

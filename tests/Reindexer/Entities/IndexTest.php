@@ -2,14 +2,13 @@
 
 namespace Tests\Reindexer\Indexes;
 
+use PHPUnit\Framework\TestCase;
 use Reindexer\Client\Api;
+use Reindexer\Entities\Index;
 use Reindexer\Enum\FieldType;
 use Reindexer\Enum\IndexType;
-use Reindexer\Entities\Index;
-use PHPUnit\Framework\TestCase;
 
 class IndexTest extends TestCase {
-
     protected $index;
     protected $client;
 
@@ -25,7 +24,7 @@ class IndexTest extends TestCase {
         $this->assertFalse($this->index->isDense());
     }
 
-    public function testGetAndSetName(){
+    public function testGetAndSetName() {
         $this->index->setName('index_name');
         $this->assertEquals('index_name', $this->index->getName());
     }
@@ -40,7 +39,7 @@ class IndexTest extends TestCase {
         $this->assertEquals(FieldType::INT, $this->index->getFieldType());
     }
 
-    public function testGetAndSetSortOrderLetters(){
+    public function testGetAndSetSortOrderLetters() {
         $this->index->setSortOrderLetters('asc');
         $this->assertEquals('asc', $this->index->getSortOrderLetters());
     }
@@ -61,7 +60,7 @@ class IndexTest extends TestCase {
     }
     public function testGetSetFieldType() {
         $this->index->setFieldType(FieldType::DOUBLE);
-        $this->assertEquals(FieldType::DOUBLE,  $this->index->getFieldType());
+        $this->assertEquals(FieldType::DOUBLE, $this->index->getFieldType());
     }
 
     public function testGetAndSetIsAppendable() {

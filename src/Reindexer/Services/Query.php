@@ -5,7 +5,6 @@ namespace Reindexer\Services;
 use Reindexer\BaseService;
 
 class Query extends BaseService {
-
     public function createByHttpGet(string $database, string $query) {
         $uri = sprintf('/api/%s/db/%s/query?q=%s', $this->version, $database, urlencode($query));
 

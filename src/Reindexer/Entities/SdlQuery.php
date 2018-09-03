@@ -17,7 +17,7 @@ class SdlQuery extends Entity {
     protected $aggregations;
 
     protected $mapJsonFields = [
-        'namespace' = 'namespace',
+        'namespace' => 'namespace',
         'limit' => 'limit',
         'offset' => 'offset',
         'distinct' => 'distinct',
@@ -28,6 +28,6 @@ class SdlQuery extends Entity {
         'merged' => 'merged',
         'selectFilter' => 'select_filter',
         'selectFunctions' => 'select_functions',
-        'aggregations' => 'aggregations'
+        'aggregations' => 'aggregations',
     ];
 }

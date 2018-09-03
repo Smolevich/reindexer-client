@@ -2,8 +2,6 @@
 
 namespace Reindexer\Entities;
 
-use Reindexer\Entities\Entity;
-
 class Index extends Entity {
     private $name;
     private $jsonPath;

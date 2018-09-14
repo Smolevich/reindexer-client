@@ -1,5 +1,5 @@
 {
-    "name": "shupilkin/reindexer-client",
+    "name": "smolevich/reindexer-client",
     "description": "PHP client for using database reindexer",
     "type": "library",
     "minimum-stability": "dev",

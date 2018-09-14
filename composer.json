@@ -3,6 +3,7 @@
     "description": "PHP client for using database reindexer",
     "type": "library",
     "minimum-stability": "dev",
+    "license": "MIT",
     "require": {
         "php": ">=7.1",
         "friendsofphp/php-cs-fixer": "^2.13"

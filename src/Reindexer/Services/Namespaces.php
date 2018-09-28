@@ -6,8 +6,18 @@ use Reindexer\BaseService;
 use Reindexer\Entities\Index as IndexEntity;
 
 class Namespaces extends BaseService {
-    public function getList(string $database, string $sortOrder = 'asc') {
-        $uri = sprintf('/api/%s/db/%s/namespaces', $this->version, $database);
+    protected $database;
+
+    public function getDatabase(): string {
+        return $this->database ?? '';
+    }
+
+    public function setDatabase(string $database): void {
+        $this->database = $database;
+    }
+
+    public function getList(string $sortOrder = 'asc') {
+        $uri = sprintf('/api/%s/db/%s/namespaces', $this->version, $this->getDatabase());
 
         if (!empty($sortOrder)) {
             $uri .= '?sort_order='. $sortOrder;
@@ -21,7 +31,7 @@ class Namespaces extends BaseService {
         );
     }
 
-    public function create(string $database, string $name, array $indexes) {
+    public function create(string $name, array $indexes = []) {
         $body = [
             'name' => $name,
             'storage' => [
@@ -35,7 +45,7 @@ class Namespaces extends BaseService {
                 $body['indexes'][] = $index->getBody();
             }
         }
-        $uri = sprintf('/api/%s/db/%s/namespaces', $this->version, $database);
+        $uri = sprintf('/api/%s/db/%s/namespaces', $this->version, $this->getDatabase());
 
         return $this->client->request(
             'POST',
@@ -45,8 +55,8 @@ class Namespaces extends BaseService {
         );
     }
 
-    public function delete(string $database, string $name) {
-        $uri = sprintf('/api/%s/db/%s/namespaces/%s', $this->version, $database, $name);
+    public function delete(string $name) {
+        $uri = sprintf('/api/%s/db/%s/namespaces/%s', $this->version, $this->getDatabase(), $name);
 
         return $this->client->request(
             'DELETE',

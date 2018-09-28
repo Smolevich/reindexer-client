@@ -5,8 +5,18 @@ namespace Reindexer\Services;
 use Reindexer\BaseService;
 
 class Query extends BaseService {
-    public function createByHttpGet(string $database, string $query) {
-        $uri = sprintf('/api/%s/db/%s/query?q=%s', $this->version, $database, urlencode($query));
+    public $database;
+
+    public function getDatabase(): string {
+        return $this->database ?? '';
+    }
+
+    public function setDatabase(string $database): void {
+        $this->database = $database;
+    }
+
+    public function createByHttpGet(string $query) {
+        $uri = sprintf('/api/%s/db/%s/query?q=%s', $this->version, $this->getDatabase(), urlencode($query));
 
         return $this->client->request(
             'GET',
@@ -16,8 +26,9 @@ class Query extends BaseService {
         );
     }
 
-    public function createSqlQueryByHttpPost(string $database, string $query) {
-        $uri = sprintf('/api/%s/db/%s/sqlquery', $this->version, $database);
+    public function createSqlQueryByHttpPost(string $query) {
+        $uri = sprintf('/api/%s/db/%s/sqlquery', $this->version, $this->getDatabase());
+
         return $this->client->request(
             'POST',
             $uri,
@@ -26,8 +37,9 @@ class Query extends BaseService {
         );
     }
 
-    public function createSdlQueryByHttpPost(string $database, string $query) {
-        $uri = sprintf('/api/%s/db/%s/query', $this->version, $database);
+    public function createSdlQueryByHttpPost(string $query) {
+        $uri = sprintf('/api/%s/db/%s/query', $this->version, $this->getDatabase());
+
         return $this->client->request(
             'POST',
             $uri,

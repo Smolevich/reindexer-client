@@ -5,12 +5,31 @@ namespace Reindexer\Services;
 use Reindexer\BaseService;
 
 class Item extends BaseService {
-    public function add(string $database, string $namespace, array $data = []) {
+    protected $database;
+    protected $namespace;
+
+    public function getDatabase(): string {
+        return $this->database ?? '';
+    }
+
+    public function setDatabase(string $database): void {
+        $this->database = $database;
+    }
+
+    public function getNamespace(): string {
+        return $this->namespace ?? '';
+    }
+
+    public function setNamespace(string $namespace): void {
+        $this->namespace = $namespace;
+    }
+
+    public function add(array $data = []) {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
-            $database,
-            $namespace
+            $this->getDatabase(),
+            $this->getNamespace()
         );
 
         return $this->client->request(
@@ -21,12 +40,12 @@ class Item extends BaseService {
         );
     }
 
-    public function update(string $database, string $namespace, array $data = []) {
+    public function update(array $data = []) {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
-            $database,
-            $namespace
+            $this->getDatabase(),
+            $this->getNamespace()
         );
 
         return $this->client->request(
@@ -37,12 +56,12 @@ class Item extends BaseService {
         );
     }
 
-    public function delete(string $database, string $namespace, array $data = []) {
+    public function delete(array $data = []) {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
-            $database,
-            $namespace
+            $this->getDatabase(),
+            $this->getNamespace()
         );
 
         return $this->client->request(
@@ -53,12 +72,12 @@ class Item extends BaseService {
         );
     }
 
-    public function get(string $database, string $namespace, int $limit = 0, int $offset = 0, string $sortField = '', string $sortOrder = '') {
+    public function get(int $limit = 0, int $offset = 0, string $sortField = '', string $sortOrder = '') {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
-            $database,
-            $namespace
+            $this->getDatabase(),
+            $this->getNamespace()
         );
         $params = [];
 

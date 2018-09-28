@@ -44,6 +44,10 @@ class Response {
         return $this->responseBody;
     }
 
+    public function getDecodedResponseBody(): array {
+        return json_decode($this->responseBody, true) ?? [];
+    }
+
     public function setResponseBody(string $responseBody): self {
         $this->responseBody = $responseBody;
 

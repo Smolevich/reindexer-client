@@ -12,7 +12,7 @@ class ResponseTest extends BaseTest {
     public function testGetResponseBody() {
         $responseData = '
             {
-                "items": [`]
+                "items": []
             }
         ';
         $this->response->setResponseBody($responseData);
@@ -31,7 +31,9 @@ class ResponseTest extends BaseTest {
             }
         ';
         $this->response->setResponseBody($responseData);
-        $this->assertEquals(json_decode($responseData, true), $this->response->getDecodedResponseBody());
+        $expectedObject = json_decode($responseData, false);
+        $this->assertAttributeEquals($expectedObject->items, 'items', $this->response->getDecodedResponseBody());
+        $this->assertEquals(json_decode($responseData, true), $this->response->getDecodedResponseBody(true));
         $this->response->setResponseBody($responseDataWithInvalidJson);
         $this->assertEquals([], $this->response->getDecodedResponseBody());
     }

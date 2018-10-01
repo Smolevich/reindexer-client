@@ -44,8 +44,8 @@ class Response {
         return $this->responseBody;
     }
 
-    public function getDecodedResponseBody(): array {
-        return json_decode($this->responseBody, true) ?? [];
+    public function getDecodedResponseBody(bool $isAssoc = false) {
+        return json_decode($this->responseBody, $isAssoc) ?? [];
     }
 
     public function setResponseBody(string $responseBody): self {

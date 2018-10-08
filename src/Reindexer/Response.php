@@ -64,6 +64,10 @@ class Response {
         return $this;
     }
 
+    public function getCode(): int {
+        return $this->getInfo()['http_code'] ?? 0;
+    }
+
     public function getRequestParams(): string {
         return $this->requestParams;
     }

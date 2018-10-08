@@ -7,6 +7,10 @@ use Tests\Reindexer\BaseTest;
 class ResponseTest extends BaseTest {
     public function setUp() {
         $this->response = new Response();
+        $this->info = [
+            'http_code' => 200,
+            'content_type' => 'application/json; charset=utf-8'
+        ];
     }
 
     public function testGetResponseBody() {
@@ -36,5 +40,10 @@ class ResponseTest extends BaseTest {
         $this->assertEquals(json_decode($responseData, true), $this->response->getDecodedResponseBody(true));
         $this->response->setResponseBody($responseDataWithInvalidJson);
         $this->assertEquals([], $this->response->getDecodedResponseBody());
+    }
+
+    public function testGetCode() {
+        $this->response->setInfo($this->info);
+        $this->assertEquals($this->info['http_code'], $this->response->getCode());
     }
 }

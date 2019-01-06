@@ -19,8 +19,8 @@ services:
 
 before_script:
   - docker build -t reindexer-client --build-arg PHP_VERSION=${PHP_VERSION} .
-  - docker run --rm -v $(pwd):/app reidexer-client composer install
-  
+  - docker run --rm -v $(pwd):/app reindexer-client composer install
+
 script:
   - docker run --rm -v $(pwd):/app reindexer-client vendor/bin/phpunit
   - docker run --rm -v $(pwd):/app reindexer-client sh -c "vendor/bin/php-cs-fixer fix"

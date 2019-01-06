@@ -1,11 +1,26 @@
 before_install:
   - printenv
+
+matrix:
+  include:
+    - name: "7.1"
+      env: PHP_VERSION=7.1
+    - name: "7.2"
+      env: PHP_VERSION=7.2
+    - name: "7.3"
+      env: PHP_VERSION=7.3
+
+cache:
+  directories:
+    - $HOME/.composer
+
 services:
   - docker
+
 before_script:
-  - docker pull composer
-  - docker run --rm -v $(pwd):/app composer install
+  - docker build -t reindexer-client --build-arg PHP_VERSION=${PHP_VERSION} .
+  - docker run --rm -v $(pwd):/app reidexer-client composer install
+  
 script:
-  - docker build -t reindexer-client .
   - docker run --rm -v $(pwd):/app reindexer-client vendor/bin/phpunit
   - docker run --rm -v $(pwd):/app reindexer-client sh -c "vendor/bin/php-cs-fixer fix"

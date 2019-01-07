@@ -1,0 +1,28 @@
+version: '3.6'
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app:cached
+    depends_on:
+      - reindexer
+    networks: ['app-stack'] 
+
+  reindexer:
+    container_name: reindexer
+    image: reindexer/reindexer
+    volumes:
+      - reindexer-data:/data
+    ports: 
+      - 6534:6534
+      - 9088:9088
+    networks: ['app-stack']  
+
+volumes:
+  reindexer-data:
+
+networks: {app-stack:{}}
+

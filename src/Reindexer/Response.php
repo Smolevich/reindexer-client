@@ -2,32 +2,43 @@
 
 namespace Reindexer;
 
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response as ResponseInterface;
+use Psr\Http\Message\StreamInterface;
+
 class Response {
-    protected $requestHeaders;
-    protected $responseHeaders;
-    protected $requestParams;
+    protected $response;
+    protected $responseContents = '';
+    protected $request;
     protected $info;
-    protected $responseBody;
     protected $error;
 
+    public function setRequest(Request $request): self {
+        $this->request = $request;
+
+        return $this;
+    }
+
+    public function getRequest(): Request {
+        return $this->request;
+    }
+
+    public function setResponse(ResponseInterface $response): self {
+        $this->response = $response;
+
+        return $this;
+    }
+
+    public function getResponse() : ResponseInterface {
+        return $this->response;
+    }
+
     public function getRequestHeaders() {
-        return $this->requestHeaders;
+        return $this->getRequest()->getHeaders();
     }
-
-    public function setRequestHeaders(array $requestHeaders): self {
-        $this->requestHeaders = $requestHeaders;
-
-        return $this;
-    }
-
+    
     public function getResponseHeaders(): array {
-        return $this->responseHeaders;
-    }
-
-    public function setResponseHeaders(array $responseHeaders): self {
-        $this->responseHeaders = $responseHeaders;
-
-        return $this;
+        return $this->getResponse()->getHeaders();
     }
 
     public function getInfo(): array {
@@ -41,17 +52,22 @@ class Response {
     }
 
     public function getResponseBody(): string {
-        return $this->responseBody;
+        if (empty($this->responseContents)) {
+            $stream = $this->getResponse()->getBody();
+            $this->responseContents = $this->getContentsFromStream($stream);
+        }
+
+        return $this->responseContents;
+    }
+
+    private function getContentsFromStream(StreamInterface $stream): string {
+        $stream->rewind();
+
+        return $stream->getContents();
     }
 
     public function getDecodedResponseBody(bool $isAssoc = false) {
-        return json_decode($this->responseBody, $isAssoc) ?? [];
-    }
-
-    public function setResponseBody(string $responseBody): self {
-        $this->responseBody = $responseBody;
-
-        return $this;
+        return json_decode($this->getResponseBody(), $isAssoc) ?? [];
     }
 
     public function getError(): string {
@@ -65,16 +81,10 @@ class Response {
     }
 
     public function getCode(): int {
-        return $this->getInfo()['http_code'] ?? 0;
+        return $this->getInfo()['http_code'] ?? $this->getResponse()->getStatusCode() ?? 0;
     }
-
+    
     public function getRequestParams(): string {
-        return $this->requestParams;
-    }
-
-    public function setRequestParams(string $requestParams): self {
-        $this->requestParams = $requestParams;
-
-        return $this;
+        return $this->getRequest()->getBody()->__toString();
     }
 }

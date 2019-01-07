@@ -25,6 +25,7 @@
         }
     ],
     "scripts": {
+        "run-test": "phpunit",
         "style-fix": "php-cs-fixer fix"
     }
 }

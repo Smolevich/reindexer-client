@@ -1,3 +1,6 @@
 {
-  "endpoint": "http://localhost:9088"
+  "endpoint": "http://localhost:9088",
+  "client_config": {
+    "http_errors": 0
+  }
 }

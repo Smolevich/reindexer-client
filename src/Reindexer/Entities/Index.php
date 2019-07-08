@@ -4,7 +4,7 @@ namespace Reindexer\Entities;
 
 class Index extends Entity {
     private $name;
-    private $jsonPath;
+    private $jsonPaths;
     private $fieldType;
     private $indexType;
     private $isPk = true;
@@ -16,7 +16,7 @@ class Index extends Entity {
 
     protected $mapJsonFields = [
         'name' => 'name',
-        'jsonPath'  => 'json_path',
+        'jsonPaths'  => 'json_paths',
         'fieldType'  => 'field_type',
         'indexType' => 'index_type',
         'isPk'  => 'is_pk',
@@ -37,12 +37,12 @@ class Index extends Entity {
         return $this;
     }
 
-    public function getJsonPath(): string {
-        return $this->jsonPath ?? '';
+    public function getJsonPaths(): array {
+        return $this->jsonPaths ?? [];
     }
 
-    public function setJsonPath(string $jsonPath): self {
-        $this->jsonPath = $jsonPath;
+    public function setJsonPaths(array $jsonPaths): self {
+        $this->jsonPaths = $jsonPaths;
 
         return $this;
     }

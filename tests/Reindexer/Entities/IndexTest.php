@@ -55,8 +55,8 @@ class IndexTest extends TestCase {
     }
 
     public function testGetAndSetJsonPath() {
-        $this->index->setJsonPath('json_path');
-        $this->assertEquals('json_path', $this->index->getJsonPath());
+        $this->index->setJsonPaths(['json_path']);
+        $this->assertEquals(['json_path'], $this->index->getJsonPaths());
     }
     public function testGetSetFieldType() {
         $this->index->setFieldType(FieldType::DOUBLE);

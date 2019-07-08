@@ -42,7 +42,6 @@ try {
         $response = $namespaceService->create($namespaceName, [$indexId]);
         echo sprintf('Response data: %s', $response->getResponseBody()) . PHP_EOL;
     }
-
 } catch (Exception $e) {
     echo sprintf(
         'Error %s in file %s on line %s',

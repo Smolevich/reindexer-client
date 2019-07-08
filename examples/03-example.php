@@ -4,8 +4,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/common-part.php';
 
 use Reindexer\Services\Database;
-use Reindexer\Services\Namespaces;
 use Reindexer\Services\Item;
+use Reindexer\Services\Namespaces;
 use Reindexer\Services\Query;
 
 try {
@@ -34,12 +34,11 @@ try {
     $itemService->setDatabase($databaseName);
     $sqlService->setDatabase($databaseName);
 
-    foreach($users as $user) {
+    foreach ($users as $user) {
         $response = $itemService->add($user);
     }
 
     $response = $sqlService->createByHttpGet('SELECT * from shupilkin_ns');
     var_dump($response->getResponseBody());
 } catch (Exception $e) {
-
 }

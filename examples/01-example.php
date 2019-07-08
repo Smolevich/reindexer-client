@@ -12,6 +12,7 @@ try {
     $configData = file_get_contents(__DIR__ . '/config.json');
     $config = json_decode($configData, true);
     $configuration = new Configuration($config);
+
     $api = $configuration->getApi();
     $databaseName = $argv[1] ?? 'test';
     $namespaceName = $argv[2] ?? 'namespace';
@@ -35,12 +36,13 @@ try {
             ->setIsPk(true)
             ->setIndexType(\Reindexer\Enum\IndexType::HASH)
             ->setFieldType('int')
-            ->setJsonPath('id')
+            ->setJsonPaths(['id'])
             ->setIsDense(true)
         ;
         $response = $namespaceService->create($namespaceName, [$indexId]);
         echo sprintf('Response data: %s', $response->getResponseBody()) . PHP_EOL;
     }
+
 } catch (Exception $e) {
     echo sprintf(
         'Error %s in file %s on line %s',

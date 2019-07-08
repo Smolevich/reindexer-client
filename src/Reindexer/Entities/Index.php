@@ -37,7 +37,7 @@ class Index extends Entity {
         return $this;
     }
 
-    public function getJsonPath(): array {
+    public function getJsonPaths(): array {
         return $this->jsonPaths ?? [];
     }
 

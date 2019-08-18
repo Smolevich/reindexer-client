@@ -5,12 +5,12 @@ on: [push]
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: php:alpine
     
     steps:
     - uses: actions/checkout@v1
-    - name: Run a one-line script
-      run: echo Hello, world!
+    - name: Show php version
+      run: php -v
     - name: Run a multi-line script
       run: |
         echo Add other actions to build,

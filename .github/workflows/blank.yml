@@ -10,7 +10,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Show php version
-      run: php -v
+      run: php -v && composer -V
     - name: Run a multi-line script
       run: |
-        composer -V
+        composer install
+        pwd && ls -alt
+        vendor/bin/phpunit

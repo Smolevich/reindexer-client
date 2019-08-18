@@ -11,8 +11,9 @@ jobs:
     - uses: actions/checkout@v1
     - name: Show php version
       run: php -v && composer -V
-    - name: Run a multi-line script
-      run: |
-        composer install
-        pwd && ls -alt
-        vendor/bin/phpunit
+    - name: Install dependencies
+      run: composer install
+    - name: Run unit tests
+      run: vendor/bin/phpunit
+    - name: Run style-fixer
+      run: vendor/bin/php-cs-fixer fix --dry-run

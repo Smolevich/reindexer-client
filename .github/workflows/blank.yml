@@ -4,9 +4,10 @@ on: [push]
 
 jobs:
   build:
-    runs-on: $
     strategy:
       matrix:
+        php: [7]
+        os: ubuntu-latest
         include:
         - php: 7.1
           os: ubuntu-latest
@@ -16,8 +17,6 @@ jobs:
           os: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-      with:
-        version: $
     - name: Show php version
       run: php -v && composer -V
     - name: Install dependencies

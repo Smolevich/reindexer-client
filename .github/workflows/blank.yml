@@ -4,9 +4,11 @@ on: [push]
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-    
+    runs-on: $
+    strategy:
+      matrix:
+        php: [7.1, 7.2, 7.3]
+        os: [ubuntu-latest]
     steps:
     - uses: actions/checkout@v1
     - name: Show php version
@@ -14,6 +16,6 @@ jobs:
     - name: Install dependencies
       run: composer install
     - name: Run unit tests
-      run: vendor/bin/phpunit
+      run: vendor/bin/phpunit --testsuite "Reindexer Unit Test Suite"
     - name: Run style-fixer
       run: vendor/bin/php-cs-fixer fix --dry-run

@@ -12,8 +12,8 @@
          verbose="true"
 >
     <testsuites>
-        <testsuite name="Reindexer Test Suite">
-            <directory suffix="Test.php">./tests</directory>
+        <testsuite name="Reindexer Unit Test Suite">
+            <directory suffix="Test.php">./tests/Unit</directory>
         </testsuite>
     </testsuites>
     <filter>

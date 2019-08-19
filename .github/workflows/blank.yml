@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         php: [7]
-        os: ubuntu-latest
+        os: [ubuntu-18.04]
         include:
         - php: 7.1
           os: ubuntu-latest

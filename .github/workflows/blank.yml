@@ -11,6 +11,8 @@ jobs:
         os: [ubuntu-latest]
     steps:
     - uses: actions/checkout@v1
+      with:
+        version: $
     - name: Show php version
       run: php -v && composer -V
     - name: Install dependencies

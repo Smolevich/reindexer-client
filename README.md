@@ -1,9 +1,9 @@
 # PHP client for work with [reindexer](https://github.com/Restream/reindexer)
 
-## Installation 
+## Installation
 
 ```bash
-composer install smolevich/reindexeVr-client
+composer install smolevich/reindexer-client
 ```
 
 ## Configuration file for library

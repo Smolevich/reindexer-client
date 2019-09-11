@@ -11,10 +11,10 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Show php version
-      run: php -v && composer -V
+      run: php${{ matrix.php }} -v && composer -V
     - name: Install dependencies
       run: composer install
     - name: Run unit tests
-      run: vendor/bin/phpunit --testsuite "Reindexer Unit Test Suite"
+      run: php${{ matrix.php }} vendor/bin/phpunit --testsuite "Reindexer Unit Test Suite"
     - name: Run style-fixer
       run: php${{ matrix.php }} vendor/bin/php-cs-fixer fix --dry-run

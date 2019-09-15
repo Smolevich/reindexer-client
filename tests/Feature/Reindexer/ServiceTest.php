@@ -8,7 +8,6 @@ use Reindexer\Services\Namespaces;
 use Tests\Unit\Reindexer\BaseTest;
 
 class ServiceTest extends BaseTest {
-
     private $namespaceName = 'unittests_ns';
     private $database = 'unittests';
     /**

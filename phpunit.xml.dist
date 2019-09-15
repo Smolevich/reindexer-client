@@ -15,10 +15,16 @@
         <testsuite name="Reindexer Unit Test Suite">
             <directory suffix="Test.php">./tests/Unit</directory>
         </testsuite>
+        <testsuite name="Reindexer Feature Test Suite">
+            <directory suffix="Test.php">./tests/Feature</directory>
+        </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
         </whitelist>
     </filter>
+    <php>
+        <env name="REINDEXER_HOST" value="http://reindexer:9088"/>
+    </php>
 </phpunit>

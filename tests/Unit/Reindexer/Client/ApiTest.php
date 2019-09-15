@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Reindexer\Client;
+namespace Tests\Unit\Reindexer\Client;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Reindexer\Client\Api;
-use Tests\Reindexer\BaseTest;
+use Tests\Unit\Reindexer\BaseTest;
 
 class ApiTest extends BaseTest {
     public function setUp() {

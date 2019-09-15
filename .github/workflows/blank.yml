@@ -22,6 +22,8 @@ jobs:
     - name: Install dependencies
       run: composer install
     - name: Run unit and integration tests
-      run: echo $REINDEXER_HOST && php${{ matrix.php }} vendor/bin/phpunit
+      run: |
+        export REINDEXER_HOST=http://0.0.0.0:9088
+        php${{ matrix.php }} vendor/bin/phpunit
     - name: Run style-fixer
       run: php${{ matrix.php }} vendor/bin/php-cs-fixer fix --dry-run

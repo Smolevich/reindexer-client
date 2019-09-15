@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environemt:
+        REINDEXER_HOST: http://reindexer:9088
     volumes:
       - .:/app:cached
     depends_on:

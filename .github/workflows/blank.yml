@@ -11,10 +11,14 @@ jobs:
     services:
       reindexer:
         image: reindexer/reindexer
+        ports:
+          - 9088:9088
     steps:
     - uses: actions/checkout@v1
     - name: Show php version
       run: php${{ matrix.php }} -v && composer -V
+    - name: Add reindxer to /etc/hosts
+      run: echo '127.0.0.1 reindexer ' >> /etc/hosts
     - name: Install dependencies
       run: composer install
     - name: Run unit and integration tests

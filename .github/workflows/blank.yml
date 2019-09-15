@@ -17,8 +17,6 @@ jobs:
     - uses: actions/checkout@v1
     - name: Show php version
       run: php${{ matrix.php }} -v && composer -V
-    - name: Export environment variable REINDEXER_HOST
-      run: export REINDEXER_HOST=http://0.0.0.0:9088
     - name: Install dependencies
       run: composer install
     - name: Run unit and integration tests

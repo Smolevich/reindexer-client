@@ -1,9 +1,9 @@
 # PHP client for work with [reindexer](https://github.com/Restream/reindexer)
 
-## Installation 
+## Installation
 
 ```bash
-composer install smolevich/reindexeVr-client
+composer require smolevich/reindexeVr-client
 ```
 
 ## Configuration file for library
@@ -16,7 +16,7 @@ composer install smolevich/reindexeVr-client
   }
 }
 ```
-* Endpoint - url of reindexer instance
+* endpoint - url of reindexer instance
 * client_config - configuration settings for api client, now it is options for guzzle client, in future versions fields can be renamed
 
 ## Example of using

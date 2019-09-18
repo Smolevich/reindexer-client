@@ -15,7 +15,7 @@
     "autoload": {
         "psr-4": {
             "": "src/",
-            "Tests\\Reindexer\\": "tests/"
+            "Tests\\": "tests/"
         }
     },
     "authors": [

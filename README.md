@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/Smolevich/reindexer-client.svg?branch=master)](https://travis-ci.org/Smolevich/reindexer-client)
 # PHP client for work with [reindexer](https://github.com/Restream/reindexer)
 
 ## Installation

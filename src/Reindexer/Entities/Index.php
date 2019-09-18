@@ -7,7 +7,7 @@ class Index extends Entity {
     private $jsonPaths;
     private $fieldType;
     private $indexType;
-    private $isPk = true;
+    private $isPk = false;
     private $isArray = false;
     private $isDense = false;
     private $isAppendable = false;

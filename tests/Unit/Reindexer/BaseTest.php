@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Reindexer;
+namespace Tests\Unit\Reindexer;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;

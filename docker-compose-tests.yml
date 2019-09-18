@@ -6,8 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      PHP_XDEBUG: 1
-      PHP_XDEBUG_DEFAULT_ENABLE: 1
+      REINDEXER_HOST: http://reindexer:9088
     volumes:
       - .:/app:cached
     depends_on:
@@ -15,13 +14,9 @@ services:
     networks: ['app-stack']
 
   reindexer:
-    container_name: reindexer
     image: reindexer/reindexer
     volumes:
       - reindexer-data:/data
-    ports:
-      - 6534:6534
-      - 9088:9088
     networks: ['app-stack']
 
 volumes:

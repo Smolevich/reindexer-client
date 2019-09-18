@@ -38,7 +38,8 @@ try {
         $response = $itemService->add($user);
     }
 
-    $response = $sqlService->createByHttpGet('SELECT * from shupilkin_ns');
+    $response = $sqlService->createByHttpGet("SELECT * from $namespaceName");
+    $response = $sqlService->createSqlQueryByHttpPost("UPDATE $namespaceName SET name = 'John Doe changed 2' WHERE id = 1");
     var_dump($response->getResponseBody());
 } catch (Exception $e) {
 }

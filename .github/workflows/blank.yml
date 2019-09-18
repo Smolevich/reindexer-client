@@ -4,16 +4,30 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    
+    strategy:
+      matrix:
+        php: [7.1, 7.2, 7.3]
+    services:
+      reindexer:
+        image: reindexer/reindexer
+        ports:
+          - 9088:9088
     steps:
     - uses: actions/checkout@v1
     - name: Show php version
-      run: php -v && composer -V
+      run: php${{ matrix.php }} -v && composer -V
     - name: Install dependencies
       run: composer install
-    - name: Run unit tests
-      run: vendor/bin/phpunit
+    - name: Run unit and integration tests
+      run: |
+        mkdir -p build/logs
+        export REINDEXER_HOST=http://0.0.0.0:9088
+        php${{ matrix.php }} vendor/bin/phpunit --coverage-clover build/logs/clover.xml
     - name: Run style-fixer
-      run: vendor/bin/php-cs-fixer fix --dry-run
+      run: php${{ matrix.php }} vendor/bin/php-cs-fixer fix --dry-run
+    - name: Code coverage
+      run: php${{matrix.php}} vendor/bin/php-coveralls -v
+      env:
+        COVERALLS_RUN_LOCALLY: ${{secrets.COVERALLS_RUN_LOCALLY}}
+        COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}

@@ -1,14 +1,14 @@
 <?php
 
-namespace Tests\Reindexer\Indexes;
+namespace Tests\Unit\Reindexer\Indexes;
 
-use PHPUnit\Framework\TestCase;
 use Reindexer\Client\Api;
 use Reindexer\Entities\Index;
 use Reindexer\Enum\FieldType;
 use Reindexer\Enum\IndexType;
+use Tests\Unit\Reindexer\BaseTest;
 
-class IndexTest extends TestCase {
+class IndexTest extends BaseTest {
     protected $index;
     protected $client;
 

@@ -1,8 +1,8 @@
 <?php
-namespace Tests\Reindexer\Services;
+namespace Tests\Unit\Reindexer\Services;
 
 use Reindexer\Services\Namespaces;
-use Tests\Reindexer\BaseTest;
+use Tests\Unit\Reindexer\BaseTest;
 
 class NamespacesTest extends BaseTest {
     public function setUp() {

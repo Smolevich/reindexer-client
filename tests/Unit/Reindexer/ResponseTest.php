@@ -1,12 +1,10 @@
 <?php
 
-namespace Reindexer;
+namespace Tests\Unit\Reindexer;
 
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use function GuzzleHttp\Psr7\stream_for;
 use Reindexer\Response;
-use Tests\Reindexer\BaseTest;
 
 class ResponseTest extends BaseTest {
     public function setUp() {

@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/Smolevich/reindexer-client.svg?branch=master)](https://travis-ci.org/Smolevich/reindexer-client)
+[![Coverage Status](https://coveralls.io/repos/github/Smolevich/reindexer-client/badge.svg)](https://coveralls.io/github/Smolevich/reindexer-client)
 # PHP client for work with [reindexer](https://github.com/Restream/reindexer)
 
 ## Installation

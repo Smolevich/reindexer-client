@@ -1,9 +1,5 @@
-ARG PHP_VERSION=7.3
-ARG COMPOSER_VERSION=1.8
+ARG PHP_VERSION=7.2
 
-FROM composer:${COMPOSER_VERSION}
-FROM php:${PHP_VERSION}-fpm-alpine
-
-COPY --from=composer /usr/bin/composer /usr/local/bin/composer
+FROM wodby/php:${PHP_VERSION}
 
 WORKDIR /app

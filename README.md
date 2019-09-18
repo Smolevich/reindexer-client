@@ -5,7 +5,7 @@
 ## Installation
 
 ```bash
-composer require smolevich/reindexeVr-client
+composer require smolevich/reindexer-client
 ```
 
 ## Configuration file for library
@@ -19,7 +19,7 @@ composer require smolevich/reindexeVr-client
 }
 ```
 * endpoint - url of reindexer instance
-* client_config - configuration settings for api client, now it is options for guzzle client, in future versions fields can be renamed
+* client_config - guzzle configuration settings for api client, now it is options for guzzle client, in future versions fields can be renamed
 
 ## Example of using
 

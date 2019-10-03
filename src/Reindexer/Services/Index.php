@@ -22,6 +22,22 @@ class Index extends BaseService {
         );
     }
 
+    public function update(IndexEntity $index, string $database, string $namespace) {
+        $uri = sprintf(
+            '/api/%s/db/%s/namespaces/%s/indexes',
+            $this->version,
+            $database,
+            $namespace
+        );
+
+        return $this->client->request(
+            'PUT',
+            $uri,
+            json_encode($index->getBody()),
+            $this->defaultHeaders
+        );
+    }
+
     public function get(string $database, string $namespace) {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/indexes',

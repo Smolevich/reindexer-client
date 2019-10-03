@@ -144,5 +144,11 @@ class ServiceTest extends BaseTest {
             ->getDecodedResponseBody(true);
 
         $this->assertEquals(3, count($response['items']));
+
+        $response = $this->queryService
+            ->createSqlQueryByHttpPost("SELECT * FROM {$this->namespaceName} WHERE rating > 446")
+            ->getDecodedResponseBody(true);
+            
+        $this->assertEquals(3, count($response['items']));
     }
 }

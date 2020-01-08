@@ -11,7 +11,7 @@
     "require-dev": {
         "phpunit/phpunit": "^7.1",
         "friendsofphp/php-cs-fixer": "^2.14",
-        "php-coveralls/php-coveralls": "^2.1"
+        "php-coveralls/php-coveralls": "dev-add-support-for-github-actions@dev"
     },
     "autoload": {
         "psr-4": {
@@ -19,6 +19,12 @@
             "Tests\\": "tests/"
         }
     },
+    "repositories": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/Smolevich/php-coveralls"
+        }
+    ],
     "authors": [
         {
             "name": "Stanislav Shupilkin",

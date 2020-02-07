@@ -37,7 +37,6 @@ jobs:
     - name: Run style-fixer
       run: php${{ matrix.php }} vendor/bin/php-cs-fixer fix --dry-run
     - name: Code coverage
-      run: php${{matrix.php}} vendor/bin/php-coveralls -v || cat /home/runner/work/reindexer-client/reindexer-client/build/logs/coveralls-upload.json
+      run: php${{matrix.php}} vendor/bin/php-coveralls -v
       env:
-        # COVERALLS_RUN_LOCALLY: ${{secrets.COVERALLS_RUN_LOCALLY}}
-        COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
+        COVERALLS_REPO_TOKEN: ${{secrets.GITHUB_TOKEN }}

@@ -3,9 +3,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/common-part.php';
 
-use Reindexer\Services\Database;
 use Reindexer\Services\Item;
-use Reindexer\Services\Namespaces;
 use Reindexer\Services\Query;
 
 try {
@@ -41,5 +39,11 @@ try {
     $response = $sqlService->createByHttpGet("SELECT * from $namespaceName");
     $response = $sqlService->createSqlQueryByHttpPost("UPDATE $namespaceName SET name = 'John Doe changed 2' WHERE id = 1");
     var_dump($response->getResponseBody());
-} catch (Exception $e) {
+} catch (\Throwable $e) {
+    echo sprintf(
+        'Error %s in file %s on line %s',
+        $e->getMessage(),
+        $e->getFile(),
+        $e->getLine()
+    );
 }

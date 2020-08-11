@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/common-part.php';
 
-use Reindexer\Client\Api;
 use Reindexer\Entities\Index as IndexEntity;
 use Reindexer\Services\Database;
 use Reindexer\Services\Namespaces;
@@ -42,7 +41,7 @@ try {
         $response = $namespaceService->create($namespaceName, [$indexId]);
         echo sprintf('Response data: %s', $response->getResponseBody()) . PHP_EOL;
     }
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     echo sprintf(
         'Error %s in file %s on line %s',
         $e->getMessage(),

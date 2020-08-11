@@ -4,8 +4,6 @@ use Reindexer\Client\Api;
 use Reindexer\LoggerInterface;
 use Reindexer\Response;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 class Configuration {
     protected $api;
     protected $config;

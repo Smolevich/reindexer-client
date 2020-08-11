@@ -6,30 +6,33 @@ on:
     tags:
   pull_request:
 
-
-
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [7.1, 7.2, 7.3]
+        php: [7.2, 7.3, 7.4]
     services:
       reindexer:
         image: reindexer/reindexer
         ports:
           - 9088:9088
     steps:
-    - uses: actions/checkout@v1
-    - name: Show php version
-      run: php${{ matrix.php }} -v && composer -V
+    - uses: actions/checkout@v2
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        tools: composer
+    - name: Show php and composer version
+      run: php -v && composer -V
     - name: Install dependencies
       run: composer install
     - name: Run unit and integration tests
       run: |
         mkdir -p build/logs
-        export REINDEXER_HOST=http://0.0.0.0:9088
         php${{ matrix.php }} vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+      env:
+        REINDEXER_HOST: "http://0.0.0.0:9088"
     - name: Run style-fixer
       run: php${{ matrix.php }} vendor/bin/php-cs-fixer fix --dry-run
     - name: Code coverage

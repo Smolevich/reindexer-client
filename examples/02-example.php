@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/common-part.php';
 
-use Reindexer\Client\Api;
 use Reindexer\Services\Namespaces;
 
 try {
@@ -22,7 +21,7 @@ try {
     } else {
         echo sprintf('Error delete namespace: %s', $response->getResponseBody());
     }
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     echo sprintf(
         'Error %s in file %s on line %s',
         $e->getMessage(),

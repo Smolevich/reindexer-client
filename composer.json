@@ -2,7 +2,7 @@
     "name": "smolevich/reindexer-client",
     "description": "PHP client for using database reindexer",
     "type": "library",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "license": "MIT",
     "require": {
         "php": ">=7.1",

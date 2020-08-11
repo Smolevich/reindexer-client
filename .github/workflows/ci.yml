@@ -23,8 +23,8 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         tools: composer
-    - name: Show php version
-      run: php${{ matrix.php }} -v && composer -V
+    - name: Show php and composer version
+      run: php -v && composer -V
     - name: Install dependencies
       run: composer install
     - name: Run unit and integration tests

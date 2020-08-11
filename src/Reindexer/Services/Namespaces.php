@@ -65,4 +65,15 @@ class Namespaces extends BaseService {
             $this->defaultHeaders
         );
     }
+
+    public function get(string $name) {
+        $uri = sprintf('/api/%s/db/%s/namespaces/%s', $this->version, $this->getDatabase(), $name);
+
+        return $this->client->request(
+            'GET',
+            $uri,
+            null,
+            $this->defaultHeaders
+        );
+    }
 }

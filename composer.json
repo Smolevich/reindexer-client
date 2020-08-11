@@ -6,7 +6,7 @@
     "license": "MIT",
     "require": {
         "php": ">=7.1",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.5"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.1",
@@ -27,6 +27,7 @@
     ],
     "scripts": {
         "run-test": "phpunit",
-        "style-fix": "php-cs-fixer fix"
+        "style-fix": "php-cs-fixer fix",
+        "check-fix": "php-cs-fixer fix --dry-run"
     }
 }

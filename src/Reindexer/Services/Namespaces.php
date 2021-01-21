@@ -2,6 +2,7 @@
 
 namespace Reindexer\Services;
 
+use GuzzleHttp\Psr7\Uri;
 use Reindexer\BaseService;
 use Reindexer\Entities\Index as IndexEntity;
 use Reindexer\Response;
@@ -107,6 +108,102 @@ class Namespaces extends BaseService {
         return $this->client->request(
             'DELETE',
             $uri,
+            null,
+            $this->defaultHeaders
+        );
+    }
+
+    public function rename(string $oldName, string $newName): Response {
+        $uri = sprintf(
+            '/api/%s/db/%s/namespaces/%s/rename/%s',
+            $this->version,
+            $this->getDatabase(),
+            $oldName,
+            $newName
+        );
+
+        return $this->client->request(
+            'GET',
+            $uri,
+            null,
+            $this->defaultHeaders
+        );
+    }
+
+    public function getMetaList(
+        string $name,
+        int $limit = 0,
+        int $offset = 0,
+        string $sortOrder = '',
+        bool $withValues = false
+    ): Response {
+        $uri = new Uri(
+            sprintf(
+                '/api/%s/db/%s/namespaces/%s/metalist',
+                $this->version,
+                $this->getDatabase(),
+                $name
+            )
+        );
+
+        if ($limit) {
+            $params['limit'] = $limit;
+        }
+
+        if ($offset) {
+            $params['offset'] = $offset;
+        }
+
+        $params['with_values'] = $withValues ? 'true' : 'false';
+
+        if ($sortOrder) {
+            $params['sort_order'] = $sortOrder;
+        }
+
+        if ($params) {
+            $uri = Uri::withQueryValues($uri, $params);
+        }
+
+        return $this->client->request(
+            'GET',
+            (string)$uri,
+            null,
+            $this->defaultHeaders
+        );
+    }
+
+    public function addMetaDataKey(string $name, string $key, string $value): Response {
+        $uri = new Uri(
+            sprintf(
+                '/api/%s/db/%s/namespaces/%s/metabykey',
+                $this->version,
+                $this->getDatabase(),
+                $name
+            )
+        );
+
+        return $this->client->request(
+            'PUT',
+            (string)$uri,
+            json_encode(['key' => $key, 'value' => $value]),
+            $this->defaultHeaders
+        );
+    }
+
+    public function getMetaDataKey(string $name, string $key): Response {
+        $uri = new Uri(
+            sprintf(
+                '/api/%s/db/%s/namespaces/%s/metabykey/%s',
+                $this->version,
+                $this->getDatabase(),
+                $name,
+                $key
+            )
+        );
+
+        return $this->client->request(
+            'PUT',
+            (string)$uri,
             null,
             $this->defaultHeaders
         );

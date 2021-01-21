@@ -87,4 +87,42 @@ class NamespacesTest extends BaseTest {
         $actual = $this->service->truncate('namespace_one');
         $this->assertEquals(json_encode($responseData), $actual->getResponseBody());
     }
+
+    public function testRename() {
+        $responseData = [
+            "success" =>  true,
+            "response_code" => 0,
+            "description" => "string"
+        ];
+        $response = $this->createApiResponseMock(['getResponseBody']);
+        $response->method('getResponseBody')->willReturn(json_encode($responseData));
+        $this->api->method('request')->willReturn($response);
+        $actual = $this->service->rename('namespace_one', 'namespace_two');
+        $this->assertEquals(json_encode($responseData), $actual->getResponseBody());
+    }
+
+    public function testGetMetaDataKey() {
+        $responseData = [
+            "success" =>  true,
+            "response_code" => 0,
+            "description" => "string"
+        ];
+        $response = $this->createApiResponseMock(['getResponseBody']);
+        $response->method('getResponseBody')->willReturn(json_encode($responseData));
+        $this->api->method('request')->willReturn($response);
+        $actual = $this->service->getMetaDataKey('namespace_one', 'test_key');
+        $this->assertEquals(json_encode($responseData), $actual->getResponseBody());
+    }
+
+    public function testGetMetaList() {
+        $responseData = [
+            "total_items" =>  0,
+            "meta" => [],
+        ];
+        $response = $this->createApiResponseMock(['getResponseBody']);
+        $response->method('getResponseBody')->willReturn(json_encode($responseData));
+        $this->api->method('request')->willReturn($response);
+        $actual = $this->service->getMetaList('namespace_one');
+        $this->assertEquals(json_encode($responseData), $actual->getResponseBody());
+    }
 }

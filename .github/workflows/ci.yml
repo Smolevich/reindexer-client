@@ -32,7 +32,7 @@ jobs:
     - name: Remove Doctrine MongoDB ODM
       if: (startsWith(matrix.php, '8.0'))
       run: |
-        composer install phpunit/phpunit:9.5
+        composer require phpunit/phpunit:9.5
     - name: Install dependencies
       run: composer install
     - name: Run unit and integration tests

@@ -29,6 +29,10 @@ jobs:
       run: if [[ "$DEBUG" == "true" ]]; then env; fi
       env:
         DEBUG: ${{secrets.DEBUG}}
+    - name: Remove Doctrine MongoDB ODM
+      if: (startsWith(matrix.php, '8.0'))
+      run: |
+        composer update phpunit/phpunit:9.5
     - name: Install dependencies
       run: composer install
     - name: Run unit and integration tests

@@ -6,7 +6,6 @@ use Reindexer\BaseService;
 use Reindexer\Response;
 
 class Database extends BaseService {
-
     public function create(string $name): Response {
         $uri = sprintf('/api/%s/db', $this->version);
         return $this->client->request(

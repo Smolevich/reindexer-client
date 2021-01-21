@@ -74,4 +74,17 @@ class NamespacesTest extends BaseTest {
         $actual = $this->service->get('namespace_one');
         $this->assertEquals(json_encode($responseData), $actual->getResponseBody());
     }
+
+    public function testTruncate() {
+        $responseData = [
+            "success" =>  true,
+            "response_code" => 0,
+            "description" => "string"
+        ];
+        $response = $this->createApiResponseMock(['getResponseBody']);
+        $response->method('getResponseBody')->willReturn(json_encode($responseData));
+        $this->api->method('request')->willReturn($response);
+        $actual = $this->service->truncate('namespace_one');
+        $this->assertEquals(json_encode($responseData), $actual->getResponseBody());
+    }
 }

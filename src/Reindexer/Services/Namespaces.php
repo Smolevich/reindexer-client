@@ -64,7 +64,7 @@ class Namespaces extends BaseService {
         );
     }
 
-    public function delete(string $name): Response {
+    public function drop(string $name): Response {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s',
             $this->version,
@@ -90,6 +90,22 @@ class Namespaces extends BaseService {
 
         return $this->client->request(
             'GET',
+            $uri,
+            null,
+            $this->defaultHeaders
+        );
+    }
+
+    public function truncate(string $name): Response {
+        $uri = sprintf(
+            '/api/%s/db/%s/namespaces/%s/truncate',
+            $this->version,
+            $this->getDatabase(),
+            $name
+        );
+
+        return $this->client->request(
+            'DELETE',
             $uri,
             null,
             $this->defaultHeaders

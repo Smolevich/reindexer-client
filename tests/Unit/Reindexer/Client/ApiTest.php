@@ -21,8 +21,8 @@ class ApiTest extends BaseTest {
     }
 
     public function testCreateApiInstanceThrowExceptionIfHostEmpty() {
-        $api = new Api(null);
         $this->expectException(\TypeError::class);
+        $api = new Api(null);
     }
 
     public function testGetClient() {

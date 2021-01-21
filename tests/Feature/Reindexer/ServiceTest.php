@@ -64,7 +64,7 @@ class ServiceTest extends BaseTest {
         $this->nsService->create($this->namespaceName);
     }
 
-    public function tearDown() {
+    public function tearDown(): void {
         $this->dbService->drop($this->database);
     }
 

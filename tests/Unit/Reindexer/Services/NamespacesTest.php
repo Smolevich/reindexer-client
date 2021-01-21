@@ -11,7 +11,7 @@ class NamespacesTest extends BaseTest {
      */
     private $service;
 
-    public function setUp() {
+    public function setUp(): void {
         $this->api = $this->createApiMock(['request']);
         $this->service = new Namespaces($this->api);
     }

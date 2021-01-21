@@ -12,7 +12,7 @@ class IndexTest extends BaseTest {
     protected $index;
     protected $client;
 
-    public function setUp() {
+    public function setUp(): void {
         $this->client = $this->createMock(Api::class);
         $this->index = new Index($this->client);
     }

@@ -45,7 +45,7 @@ class ServiceTest extends BaseTest {
      */
     private $itemService;
 
-    public function setUp() {
+    public function setUp(): void {
         $host = getenv('REINDEXER_HOST');
         $this->config = [
             'host' => $host

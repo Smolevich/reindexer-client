@@ -3,9 +3,11 @@
 namespace Reindexer\Services;
 
 use Reindexer\BaseService;
+use Reindexer\Response;
 
 class Database extends BaseService {
-    public function create(string $name) {
+
+    public function create(string $name): Response {
         $uri = sprintf('/api/%s/db', $this->version);
         return $this->client->request(
             'POST',
@@ -17,8 +19,9 @@ class Database extends BaseService {
         );
     }
 
-    public function getList() {
+    public function getList(): Response {
         $uri = sprintf('/api/%s/db', $this->version);
+
         return $this->client->request(
             'GET',
             $uri,
@@ -27,7 +30,7 @@ class Database extends BaseService {
         );
     }
 
-    public function drop(string $name) {
+    public function drop(string $name): Response {
         $uri = sprintf('/api/%s/db/%s', $this->version, $name);
         return $this->client->request(
             'DELETE',

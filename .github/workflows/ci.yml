@@ -23,6 +23,7 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         tools: composer
+        coverage: xdebug
     - name: Show php and composer version
       run: php -v && composer -V
     - name: debug if needed

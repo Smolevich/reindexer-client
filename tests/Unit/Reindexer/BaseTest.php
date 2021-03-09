@@ -13,14 +13,14 @@ abstract class BaseTest extends TestCase {
     public function createApiMock(array $methods) {
         return $this->getMockBuilder(Api::class)
             ->disableOriginalConstructor()
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->getMock();
     }
 
     public function createApiResponseMock(array $methods) {
         return $this->getMockBuilder(Response::class)
             ->disableOriginalConstructor()
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->getMock();
     }
 

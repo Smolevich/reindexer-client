@@ -6,14 +6,25 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      PHP_XDEBUG: 1
-      PHP_XDEBUG_DEFAULT_ENABLE: 1
+      XDEBUG_MODE: debug
     volumes:
-      - .:/app:cached
+      - .:/var/www/html:cached
     depends_on:
       - reindexer
     networks: ['app-stack']
-
+  nginx:
+    image: wodby/nginx:latest
+    ports:
+      - 81:80
+    depends_on:
+      - php
+    volumes:
+      - .:/var/www/html:cached
+    networks: ['app-stack']
+    environment:
+      NGINX_BACKEND_HOST: php
+      NGINX_VHOST_PRESET: php
+      NGINX_SERVER_ROOT: /var/www/html
   reindexer:
     container_name: reindexer
     image: reindexer/reindexer

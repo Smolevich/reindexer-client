@@ -8,7 +8,7 @@ use Reindexer\Client\Api;
 use Tests\Unit\Reindexer\BaseTest;
 
 class ApiTest extends BaseTest {
-    public function setUp() {
+    public function setUp(): void {
         $this->config = [
             'host' => 'http://reindexer:9800'
         ];
@@ -20,10 +20,8 @@ class ApiTest extends BaseTest {
         $this->assertEquals('reindexer2:9800', $this->api->getHost());
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testCreateApiInstanceThrowExceptionIfHostEmpty() {
+        $this->expectException(\TypeError::class);
         $api = new Api(null);
     }
 

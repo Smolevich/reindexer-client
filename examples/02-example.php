@@ -14,7 +14,7 @@ try {
     $namespaceName = $argv[2] ?? 'namespace';
     $namespaceService = new Namespaces($api);
     $namespaceService->setDatabase($databaseName);
-    $response = $namespaceService->delete($namespaceName);
+    $response = $namespaceService->drop($namespaceName);
 
     if ($response->getCode() === 200) {
         echo sprintf('Namespace with name %s was deleted', $namespaceName);

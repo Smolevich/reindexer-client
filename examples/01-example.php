@@ -40,6 +40,10 @@ try {
         ;
         $response = $namespaceService->create($namespaceName, [$indexId]);
         echo sprintf('Response data: %s', $response->getResponseBody()) . PHP_EOL;
+        $response = $namespaceService->getMetaList($namespaceName, 0, 0, 'desc');
+        echo sprintf('Response data: %s', $response->getResponseBody()) . PHP_EOL;
+        $response = $namespaceService->addMetaDataKey($namespaceName, 'updated_at', (new DateTime())->format('Y-m-d H:i:s'));
+        echo sprintf('Response data: %s', $response->getResponseBody()) . PHP_EOL;
     }
 } catch (\Throwable $e) {
     echo sprintf(

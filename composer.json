@@ -5,11 +5,12 @@
     "minimum-stability": "stable",
     "license": "MIT",
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.2",
+        "ext-json": "*",
         "guzzlehttp/guzzle": "^6.5"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.1",
+        "phpunit/phpunit": "^8.1",
         "friendsofphp/php-cs-fixer": "^2.14",
         "php-coveralls/php-coveralls": "^2.1"
     },

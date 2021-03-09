@@ -45,7 +45,7 @@ class ServiceTest extends BaseTest {
      */
     private $itemService;
 
-    public function setUp() {
+    public function setUp(): void {
         $host = getenv('REINDEXER_HOST');
         $this->config = [
             'host' => $host
@@ -64,7 +64,7 @@ class ServiceTest extends BaseTest {
         $this->nsService->create($this->namespaceName);
     }
 
-    public function tearDown() {
+    public function tearDown(): void {
         $this->dbService->drop($this->database);
     }
 

@@ -3,6 +3,7 @@
 namespace Reindexer\Services;
 
 use Reindexer\BaseService;
+use Reindexer\Response;
 
 class Item extends BaseService {
     protected $database;
@@ -24,13 +25,52 @@ class Item extends BaseService {
         $this->namespace = $namespace;
     }
 
-    public function add(array $data = []) {
+    /**
+     * @param array $precepts
+     *
+     * @return string
+     */
+    protected function preparePercepts(array $precepts): string {
+        $result = [];
+        foreach ($precepts AS $k => $v) {
+            $result[] = 'precepts=' . $this->urlencode("{$k}={$v}");
+        }
+
+        return implode('&', $result);
+    }
+
+    /**
+     * @param string $str
+     *
+     * @return string
+     * @todo Move to separate helper class
+     */
+    public function urlencode(string $str): string {
+        return str_ireplace(
+            ['%3B', '%3A', '%40', '%24', '%21', '%2A', '%28', '%29', '%2C', '%2F'],
+            [';', ':', '@', '$', '!', '*', '(', ')', ',', '/'],
+            \urlencode($str)
+        );
+    }
+
+    /**
+     * This method will INSERT documents to namespace, by their primary keys.
+     * @param array $data Single document or Array of documents
+     * @param array $precepts Example: ['id' => 'serial()']
+     *
+     * @return Response
+     */
+    public function add(array $data = [], array $precepts = []): Response {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
             $this->getDatabase(),
             $this->getNamespace()
         );
+
+        if ($precepts) {
+            $uri .= '?' . $this->preparePercepts($precepts);
+        }
 
         return $this->client->request(
             'POST',
@@ -72,7 +112,17 @@ class Item extends BaseService {
         );
     }
 
-    public function get(int $limit = 0, int $offset = 0, string $sortField = '', string $sortOrder = '') {
+    /**
+     * @param int $limit Maximum count of returned items
+     * @param int $offset Offset of first returned item
+     * @param string $sortField Sort Field
+     * @param string $sortOrder Sort Order
+     * @param string $filter Filter with SQL syntax, e.g: field1 = 'v1' AND field2 > 'v2'
+     * @param array $fields List of returned fields
+     *
+     * @return Response
+     */
+    public function get(int $limit = 0, int $offset = 0, string $sortField = '', string $sortOrder = '', string $filter = '', array $fields = []): Response {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
@@ -97,8 +147,16 @@ class Item extends BaseService {
             $params['sort_order'] = $sortOrder;
         }
 
+        if (!empty($fields)) {
+            $params['fields'] = implode(',', $fields);
+        }
+
         if ($params) {
             $uri .= '?' . http_build_query($params);
+        }
+
+        if (!empty($filter)) {
+            $uri .= ($params ? '&' : '?') . 'filter=' . $this->urlencode($filter);
         }
 
         return $this->client->request(

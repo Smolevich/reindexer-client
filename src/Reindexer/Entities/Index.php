@@ -13,6 +13,7 @@ class Index extends Entity {
     private $isAppendable = false;
     private $collateMode = 'none';
     private $sortOrderLetters;
+    private $expireAfter = 0;
 
     protected $mapJsonFields = [
         'name' => 'name',
@@ -25,9 +26,10 @@ class Index extends Entity {
         'isAppendable' => 'is_appendable',
         'collateMode' => 'collate_mode',
         'sortOrderLetters' => 'sort_order_letters',
+        'expireAfter' => 'expire_after'
     ];
 
-    public function getName() {
+    public function getName(): ?string {
         return $this->name;
     }
 
@@ -37,7 +39,7 @@ class Index extends Entity {
         return $this;
     }
 
-    public function getJsonPaths(): array {
+    public function getJsonPaths(): ?array {
         return $this->jsonPaths ?? [];
     }
 
@@ -47,7 +49,7 @@ class Index extends Entity {
         return $this;
     }
 
-    public function getFieldType(): string {
+    public function getFieldType(): ?string {
         return $this->fieldType;
     }
 
@@ -107,7 +109,7 @@ class Index extends Entity {
         return $this;
     }
 
-    public function getSortOrderLetters(): string {
+    public function getSortOrderLetters(): ?string {
         return $this->sortOrderLetters;
     }
 
@@ -117,12 +119,30 @@ class Index extends Entity {
         return $this;
     }
 
-    public function getIndexType(): string {
+    public function getIndexType(): ?string {
         return $this->indexType;
     }
 
     public function setIndexType(string $indexType): self {
         $this->indexType = $indexType;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getExpireAfter(): int {
+        return $this->expireAfter;
+    }
+
+    /**
+     * @param int $expireAfter
+     *
+     * @return $this
+     */
+    public function setExpireAfter(int $expireAfter): self {
+        $this->expireAfter = $expireAfter;
 
         return $this;
     }

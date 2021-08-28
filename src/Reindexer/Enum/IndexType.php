@@ -7,4 +7,5 @@ class IndexType {
     const TREE = 'tree';
     const TEXT = 'text';
     const COLUMN = '-';
+    const TTL = 'ttl';
 }

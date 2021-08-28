@@ -80,7 +80,7 @@ class Item extends BaseService {
         );
     }
 
-    public function update(array $data = []) {
+    public function update(array $data = []): Response {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
@@ -96,7 +96,7 @@ class Item extends BaseService {
         );
     }
 
-    public function delete(array $data = []) {
+    public function delete(array $data = []): Response {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,

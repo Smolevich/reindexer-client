@@ -32,7 +32,7 @@ class Item extends BaseService {
      */
     protected function preparePercepts(array $precepts): string {
         $result = [];
-        foreach ($precepts AS $k => $v) {
+        foreach ($precepts as $k => $v) {
             $result[] = 'precepts=' . $this->urlencode("{$k}={$v}");
         }
 

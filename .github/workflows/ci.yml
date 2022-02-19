@@ -64,7 +64,7 @@ jobs:
         name: "phpunit-${{ matrix.deps }}-${{ matrix.php-version }}.coverage"
         path: "coverage.xml"
     - name: Run style-fixer
-      run: php-cs-fixer fix --dry-run
+      run: php-cs-fixer fix --config .php-cs-fixer.php --dry-run
     - name: "Download coverage files"
       uses: "actions/download-artifact@v2"
       with:

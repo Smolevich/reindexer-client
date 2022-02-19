@@ -2,6 +2,8 @@
 
 
 $finder = PhpCsFixer\Finder::create()
+    ->ignoreDotFiles(false)
+    ->ignoreVCSIgnored(true)
     ->in(__DIR__)
     ->notPath('vendor')
     ->name('*.php')

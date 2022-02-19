@@ -24,7 +24,7 @@ jobs:
         - operating-system: 'ubuntu-latest'
           php: '7.4'
           phpunit-versions: '8.5.23'
-          php-cs-fixer-versions: '2.14.1'
+          php-cs-fixer-versions: '3.6.0'
         - operating-system: 'ubuntu-latest'
           php: '8.0'
           phpunit-versions: '9.5.0'
@@ -52,7 +52,7 @@ jobs:
       env:
         DEBUG: ${{secrets.DEBUG}}
     - name: Install dependencies
-      run: composer install --prefer-dist
+      run: composer install --prefer-dist --no-dev
     - name: Run unit and integration tests
       run: |
         phpunit --bootstrap vendor/autoload.php --coverage-clover=coverage.xml

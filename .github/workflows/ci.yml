@@ -12,6 +12,27 @@ jobs:
     strategy:
       matrix:
         php: ['7.2', '7.3', '7.4', '8.0', '8.1']
+        include:
+        - operating-system: 'ubuntu-latest'
+          php: '7.2'
+          phpunit-versions: '8.1'
+          php-cs-fixer-versions: '2.14.1'
+        - operating-system: 'ubuntu-latest'
+          php: '7.3'
+          php-cs-fixer-versions: '2.14.1'
+          phpunit-versions: '8.1'
+        - operating-system: 'ubuntu-latest'
+          php: '7.4'
+          phpunit-versions: '8.1'
+          php-cs-fixer-versions: '2.14.1'
+        - operating-system: 'ubuntu-latest'
+          php: '8.0'
+          phpunit-versions: '9.5.0'
+          php-cs-fixer-versions: '3.6.0'
+        - operating-system: 'ubuntu-latest'
+          php: '8.1'
+          phpunit-versions: '9.5.0'
+          php-cs-fixer-versions: '3.6.0'
     services:
       reindexer:
         image: reindexer/reindexer
@@ -22,7 +43,7 @@ jobs:
     - uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
-        tools: composer
+        tools: composer, php-cs-fixer:${{ matrix.php-cs-fixer-versions}}, phpunit:${{ matrix.phpunit-versions }}
         coverage: xdebug
     - name: Show php and composer version
       run: php -v && composer -V
@@ -30,12 +51,8 @@ jobs:
       run: if [[ "$DEBUG" == "true" ]]; then env; fi
       env:
         DEBUG: ${{secrets.DEBUG}}
-    - name: Update phpunit for compability PHP 8
-      if: (startsWith(matrix.php, '8.0'))
-      run: |
-        composer require phpunit/phpunit:9.5
     - name: Install dependencies
-      run: composer install
+      run: composer install --no-dev --prefer-dist
     - name: Run unit and integration tests
       run: |
         php vendor/bin/phpunit --coverage-clover=coverage.xml

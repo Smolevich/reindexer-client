@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['7.2', '7.3', '7.4', '8.0']
+        php: ['7.2', '7.3', '7.4', '8.0', '8.1']
     services:
       reindexer:
         image: reindexer/reindexer
@@ -38,14 +38,21 @@ jobs:
       run: composer install
     - name: Run unit and integration tests
       run: |
-        mkdir -p build/logs
-        php vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+        php vendor/bin/phpunit --coverage-clover=coverage.xml
       env:
         REINDEXER_HOST: "http://0.0.0.0:9088"
+    - name: "Upload coverage file"
+      uses: "actions/upload-artifact@v2"
+      with:
+        name: "phpunit-${{ matrix.deps }}-${{ matrix.php-version }}.coverage"
+        path: "coverage.xml"
     - name: Run style-fixer
       run: php vendor/bin/php-cs-fixer fix --dry-run
-    - name: Code coverage
-      run: php vendor/bin/php-coveralls -v
-      env:
-        COVERALLS_RUN_LOCALLY: ${{secrets.COVERALLS_RUN_LOCALLY}}
-        COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
+    - name: "Download coverage files"
+      uses: "actions/download-artifact@v2"
+      with:
+        path: "reports"
+    - uses: codecov/codecov-action@v2
+      with:
+        directory: "reports"
+        verbose: true # optional (default = false)

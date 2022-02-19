@@ -55,7 +55,7 @@ jobs:
       run: composer install --no-dev --prefer-dist
     - name: Run unit and integration tests
       run: |
-        php vendor/bin/phpunit --coverage-clover=coverage.xml
+        phpunit --coverage-clover=coverage.xml
       env:
         REINDEXER_HOST: "http://0.0.0.0:9088"
     - name: "Upload coverage file"
@@ -64,7 +64,7 @@ jobs:
         name: "phpunit-${{ matrix.deps }}-${{ matrix.php-version }}.coverage"
         path: "coverage.xml"
     - name: Run style-fixer
-      run: php vendor/bin/php-cs-fixer fix --dry-run
+      run: php-cs-fixer fix --dry-run
     - name: "Download coverage files"
       uses: "actions/download-artifact@v2"
       with:

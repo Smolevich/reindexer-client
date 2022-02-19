@@ -52,7 +52,7 @@ jobs:
       env:
         DEBUG: ${{secrets.DEBUG}}
     - name: Install dependencies
-      run: composer install --no-dev --prefer-dist
+      run: composer install --prefer-dist
     - name: Run unit and integration tests
       run: |
         phpunit --coverage-clover=coverage.xml

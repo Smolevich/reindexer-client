@@ -55,7 +55,7 @@ jobs:
       run: composer install --prefer-dist
     - name: Run unit and integration tests
       run: |
-        phpunit --coverage-clover=coverage.xml
+        phpunit --bootstrap vendor/autoload.php --coverage-clover=coverage.xml
       env:
         REINDEXER_HOST: "http://0.0.0.0:9088"
     - name: "Upload coverage file"

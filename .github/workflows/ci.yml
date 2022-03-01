@@ -51,12 +51,12 @@ jobs:
       run: if [[ "$DEBUG" == "true" ]]; then env; fi
       env:
         DEBUG: ${{secrets.DEBUG}}
-    - name: Install phpunit with specific version
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-dev
+    - name: Install phpunit and php-cs-fixer with specific version
       run: |
           composer update phpunit/phpunit:${{ matrix.phpunit-versions }} --dev
           composer update friendsofphp/php-cs-fixer:${{ matrix.php-cs-fixer-versions }} --dev
-    - name: Install dependencies
-      run: composer install --prefer-dist
     - name: Run unit and integration tests
       run: |
         vendor/bin/phpunit --bootstrap vendor/autoload.php --coverage-clover=coverage.xml

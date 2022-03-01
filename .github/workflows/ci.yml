@@ -51,11 +51,15 @@ jobs:
       run: if [[ "$DEBUG" == "true" ]]; then env; fi
       env:
         DEBUG: ${{secrets.DEBUG}}
+    - name: Install phpunit with specific version
+      run: |
+          composer require phpunit:${{ matrix.phpunit-versions }} --dev
+          composer require php-cs-fixer:${{ matrix.php-cs-fixer-versions }} --dev
     - name: Install dependencies
-      run: composer install --prefer-dist --no-dev
+      run: composer install --prefer-dist
     - name: Run unit and integration tests
       run: |
-        phpunit --bootstrap vendor/autoload.php --coverage-clover=coverage.xml
+        vendor/bin/phpunit --bootstrap vendor/autoload.php --coverage-clover=coverage.xml
       env:
         REINDEXER_HOST: "http://0.0.0.0:9088"
     - name: "Upload coverage file"
@@ -64,7 +68,7 @@ jobs:
         name: "phpunit-${{ matrix.deps }}-${{ matrix.php-version }}.coverage"
         path: "coverage.xml"
     - name: Run style-fixer
-      run: php-cs-fixer fix --config .php-cs-fixer.php --dry-run
+      run: vendor/bin/php-cs-fixer fix --config .php-cs-fixer.php --dry-run
     - name: "Download coverage files"
       uses: "actions/download-artifact@v2"
       with:

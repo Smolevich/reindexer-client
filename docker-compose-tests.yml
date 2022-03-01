@@ -22,5 +22,6 @@ services:
 volumes:
   reindexer-data:
 
-networks: {app-stack:{}}
+networks:
+    app-stack:
 

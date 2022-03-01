@@ -1,13 +1,17 @@
 <?php
 
-
 $finder = PhpCsFixer\Finder::create()
+    ->ignoreDotFiles(false)
+    ->ignoreVCSIgnored(true)
     ->in(__DIR__)
     ->notPath('vendor')
     ->name('*.php')
 ;
 
-return PhpCsFixer\Config::create()
+$config = new PhpCsFixer\Config();
+
+return $config
+    ->setRiskyAllowed(true)
     ->setRules([
         '@PSR2' => true,
         'braces' => [
@@ -17,5 +21,4 @@ return PhpCsFixer\Config::create()
         'ordered_imports' => true,
     ])
     ->setFinder($finder)
-    ->setUsingCache(true)
 ;

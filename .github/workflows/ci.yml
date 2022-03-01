@@ -11,7 +11,23 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['7.2', '7.3', '7.4', '8.0']
+        php: ['7.2', '7.3', '7.4', '8.0', '8.1']
+        include:
+        - operating-system: 'ubuntu-latest'
+          php: '7.2'
+          composer-flags: ' --prefer-lowest'
+        - operating-system: 'ubuntu-latest'
+          php: '7.3'
+          composer-flags: ' --prefer-lowest'
+        - operating-system: 'ubuntu-latest'
+          php: '7.4'
+          composer-flags: ' --prefer-lowest'
+        - operating-system: 'ubuntu-latest'
+          composer-flags: ' --prefer-stable'
+          php: '8.0'
+        - operating-system: 'ubuntu-latest'
+          php: '8.1'
+          composer-flags: ' --prefer-stable'
     services:
       reindexer:
         image: reindexer/reindexer
@@ -30,22 +46,29 @@ jobs:
       run: if [[ "$DEBUG" == "true" ]]; then env; fi
       env:
         DEBUG: ${{secrets.DEBUG}}
-    - name: Update phpunit for compability PHP 8
-      if: (startsWith(matrix.php, '8.0'))
-      run: |
-        composer require phpunit/phpunit:9.5
     - name: Install dependencies
-      run: composer install
+      run: composer install --prefer-dist --no-dev
+    - name: Install phpunit and php-cs-fixer with specific version
+      run: |
+          composer update phpunit/phpunit ${{ matrix.composer-flags }} --dev
+          composer update friendsofphp/php-cs-fixer ${{ matrix.composer-flags }} --dev
     - name: Run unit and integration tests
       run: |
-        mkdir -p build/logs
-        php vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+        vendor/bin/phpunit --bootstrap vendor/autoload.php --coverage-clover=coverage.xml
       env:
         REINDEXER_HOST: "http://0.0.0.0:9088"
+    - name: "Upload coverage file"
+      uses: "actions/upload-artifact@v2"
+      with:
+        name: "phpunit-${{ matrix.deps }}-${{ matrix.php-version }}.coverage"
+        path: "coverage.xml"
     - name: Run style-fixer
-      run: php vendor/bin/php-cs-fixer fix --dry-run
-    - name: Code coverage
-      run: php vendor/bin/php-coveralls -v
-      env:
-        COVERALLS_RUN_LOCALLY: ${{secrets.COVERALLS_RUN_LOCALLY}}
-        COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
+      run: vendor/bin/php-cs-fixer fix --config .php-cs-fixer.php --dry-run
+    - name: "Download coverage files"
+      uses: "actions/download-artifact@v2"
+      with:
+        path: "reports"
+    - uses: codecov/codecov-action@v2
+      with:
+        directory: "reports"
+        verbose: true # optional (default = false)

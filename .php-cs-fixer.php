@@ -1,6 +1,5 @@
 <?php
 
-
 $finder = PhpCsFixer\Finder::create()
     ->ignoreDotFiles(false)
     ->ignoreVCSIgnored(true)
@@ -11,7 +10,7 @@ $finder = PhpCsFixer\Finder::create()
 
 $config = new PhpCsFixer\Config();
 
-$config
+return $config
     ->setRiskyAllowed(true)
     ->setRules([
         '@PSR2' => true,
@@ -22,4 +21,4 @@ $config
         'ordered_imports' => true,
     ])
     ->setFinder($finder)
-; ;
+;

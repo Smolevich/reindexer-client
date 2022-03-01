@@ -53,8 +53,8 @@ jobs:
         DEBUG: ${{secrets.DEBUG}}
     - name: Install phpunit with specific version
       run: |
-          composer require phpunit:${{ matrix.phpunit-versions }} --dev
-          composer require php-cs-fixer:${{ matrix.php-cs-fixer-versions }} --dev
+          composer require phpunit/phpunit:${{ matrix.phpunit-versions }} --dev
+          composer require friendsofphp/php-cs-fixer:${{ matrix.php-cs-fixer-versions }} --dev
     - name: Install dependencies
       run: composer install --prefer-dist
     - name: Run unit and integration tests

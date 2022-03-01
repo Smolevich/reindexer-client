@@ -50,7 +50,7 @@ jobs:
       run: composer install --prefer-dist --no-dev
     - name: Install phpunit and php-cs-fixer with specific version
       run: |
-          composer update ${{ matrix.composer-flags }} --dev
+          composer update phpunit/phpunit ${{ matrix.composer-flags }} --dev
     - name: Run unit and integration tests
       run: |
         vendor/bin/phpunit --bootstrap vendor/autoload.php --coverage-clover=coverage.xml

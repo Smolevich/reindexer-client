@@ -51,6 +51,7 @@ jobs:
     - name: Install phpunit and php-cs-fixer with specific version
       run: |
           composer update phpunit/phpunit ${{ matrix.composer-flags }} --dev
+          composer update friendsofphp/php-cs-fixer ${{ matrix.composer-flags }} --dev
     - name: Run unit and integration tests
       run: |
         vendor/bin/phpunit --bootstrap vendor/autoload.php --coverage-clover=coverage.xml

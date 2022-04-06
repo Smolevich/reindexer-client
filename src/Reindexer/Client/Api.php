@@ -3,7 +3,9 @@
 namespace Reindexer\Client;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Utils;
 use GuzzleHttp\TransferStats;
 use Reindexer\LoggerInterface;
 use Reindexer\Response;
@@ -36,7 +38,7 @@ class Api extends BaseApi {
         $request = new Request($method, $this->host . $uri, $headers);
 
         if ($body) {
-            $stream = \GuzzleHttp\Psr7\stream_for($body);
+            $stream = Utils::streamFor($body);
             $request = $request->withBody($stream);
         }
 
@@ -55,12 +57,11 @@ class Api extends BaseApi {
                 ]
             );
 
-            $requestParams = $request->getBody()->__toString();
             $apiResponse->setRequest($request)
                 ->setResponse($response)
                 ->setInfo($this->info)
                 ->setError($this->error);
-                
+
             if ($this->logger) {
                 $this->logger->logResponse($apiResponse);
             }

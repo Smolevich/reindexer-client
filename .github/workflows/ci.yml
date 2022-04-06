@@ -11,17 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['7.2', '7.3', '7.4', '8.0', '8.1']
+        php: ['8.0', '8.1']
         include:
-        - operating-system: 'ubuntu-latest'
-          php: '7.2'
-          composer-flags: ' --prefer-lowest'
-        - operating-system: 'ubuntu-latest'
-          php: '7.3'
-          composer-flags: ' --prefer-lowest'
-        - operating-system: 'ubuntu-latest'
-          php: '7.4'
-          composer-flags: ' --prefer-lowest'
         - operating-system: 'ubuntu-latest'
           composer-flags: ' --prefer-stable'
           php: '8.0'

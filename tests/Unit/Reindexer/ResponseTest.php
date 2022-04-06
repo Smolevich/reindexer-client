@@ -40,6 +40,18 @@ class ResponseTest extends BaseTest {
         $this->assertEquals($this->info['http_code'], $this->response->getCode());
     }
 
+    /**
+     * @dataProvider responseProvider
+     */
+    public function testGetRequestHeaders($request, $response) {
+        $this->response->setRequest($request)
+            ->setResponse($response);
+        $this->assertEquals(
+            $request->getHeaders(),
+            $this->response->getRequestHeaders()
+        );
+    }
+
     public function responseProvider() {
         return [
             [

@@ -33,10 +33,10 @@ class Response {
         return $this->response;
     }
 
-    public function getRequestHeaders() {
+    public function getRequestHeaders(): array {
         return $this->getRequest()->getHeaders();
     }
-    
+
     public function getResponseHeaders(): array {
         return $this->getResponse()->getHeaders();
     }
@@ -66,7 +66,7 @@ class Response {
         return $stream->getContents();
     }
 
-    public function getDecodedResponseBody(bool $isAssoc = false) {
+    public function getDecodedResponseBody(bool $isAssoc = false): array {
         return json_decode($this->getResponseBody(), $isAssoc) ?? [];
     }
 
@@ -83,7 +83,7 @@ class Response {
     public function getCode(): int {
         return $this->getInfo()['http_code'] ?? $this->getResponse()->getStatusCode() ?? 0;
     }
-    
+
     public function getRequestParams(): string {
         return $this->getRequest()->getBody()->__toString();
     }

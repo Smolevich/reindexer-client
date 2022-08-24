@@ -5,7 +5,6 @@ use Reindexer\Services\Namespaces;
 use Tests\Unit\Reindexer\BaseTest;
 
 class NamespacesTest extends BaseTest {
-
     /**
      * @var Namespaces
      */

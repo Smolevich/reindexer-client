@@ -17,7 +17,7 @@ try {
     $namespaceName = $argv[2] ?? 'namespace';
     $dbService = new Database($api);
     $response = $dbService->getList();
-    $existDatabases = $response->getDecodedResponseBody(true)['items'] ?? [];
+    $existDatabases = $response?->getDecodedResponseBody(true)['items'] ?? [];
     $namespaceService = new Namespaces($api);
     $namespaceService->setDatabase($databaseName);
     $response = $namespaceService->getList('asc');

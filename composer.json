@@ -7,7 +7,10 @@
     "require": {
         "php": ">=8.0",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^7.0"
+        "guzzlehttp/guzzle": "^7.0",
+        "google/protobuf": "^3.17",
+        "grpc/grpc": "~1.30.0",
+        "ext-grpc": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",
@@ -17,6 +20,7 @@
     "autoload": {
         "psr-4": {
             "": "src/",
+            "": "gen/pb-php",
             "Tests\\": "tests/"
         }
     },

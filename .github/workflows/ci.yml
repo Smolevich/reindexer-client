@@ -29,7 +29,7 @@ jobs:
     - uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
-        tools: composer
+        tools: composer, grpc_php_plugin
         coverage: xdebug
     - name: Show php and composer version
       run: php -v && composer -V

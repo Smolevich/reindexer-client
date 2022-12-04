@@ -49,6 +49,7 @@ jobs:
         vendor/bin/phpunit --bootstrap vendor/autoload.php --coverage-clover=coverage.xml
       env:
         REINDEXER_HOST: "http://0.0.0.0:9088"
+        REINDEXER_GRPC_HOST: "reindexer:16534"
     - name: "Upload coverage file"
       uses: "actions/upload-artifact@v2"
       with:

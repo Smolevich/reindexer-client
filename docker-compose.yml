@@ -9,6 +9,8 @@ services:
       XDEBUG_MODE: debug
     volumes:
       - .:/var/www/html:cached
+      - ./.docker/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini:cached
+      - ./.docker/php.ini:/usr/local/etc/php/conf.d/php.ini:cached
     depends_on:
       - reindexer
     networks: ['app-stack']

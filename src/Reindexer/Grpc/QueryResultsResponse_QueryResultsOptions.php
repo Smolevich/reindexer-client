@@ -6,7 +6,7 @@ namespace Reindexer\Grpc;
 
 if (false) {
     /**
-     * This class is deprecated. Use Reindexer\Grpc\QueryResultsResponse\QueryResultsOptions instead.
+     * This class is deprecated. Use Reindexer\Grpc2\QueryResultsResponse\QueryResultsOptions instead.
      * @deprecated
      */
     class QueryResultsResponse_QueryResultsOptions {}

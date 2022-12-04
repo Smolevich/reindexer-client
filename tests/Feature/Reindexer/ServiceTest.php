@@ -5,6 +5,7 @@ namespace Tests\Feature\Reindexer;
 use Reindexer\Client\Api;
 use Reindexer\Entities\Index;
 use Reindexer\Enum\IndexType;
+use Reindexer\Grpc\ReindexerClient;
 use Reindexer\Services\Database;
 use Reindexer\Services\Index as ReindexerIndex;
 use Reindexer\Services\Item;
@@ -47,6 +48,7 @@ class ServiceTest extends BaseTest {
 
     public function setUp(): void {
         $host = getenv('REINDEXER_HOST');
+
         $this->config = [
             'host' => $host
         ];

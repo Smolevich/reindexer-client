@@ -6,7 +6,7 @@ namespace Reindexer\Grpc;
 
 if (false) {
     /**
-     * This class is deprecated. Use Reindexer\Grpc\ErrorResponse\ErrorCode instead.
+     * This class is deprecated. Use Reindexer\Grpc2\ErrorResponse\ErrorCode instead.
      * @deprecated
      */
     class ErrorResponse_ErrorCode {}

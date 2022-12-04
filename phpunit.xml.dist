@@ -19,5 +19,6 @@
   <logging/>
   <php>
     <env name="REINDEXER_HOST" value=""/>
+    <env name="REINDEXER_GRPC_HOST" value=""/>
   </php>
 </phpunit>

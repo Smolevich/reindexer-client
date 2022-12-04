@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile
     environment:
       REINDEXER_HOST: http://reindexer:9088
+      REINDEXER_GRPC_HOST: reindexer:16534
     volumes:
       - .:/app:cached
     depends_on:

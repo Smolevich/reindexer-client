@@ -6,7 +6,7 @@ namespace Reindexer\Grpc;
 
 if (false) {
     /**
-     * This class is deprecated. Use Reindexer\Grpc\IndexOptions\CollateMode instead.
+     * This class is deprecated. Use Reindexer\Grpc2\IndexOptions\CollateMode instead.
      * @deprecated
      */
     class IndexOptions_CollateMode {}

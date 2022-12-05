@@ -24,6 +24,7 @@ jobs:
         image: reindexer/reindexer
         ports:
           - 9088:9088
+          - 16534:16534
     steps:
     - uses: actions/checkout@v2
     - uses: shivammathur/setup-php@v2

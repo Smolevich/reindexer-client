@@ -1,6 +1,5 @@
 <?php
 
-
 use Reindexer\Grpc\ReindexerClient;
 use Tests\Unit\Reindexer\BaseTest;
 
@@ -27,7 +26,6 @@ class GrpcTest extends BaseTest {
         $request = new \Reindexer\Grpc\EnumDatabasesRequest();
         list($response, $error) = $this->client->enumDatabases($request)->wait();
         $this->assertIsObject($error);
-        var_dump($error);
         $this->assertSame(0, $error->code);
         $this->assertNotNull($response);
         $this->assertNotNull($response->getNames());

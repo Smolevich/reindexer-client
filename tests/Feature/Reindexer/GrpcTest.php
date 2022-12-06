@@ -30,6 +30,6 @@ class GrpcTest extends BaseTest {
         $this->assertNotNull($response);
         $this->assertNotNull($response->getNames());
         $this->assertIsObject($response->getNames());
-        $this->assertSame('unittests', $response->getNames()[0]);
+        $this->assertSame($this->database, $response->getNames()[0]);
     }
 }

@@ -5,7 +5,7 @@ use Reindexer\Grpc\ReindexerClient;
 use Tests\Unit\Reindexer\BaseTest;
 
 class GrpcTest extends BaseTest {
-    private string $database = 'unittests';
+    private string $database = 'grpc_tests';
     private ReindexerClient $client;
 
     public function setUp(): void {

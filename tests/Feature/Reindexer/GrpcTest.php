@@ -4,7 +4,7 @@ use Reindexer\Grpc\ReindexerClient;
 use Tests\Unit\Reindexer\BaseTest;
 
 class GrpcTest extends BaseTest {
-    private string $database = 'unittests_ns';
+    private string $database = 'unittests';
     private ReindexerClient $client;
 
     public function setUp(): void {
@@ -31,5 +31,14 @@ class GrpcTest extends BaseTest {
         $this->assertNotNull($response->getNames());
         $this->assertIsObject($response->getNames());
         $this->assertSame($this->database, $response->getNames()[0]);
+    }
+
+    public function testDelete() {
+        $request = new \Reindexer\Grpc\CreateDatabaseRequest(['dbName' => $this->database . '_1']);
+        list($response, $error) = $this->client->CreateDatabase($request)->wait();
+        $this->client->Delete(new \Reindexer\Grpc\DeleteRequest(['dbName' => $this->database . '_1']));
+        $request = new \Reindexer\Grpc\EnumDatabasesRequest();
+        list($response, $error) = $this->client->enumDatabases($request)->wait();
+        $this->assertCount(0, $response->getNames());
     }
 }

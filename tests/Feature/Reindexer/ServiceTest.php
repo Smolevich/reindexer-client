@@ -82,7 +82,6 @@ class ServiceTest extends BaseTest {
         );
         $this->dbService->drop('unittests_2');
         $databases = $this->dbService->getList()->getDecodedResponseBody(true);
-        var_dump($databases['items']);
         $this->assertEquals(1, count($databases['items']));
     }
 

@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Connection options.
  *
  * Generated from protobuf message <code>reindexer.grpc.ConnectRequest</code>
  */
-class ConnectRequest extends \Google\Protobuf\Internal\Message
-{
+class ConnectRequest extends \Google\Protobuf\Internal\Message {
     /**
      * uri looks like `cproto://127.0.0.1:6534/var/lib/reindexer/dbname`
      * and consists of:
@@ -54,7 +53,7 @@ class ConnectRequest extends \Google\Protobuf\Internal\Message
      *     @type \Reindexer\Grpc\ConnectOptions $connectOpts
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -66,8 +65,7 @@ class ConnectRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string url = 1;</code>
      * @return string
      */
-    public function getUrl()
-    {
+    public function getUrl() {
         return $this->url;
     }
 
@@ -79,9 +77,8 @@ class ConnectRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setUrl($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setUrl($var) {
+        GPBUtil::checkString($var, true);
         $this->url = $var;
 
         return $this;
@@ -91,8 +88,7 @@ class ConnectRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string dbName = 2;</code>
      * @return string
      */
-    public function getDbName()
-    {
+    public function getDbName() {
         return $this->dbName;
     }
 
@@ -101,9 +97,8 @@ class ConnectRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDbName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setDbName($var) {
+        GPBUtil::checkString($var, true);
         $this->dbName = $var;
 
         return $this;
@@ -113,8 +108,7 @@ class ConnectRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string login = 3;</code>
      * @return string
      */
-    public function getLogin()
-    {
+    public function getLogin() {
         return $this->login;
     }
 
@@ -123,9 +117,8 @@ class ConnectRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setLogin($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setLogin($var) {
+        GPBUtil::checkString($var, true);
         $this->login = $var;
 
         return $this;
@@ -135,8 +128,7 @@ class ConnectRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string password = 4;</code>
      * @return string
      */
-    public function getPassword()
-    {
+    public function getPassword() {
         return $this->password;
     }
 
@@ -145,9 +137,8 @@ class ConnectRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setPassword($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setPassword($var) {
+        GPBUtil::checkString($var, true);
         $this->password = $var;
 
         return $this;
@@ -157,18 +148,15 @@ class ConnectRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.ConnectOptions connectOpts = 5;</code>
      * @return \Reindexer\Grpc\ConnectOptions|null
      */
-    public function getConnectOpts()
-    {
+    public function getConnectOpts() {
         return $this->connectOpts;
     }
 
-    public function hasConnectOpts()
-    {
+    public function hasConnectOpts() {
         return isset($this->connectOpts);
     }
 
-    public function clearConnectOpts()
-    {
+    public function clearConnectOpts() {
         unset($this->connectOpts);
     }
 
@@ -177,13 +165,10 @@ class ConnectRequest extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\ConnectOptions $var
      * @return $this
      */
-    public function setConnectOpts($var)
-    {
+    public function setConnectOpts($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\ConnectOptions::class);
         $this->connectOpts = $var;
 
         return $this;
     }
-
 }
-

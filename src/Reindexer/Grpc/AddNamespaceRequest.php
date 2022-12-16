@@ -5,14 +5,13 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Generated from protobuf message <code>reindexer.grpc.AddNamespaceRequest</code>
  */
-class AddNamespaceRequest extends \Google\Protobuf\Internal\Message
-{
+class AddNamespaceRequest extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>string dbName = 1;</code>
      */
@@ -32,7 +31,7 @@ class AddNamespaceRequest extends \Google\Protobuf\Internal\Message
      *     @type \Reindexer\Grpc\PBNamespace $namespace
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -41,8 +40,7 @@ class AddNamespaceRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string dbName = 1;</code>
      * @return string
      */
-    public function getDbName()
-    {
+    public function getDbName() {
         return $this->dbName;
     }
 
@@ -51,9 +49,8 @@ class AddNamespaceRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDbName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setDbName($var) {
+        GPBUtil::checkString($var, true);
         $this->dbName = $var;
 
         return $this;
@@ -63,18 +60,15 @@ class AddNamespaceRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.Namespace namespace = 2;</code>
      * @return \Reindexer\Grpc\PBNamespace|null
      */
-    public function getNamespace()
-    {
+    public function getNamespace() {
         return $this->namespace;
     }
 
-    public function hasNamespace()
-    {
+    public function hasNamespace() {
         return isset($this->namespace);
     }
 
-    public function clearNamespace()
-    {
+    public function clearNamespace() {
         unset($this->namespace);
     }
 
@@ -83,13 +77,10 @@ class AddNamespaceRequest extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\PBNamespace $var
      * @return $this
      */
-    public function setNamespace($var)
-    {
+    public function setNamespace($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\PBNamespace::class);
         $this->namespace = $var;
 
         return $this;
     }
-
 }
-

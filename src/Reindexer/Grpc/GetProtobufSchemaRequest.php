@@ -5,14 +5,13 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Generated from protobuf message <code>reindexer.grpc.GetProtobufSchemaRequest</code>
  */
-class GetProtobufSchemaRequest extends \Google\Protobuf\Internal\Message
-{
+class GetProtobufSchemaRequest extends \Google\Protobuf\Internal\Message {
     /**
      * DB name
      *
@@ -38,7 +37,7 @@ class GetProtobufSchemaRequest extends \Google\Protobuf\Internal\Message
      *           List of namespaces to be included in final .proto file
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -49,8 +48,7 @@ class GetProtobufSchemaRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string dbName = 1;</code>
      * @return string
      */
-    public function getDbName()
-    {
+    public function getDbName() {
         return $this->dbName;
     }
 
@@ -61,9 +59,8 @@ class GetProtobufSchemaRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDbName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setDbName($var) {
+        GPBUtil::checkString($var, true);
         $this->dbName = $var;
 
         return $this;
@@ -75,8 +72,7 @@ class GetProtobufSchemaRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>repeated string namespaces = 2;</code>
      * @return \Google\Protobuf\Internal\RepeatedField
      */
-    public function getNamespaces()
-    {
+    public function getNamespaces() {
         return $this->namespaces;
     }
 
@@ -87,13 +83,10 @@ class GetProtobufSchemaRequest extends \Google\Protobuf\Internal\Message
      * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
      * @return $this
      */
-    public function setNamespaces($var)
-    {
+    public function setNamespaces($var) {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->namespaces = $arr;
 
         return $this;
     }
-
 }
-

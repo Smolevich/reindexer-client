@@ -9,8 +9,8 @@ if (false) {
      * This class is deprecated. Use Reindexer\Grpc2\ErrorResponse\ErrorCode instead.
      * @deprecated
      */
-    class ErrorResponse_ErrorCode {}
+    class ErrorResponse_ErrorCode {
+    }
 }
 class_exists(ErrorResponse\ErrorCode::class);
 @trigger_error('Reindexer\Grpc\ErrorResponse_ErrorCode is deprecated and will be removed in the next major release. Use Reindexer\Grpc\ErrorResponse\ErrorCode instead', E_USER_DEPRECATED);
-

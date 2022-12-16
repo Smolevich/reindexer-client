@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Transaction data.
  *
  * Generated from protobuf message <code>reindexer.grpc.TransactionIdResponse</code>
  */
-class TransactionIdResponse extends \Google\Protobuf\Internal\Message
-{
+class TransactionIdResponse extends \Google\Protobuf\Internal\Message {
     /**
      * Operation status
      *
@@ -40,7 +39,7 @@ class TransactionIdResponse extends \Google\Protobuf\Internal\Message
      *           unique transaction ID
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -51,18 +50,15 @@ class TransactionIdResponse extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.ErrorResponse status = 1;</code>
      * @return \Reindexer\Grpc\ErrorResponse|null
      */
-    public function getStatus()
-    {
+    public function getStatus() {
         return $this->status;
     }
 
-    public function hasStatus()
-    {
+    public function hasStatus() {
         return isset($this->status);
     }
 
-    public function clearStatus()
-    {
+    public function clearStatus() {
         unset($this->status);
     }
 
@@ -73,8 +69,7 @@ class TransactionIdResponse extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\ErrorResponse $var
      * @return $this
      */
-    public function setStatus($var)
-    {
+    public function setStatus($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\ErrorResponse::class);
         $this->status = $var;
 
@@ -87,8 +82,7 @@ class TransactionIdResponse extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>int64 id = 2;</code>
      * @return int|string
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -99,13 +93,10 @@ class TransactionIdResponse extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setId($var)
-    {
+    public function setId($var) {
         GPBUtil::checkInt64($var);
         $this->id = $var;
 
         return $this;
     }
-
 }
-

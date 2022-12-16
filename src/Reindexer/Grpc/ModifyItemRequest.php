@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Item definition.
  *
  * Generated from protobuf message <code>reindexer.grpc.ModifyItemRequest</code>
  */
-class ModifyItemRequest extends \Google\Protobuf\Internal\Message
-{
+class ModifyItemRequest extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>string dbName = 1;</code>
      */
@@ -60,7 +59,7 @@ class ModifyItemRequest extends \Google\Protobuf\Internal\Message
      *     @type string $data
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -69,8 +68,7 @@ class ModifyItemRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string dbName = 1;</code>
      * @return string
      */
-    public function getDbName()
-    {
+    public function getDbName() {
         return $this->dbName;
     }
 
@@ -79,9 +77,8 @@ class ModifyItemRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDbName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setDbName($var) {
+        GPBUtil::checkString($var, true);
         $this->dbName = $var;
 
         return $this;
@@ -91,8 +88,7 @@ class ModifyItemRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string nsName = 2;</code>
      * @return string
      */
-    public function getNsName()
-    {
+    public function getNsName() {
         return $this->nsName;
     }
 
@@ -101,9 +97,8 @@ class ModifyItemRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setNsName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setNsName($var) {
+        GPBUtil::checkString($var, true);
         $this->nsName = $var;
 
         return $this;
@@ -113,8 +108,7 @@ class ModifyItemRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.ModifyMode mode = 3;</code>
      * @return int
      */
-    public function getMode()
-    {
+    public function getMode() {
         return $this->mode;
     }
 
@@ -123,8 +117,7 @@ class ModifyItemRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setMode($var)
-    {
+    public function setMode($var) {
         GPBUtil::checkEnum($var, \Reindexer\Grpc\ModifyMode::class);
         $this->mode = $var;
 
@@ -141,8 +134,7 @@ class ModifyItemRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.EncodingType encodingType = 4;</code>
      * @return int
      */
-    public function getEncodingType()
-    {
+    public function getEncodingType() {
         return $this->encodingType;
     }
 
@@ -157,8 +149,7 @@ class ModifyItemRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setEncodingType($var)
-    {
+    public function setEncodingType($var) {
         GPBUtil::checkEnum($var, \Reindexer\Grpc\EncodingType::class);
         $this->encodingType = $var;
 
@@ -169,8 +160,7 @@ class ModifyItemRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bytes data = 5;</code>
      * @return string
      */
-    public function getData()
-    {
+    public function getData() {
         return $this->data;
     }
 
@@ -179,13 +169,10 @@ class ModifyItemRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setData($var)
-    {
-        GPBUtil::checkString($var, False);
+    public function setData($var) {
+        GPBUtil::checkString($var, false);
         $this->data = $var;
 
         return $this;
     }
-
 }
-

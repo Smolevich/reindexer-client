@@ -5,8 +5,8 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Query definition. Represents query
@@ -14,8 +14,7 @@ use Google\Protobuf\Internal\GPBUtil;
  *
  * Generated from protobuf message <code>reindexer.grpc.Query</code>
  */
-class Query extends \Google\Protobuf\Internal\Message
-{
+class Query extends \Google\Protobuf\Internal\Message {
     /**
      * Query can be encoded as following:
      * 1. JSON
@@ -42,7 +41,7 @@ class Query extends \Google\Protobuf\Internal\Message
      *     @type string $data
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -55,8 +54,7 @@ class Query extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.EncodingType encdoingType = 1;</code>
      * @return int
      */
-    public function getEncdoingType()
-    {
+    public function getEncdoingType() {
         return $this->encdoingType;
     }
 
@@ -69,8 +67,7 @@ class Query extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setEncdoingType($var)
-    {
+    public function setEncdoingType($var) {
         GPBUtil::checkEnum($var, \Reindexer\Grpc\EncodingType::class);
         $this->encdoingType = $var;
 
@@ -81,8 +78,7 @@ class Query extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bytes data = 2;</code>
      * @return string
      */
-    public function getData()
-    {
+    public function getData() {
         return $this->data;
     }
 
@@ -91,13 +87,10 @@ class Query extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setData($var)
-    {
-        GPBUtil::checkString($var, False);
+    public function setData($var) {
+        GPBUtil::checkString($var, false);
         $this->data = $var;
 
         return $this;
     }
-
 }
-

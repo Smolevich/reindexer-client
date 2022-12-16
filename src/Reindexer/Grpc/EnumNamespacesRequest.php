@@ -5,14 +5,13 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Generated from protobuf message <code>reindexer.grpc.EnumNamespacesRequest</code>
  */
-class EnumNamespacesRequest extends \Google\Protobuf\Internal\Message
-{
+class EnumNamespacesRequest extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>string dbName = 1;</code>
      */
@@ -32,7 +31,7 @@ class EnumNamespacesRequest extends \Google\Protobuf\Internal\Message
      *     @type \Reindexer\Grpc\EnumNamespacesOptions $options
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -41,8 +40,7 @@ class EnumNamespacesRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string dbName = 1;</code>
      * @return string
      */
-    public function getDbName()
-    {
+    public function getDbName() {
         return $this->dbName;
     }
 
@@ -51,9 +49,8 @@ class EnumNamespacesRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDbName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setDbName($var) {
+        GPBUtil::checkString($var, true);
         $this->dbName = $var;
 
         return $this;
@@ -63,18 +60,15 @@ class EnumNamespacesRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.EnumNamespacesOptions options = 2;</code>
      * @return \Reindexer\Grpc\EnumNamespacesOptions|null
      */
-    public function getOptions()
-    {
+    public function getOptions() {
         return $this->options;
     }
 
-    public function hasOptions()
-    {
+    public function hasOptions() {
         return isset($this->options);
     }
 
-    public function clearOptions()
-    {
+    public function clearOptions() {
         unset($this->options);
     }
 
@@ -83,13 +77,10 @@ class EnumNamespacesRequest extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\EnumNamespacesOptions $var
      * @return $this
      */
-    public function setOptions($var)
-    {
+    public function setOptions($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\EnumNamespacesOptions::class);
         $this->options = $var;
 
         return $this;
     }
-
 }
-

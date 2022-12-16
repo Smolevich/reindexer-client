@@ -5,14 +5,13 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Generated from protobuf message <code>reindexer.grpc.EnumNamespacesResponse</code>
  */
-class EnumNamespacesResponse extends \Google\Protobuf\Internal\Message
-{
+class EnumNamespacesResponse extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>repeated .reindexer.grpc.Namespace namespacesDefinitions = 1;</code>
      */
@@ -32,7 +31,7 @@ class EnumNamespacesResponse extends \Google\Protobuf\Internal\Message
      *     @type \Reindexer\Grpc\ErrorResponse $errorResponse
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -41,8 +40,7 @@ class EnumNamespacesResponse extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>repeated .reindexer.grpc.Namespace namespacesDefinitions = 1;</code>
      * @return \Google\Protobuf\Internal\RepeatedField
      */
-    public function getNamespacesDefinitions()
-    {
+    public function getNamespacesDefinitions() {
         return $this->namespacesDefinitions;
     }
 
@@ -51,8 +49,7 @@ class EnumNamespacesResponse extends \Google\Protobuf\Internal\Message
      * @param array<\Reindexer\Grpc\PBNamespace>|\Google\Protobuf\Internal\RepeatedField $var
      * @return $this
      */
-    public function setNamespacesDefinitions($var)
-    {
+    public function setNamespacesDefinitions($var) {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \Reindexer\Grpc\PBNamespace::class);
         $this->namespacesDefinitions = $arr;
 
@@ -63,18 +60,15 @@ class EnumNamespacesResponse extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.ErrorResponse errorResponse = 2;</code>
      * @return \Reindexer\Grpc\ErrorResponse|null
      */
-    public function getErrorResponse()
-    {
+    public function getErrorResponse() {
         return $this->errorResponse;
     }
 
-    public function hasErrorResponse()
-    {
+    public function hasErrorResponse() {
         return isset($this->errorResponse);
     }
 
-    public function clearErrorResponse()
-    {
+    public function clearErrorResponse() {
         unset($this->errorResponse);
     }
 
@@ -83,13 +77,10 @@ class EnumNamespacesResponse extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\ErrorResponse $var
      * @return $this
      */
-    public function setErrorResponse($var)
-    {
+    public function setErrorResponse($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\ErrorResponse::class);
         $this->errorResponse = $var;
 
         return $this;
     }
-
 }
-

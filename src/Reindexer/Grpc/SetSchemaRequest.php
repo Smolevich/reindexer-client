@@ -5,14 +5,13 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Generated from protobuf message <code>reindexer.grpc.SetSchemaRequest</code>
  */
-class SetSchemaRequest extends \Google\Protobuf\Internal\Message
-{
+class SetSchemaRequest extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>string dbName = 1;</code>
      */
@@ -32,7 +31,7 @@ class SetSchemaRequest extends \Google\Protobuf\Internal\Message
      *     @type \Reindexer\Grpc\SchemaDefinition $schemaDefinitionRequest
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -41,8 +40,7 @@ class SetSchemaRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string dbName = 1;</code>
      * @return string
      */
-    public function getDbName()
-    {
+    public function getDbName() {
         return $this->dbName;
     }
 
@@ -51,9 +49,8 @@ class SetSchemaRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDbName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setDbName($var) {
+        GPBUtil::checkString($var, true);
         $this->dbName = $var;
 
         return $this;
@@ -63,18 +60,15 @@ class SetSchemaRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.SchemaDefinition schemaDefinitionRequest = 2;</code>
      * @return \Reindexer\Grpc\SchemaDefinition|null
      */
-    public function getSchemaDefinitionRequest()
-    {
+    public function getSchemaDefinitionRequest() {
         return $this->schemaDefinitionRequest;
     }
 
-    public function hasSchemaDefinitionRequest()
-    {
+    public function hasSchemaDefinitionRequest() {
         return isset($this->schemaDefinitionRequest);
     }
 
-    public function clearSchemaDefinitionRequest()
-    {
+    public function clearSchemaDefinitionRequest() {
         unset($this->schemaDefinitionRequest);
     }
 
@@ -83,13 +77,10 @@ class SetSchemaRequest extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\SchemaDefinition $var
      * @return $this
      */
-    public function setSchemaDefinitionRequest($var)
-    {
+    public function setSchemaDefinitionRequest($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\SchemaDefinition::class);
         $this->schemaDefinitionRequest = $var;
 
         return $this;
     }
-
 }
-

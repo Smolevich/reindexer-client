@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Transaction Item message
  *
  * Generated from protobuf message <code>reindexer.grpc.AddTxItemRequest</code>
  */
-class AddTxItemRequest extends \Google\Protobuf\Internal\Message
-{
+class AddTxItemRequest extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>int64 id = 1;</code>
      */
@@ -53,7 +52,7 @@ class AddTxItemRequest extends \Google\Protobuf\Internal\Message
      *           data buffer
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -62,8 +61,7 @@ class AddTxItemRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>int64 id = 1;</code>
      * @return int|string
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -72,8 +70,7 @@ class AddTxItemRequest extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setId($var)
-    {
+    public function setId($var) {
         GPBUtil::checkInt64($var);
         $this->id = $var;
 
@@ -86,8 +83,7 @@ class AddTxItemRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.ModifyMode mode = 2;</code>
      * @return int
      */
-    public function getMode()
-    {
+    public function getMode() {
         return $this->mode;
     }
 
@@ -98,8 +94,7 @@ class AddTxItemRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setMode($var)
-    {
+    public function setMode($var) {
         GPBUtil::checkEnum($var, \Reindexer\Grpc\ModifyMode::class);
         $this->mode = $var;
 
@@ -112,8 +107,7 @@ class AddTxItemRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.EncodingType encodingType = 3;</code>
      * @return int
      */
-    public function getEncodingType()
-    {
+    public function getEncodingType() {
         return $this->encodingType;
     }
 
@@ -124,8 +118,7 @@ class AddTxItemRequest extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setEncodingType($var)
-    {
+    public function setEncodingType($var) {
         GPBUtil::checkEnum($var, \Reindexer\Grpc\EncodingType::class);
         $this->encodingType = $var;
 
@@ -138,8 +131,7 @@ class AddTxItemRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bytes data = 4;</code>
      * @return string
      */
-    public function getData()
-    {
+    public function getData() {
         return $this->data;
     }
 
@@ -150,13 +142,10 @@ class AddTxItemRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setData($var)
-    {
-        GPBUtil::checkString($var, False);
+    public function setData($var) {
+        GPBUtil::checkString($var, false);
         $this->data = $var;
 
         return $this;
     }
-
 }
-

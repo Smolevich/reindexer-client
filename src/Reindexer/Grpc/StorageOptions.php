@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Storage options for a namespace.
  *
  * Generated from protobuf message <code>reindexer.grpc.StorageOptions</code>
  */
-class StorageOptions extends \Google\Protobuf\Internal\Message
-{
+class StorageOptions extends \Google\Protobuf\Internal\Message {
     /**
      * Ns name.
      *
@@ -114,7 +113,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      *           in case it is malfunctioned.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -125,8 +124,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string nsName = 1;</code>
      * @return string
      */
-    public function getNsName()
-    {
+    public function getNsName() {
         return $this->nsName;
     }
 
@@ -137,9 +135,8 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setNsName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setNsName($var) {
+        GPBUtil::checkString($var, true);
         $this->nsName = $var;
 
         return $this;
@@ -151,8 +148,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool enabled = 2;</code>
      * @return bool
      */
-    public function getEnabled()
-    {
+    public function getEnabled() {
         return $this->enabled;
     }
 
@@ -163,8 +159,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setEnabled($var)
-    {
+    public function setEnabled($var) {
         GPBUtil::checkBool($var);
         $this->enabled = $var;
 
@@ -178,8 +173,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool dropOnFileFormatError = 3;</code>
      * @return bool
      */
-    public function getDropOnFileFormatError()
-    {
+    public function getDropOnFileFormatError() {
         return $this->dropOnFileFormatError;
     }
 
@@ -191,8 +185,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setDropOnFileFormatError($var)
-    {
+    public function setDropOnFileFormatError($var) {
         GPBUtil::checkBool($var);
         $this->dropOnFileFormatError = $var;
 
@@ -205,8 +198,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool createIfMissing = 4;</code>
      * @return bool
      */
-    public function getCreateIfMissing()
-    {
+    public function getCreateIfMissing() {
         return $this->createIfMissing;
     }
 
@@ -217,8 +209,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setCreateIfMissing($var)
-    {
+    public function setCreateIfMissing($var) {
         GPBUtil::checkBool($var);
         $this->createIfMissing = $var;
 
@@ -232,8 +223,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool verifyChecksums = 5;</code>
      * @return bool
      */
-    public function getVerifyChecksums()
-    {
+    public function getVerifyChecksums() {
         return $this->verifyChecksums;
     }
 
@@ -245,8 +235,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setVerifyChecksums($var)
-    {
+    public function setVerifyChecksums($var) {
         GPBUtil::checkBool($var);
         $this->verifyChecksums = $var;
 
@@ -260,8 +249,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool fillCache = 6;</code>
      * @return bool
      */
-    public function getFillCache()
-    {
+    public function getFillCache() {
         return $this->fillCache;
     }
 
@@ -273,8 +261,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setFillCache($var)
-    {
+    public function setFillCache($var) {
         GPBUtil::checkBool($var);
         $this->fillCache = $var;
 
@@ -292,8 +279,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool sync = 7;</code>
      * @return bool
      */
-    public function getSync()
-    {
+    public function getSync() {
         return $this->sync;
     }
 
@@ -309,8 +295,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setSync($var)
-    {
+    public function setSync($var) {
         GPBUtil::checkBool($var);
         $this->sync = $var;
 
@@ -323,8 +308,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool slaveMode = 8;</code>
      * @return bool
      */
-    public function getSlaveMode()
-    {
+    public function getSlaveMode() {
         return $this->slaveMode;
     }
 
@@ -335,8 +319,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setSlaveMode($var)
-    {
+    public function setSlaveMode($var) {
         GPBUtil::checkBool($var);
         $this->slaveMode = $var;
 
@@ -350,8 +333,7 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool autorepair = 9;</code>
      * @return bool
      */
-    public function getAutorepair()
-    {
+    public function getAutorepair() {
         return $this->autorepair;
     }
 
@@ -363,13 +345,10 @@ class StorageOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setAutorepair($var)
-    {
+    public function setAutorepair($var) {
         GPBUtil::checkBool($var);
         $this->autorepair = $var;
 
         return $this;
     }
-
 }
-

@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * List of databases names
  *
  * Generated from protobuf message <code>reindexer.grpc.EnumDatabasesResponse</code>
  */
-class EnumDatabasesResponse extends \Google\Protobuf\Internal\Message
-{
+class EnumDatabasesResponse extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>repeated string names = 1;</code>
      */
@@ -34,7 +33,7 @@ class EnumDatabasesResponse extends \Google\Protobuf\Internal\Message
      *     @type \Reindexer\Grpc\ErrorResponse $errorResponse
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -43,8 +42,7 @@ class EnumDatabasesResponse extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>repeated string names = 1;</code>
      * @return \Google\Protobuf\Internal\RepeatedField
      */
-    public function getNames()
-    {
+    public function getNames() {
         return $this->names;
     }
 
@@ -53,8 +51,7 @@ class EnumDatabasesResponse extends \Google\Protobuf\Internal\Message
      * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
      * @return $this
      */
-    public function setNames($var)
-    {
+    public function setNames($var) {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->names = $arr;
 
@@ -65,18 +62,15 @@ class EnumDatabasesResponse extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.ErrorResponse errorResponse = 2;</code>
      * @return \Reindexer\Grpc\ErrorResponse|null
      */
-    public function getErrorResponse()
-    {
+    public function getErrorResponse() {
         return $this->errorResponse;
     }
 
-    public function hasErrorResponse()
-    {
+    public function hasErrorResponse() {
         return isset($this->errorResponse);
     }
 
-    public function clearErrorResponse()
-    {
+    public function clearErrorResponse() {
         unset($this->errorResponse);
     }
 
@@ -85,13 +79,10 @@ class EnumDatabasesResponse extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\ErrorResponse $var
      * @return $this
      */
-    public function setErrorResponse($var)
-    {
+    public function setErrorResponse($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\ErrorResponse::class);
         $this->errorResponse = $var;
 
         return $this;
     }
-
 }
-

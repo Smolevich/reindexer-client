@@ -5,14 +5,13 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Generated from protobuf message <code>reindexer.grpc.UpdateIndexRequest</code>
  */
-class UpdateIndexRequest extends \Google\Protobuf\Internal\Message
-{
+class UpdateIndexRequest extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>string dbName = 1;</code>
      */
@@ -37,7 +36,7 @@ class UpdateIndexRequest extends \Google\Protobuf\Internal\Message
      *     @type \Reindexer\Grpc\Index $definition
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -46,8 +45,7 @@ class UpdateIndexRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string dbName = 1;</code>
      * @return string
      */
-    public function getDbName()
-    {
+    public function getDbName() {
         return $this->dbName;
     }
 
@@ -56,9 +54,8 @@ class UpdateIndexRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDbName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setDbName($var) {
+        GPBUtil::checkString($var, true);
         $this->dbName = $var;
 
         return $this;
@@ -68,8 +65,7 @@ class UpdateIndexRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string nsName = 2;</code>
      * @return string
      */
-    public function getNsName()
-    {
+    public function getNsName() {
         return $this->nsName;
     }
 
@@ -78,9 +74,8 @@ class UpdateIndexRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setNsName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setNsName($var) {
+        GPBUtil::checkString($var, true);
         $this->nsName = $var;
 
         return $this;
@@ -90,18 +85,15 @@ class UpdateIndexRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.Index definition = 3;</code>
      * @return \Reindexer\Grpc\Index|null
      */
-    public function getDefinition()
-    {
+    public function getDefinition() {
         return $this->definition;
     }
 
-    public function hasDefinition()
-    {
+    public function hasDefinition() {
         return isset($this->definition);
     }
 
-    public function clearDefinition()
-    {
+    public function clearDefinition() {
         unset($this->definition);
     }
 
@@ -110,13 +102,10 @@ class UpdateIndexRequest extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\Index $var
      * @return $this
      */
-    public function setDefinition($var)
-    {
+    public function setDefinition($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\Index::class);
         $this->definition = $var;
 
         return $this;
     }
-
 }
-

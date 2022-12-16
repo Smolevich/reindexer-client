@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Metadata keys
  *
  * Generated from protobuf message <code>reindexer.grpc.MetadataKeysResponse</code>
  */
-class MetadataKeysResponse extends \Google\Protobuf\Internal\Message
-{
+class MetadataKeysResponse extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>repeated string keys = 1;</code>
      */
@@ -34,7 +33,7 @@ class MetadataKeysResponse extends \Google\Protobuf\Internal\Message
      *     @type \Reindexer\Grpc\ErrorResponse $errorResponse
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -43,8 +42,7 @@ class MetadataKeysResponse extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>repeated string keys = 1;</code>
      * @return \Google\Protobuf\Internal\RepeatedField
      */
-    public function getKeys()
-    {
+    public function getKeys() {
         return $this->keys;
     }
 
@@ -53,8 +51,7 @@ class MetadataKeysResponse extends \Google\Protobuf\Internal\Message
      * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
      * @return $this
      */
-    public function setKeys($var)
-    {
+    public function setKeys($var) {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->keys = $arr;
 
@@ -65,18 +62,15 @@ class MetadataKeysResponse extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.ErrorResponse errorResponse = 2;</code>
      * @return \Reindexer\Grpc\ErrorResponse|null
      */
-    public function getErrorResponse()
-    {
+    public function getErrorResponse() {
         return $this->errorResponse;
     }
 
-    public function hasErrorResponse()
-    {
+    public function hasErrorResponse() {
         return isset($this->errorResponse);
     }
 
-    public function clearErrorResponse()
-    {
+    public function clearErrorResponse() {
         unset($this->errorResponse);
     }
 
@@ -85,13 +79,10 @@ class MetadataKeysResponse extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\ErrorResponse $var
      * @return $this
      */
-    public function setErrorResponse($var)
-    {
+    public function setErrorResponse($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\ErrorResponse::class);
         $this->errorResponse = $var;
 
         return $this;
     }
-
 }
-

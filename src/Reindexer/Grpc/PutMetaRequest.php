@@ -5,8 +5,8 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Sets metadata by key,
@@ -14,8 +14,7 @@ use Google\Protobuf\Internal\GPBUtil;
  *
  * Generated from protobuf message <code>reindexer.grpc.PutMetaRequest</code>
  */
-class PutMetaRequest extends \Google\Protobuf\Internal\Message
-{
+class PutMetaRequest extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>string dbName = 1;</code>
      */
@@ -35,7 +34,7 @@ class PutMetaRequest extends \Google\Protobuf\Internal\Message
      *     @type \Reindexer\Grpc\Metadata $metadata
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -44,8 +43,7 @@ class PutMetaRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string dbName = 1;</code>
      * @return string
      */
-    public function getDbName()
-    {
+    public function getDbName() {
         return $this->dbName;
     }
 
@@ -54,9 +52,8 @@ class PutMetaRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDbName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setDbName($var) {
+        GPBUtil::checkString($var, true);
         $this->dbName = $var;
 
         return $this;
@@ -66,18 +63,15 @@ class PutMetaRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.Metadata metadata = 2;</code>
      * @return \Reindexer\Grpc\Metadata|null
      */
-    public function getMetadata()
-    {
+    public function getMetadata() {
         return $this->metadata;
     }
 
-    public function hasMetadata()
-    {
+    public function hasMetadata() {
         return isset($this->metadata);
     }
 
-    public function clearMetadata()
-    {
+    public function clearMetadata() {
         unset($this->metadata);
     }
 
@@ -86,13 +80,10 @@ class PutMetaRequest extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\Metadata $var
      * @return $this
      */
-    public function setMetadata($var)
-    {
+    public function setMetadata($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\Metadata::class);
         $this->metadata = $var;
 
         return $this;
     }
-
 }
-

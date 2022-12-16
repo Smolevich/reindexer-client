@@ -5,15 +5,13 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Generated from protobuf message <code>reindexer.grpc.EnumDatabasesRequest</code>
  */
-class EnumDatabasesRequest extends \Google\Protobuf\Internal\Message
-{
-
+class EnumDatabasesRequest extends \Google\Protobuf\Internal\Message {
     /**
      * Constructor.
      *
@@ -22,10 +20,8 @@ class EnumDatabasesRequest extends \Google\Protobuf\Internal\Message
      *
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
-
 }
-

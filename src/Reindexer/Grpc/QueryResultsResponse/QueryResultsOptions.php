@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc\QueryResultsResponse;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Options for returned buffer.
  *
  * Generated from protobuf message <code>reindexer.grpc.QueryResultsResponse.QueryResultsOptions</code>
  */
-class QueryResultsOptions extends \Google\Protobuf\Internal\Message
-{
+class QueryResultsOptions extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>int64 totalItems = 1;</code>
      */
@@ -44,7 +43,7 @@ class QueryResultsOptions extends \Google\Protobuf\Internal\Message
      *     @type string $explain
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -53,8 +52,7 @@ class QueryResultsOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>int64 totalItems = 1;</code>
      * @return int|string
      */
-    public function getTotalItems()
-    {
+    public function getTotalItems() {
         return $this->totalItems;
     }
 
@@ -63,8 +61,7 @@ class QueryResultsOptions extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setTotalItems($var)
-    {
+    public function setTotalItems($var) {
         GPBUtil::checkInt64($var);
         $this->totalItems = $var;
 
@@ -75,8 +72,7 @@ class QueryResultsOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>int64 queryTotalItems = 2;</code>
      * @return int|string
      */
-    public function getQueryTotalItems()
-    {
+    public function getQueryTotalItems() {
         return $this->queryTotalItems;
     }
 
@@ -85,8 +81,7 @@ class QueryResultsOptions extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setQueryTotalItems($var)
-    {
+    public function setQueryTotalItems($var) {
         GPBUtil::checkInt64($var);
         $this->queryTotalItems = $var;
 
@@ -97,8 +92,7 @@ class QueryResultsOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool cacheEnabled = 3;</code>
      * @return bool
      */
-    public function getCacheEnabled()
-    {
+    public function getCacheEnabled() {
         return $this->cacheEnabled;
     }
 
@@ -107,8 +101,7 @@ class QueryResultsOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setCacheEnabled($var)
-    {
+    public function setCacheEnabled($var) {
         GPBUtil::checkBool($var);
         $this->cacheEnabled = $var;
 
@@ -119,8 +112,7 @@ class QueryResultsOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string explain = 4;</code>
      * @return string
      */
-    public function getExplain()
-    {
+    public function getExplain() {
         return $this->explain;
     }
 
@@ -129,16 +121,13 @@ class QueryResultsOptions extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setExplain($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setExplain($var) {
+        GPBUtil::checkString($var, true);
         $this->explain = $var;
 
         return $this;
     }
-
 }
 
 // Adding a class alias for backwards compatibility with the previous class name.
 class_alias(QueryResultsOptions::class, \Reindexer\Grpc\QueryResultsResponse_QueryResultsOptions::class);
-

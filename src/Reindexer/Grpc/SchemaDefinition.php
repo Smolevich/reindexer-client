@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * JSON Schema definition.
  *
  * Generated from protobuf message <code>reindexer.grpc.SchemaDefinition</code>
  */
-class SchemaDefinition extends \Google\Protobuf\Internal\Message
-{
+class SchemaDefinition extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>string nsName = 1;</code>
      */
@@ -34,7 +33,7 @@ class SchemaDefinition extends \Google\Protobuf\Internal\Message
      *     @type string $jsonData
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -43,8 +42,7 @@ class SchemaDefinition extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string nsName = 1;</code>
      * @return string
      */
-    public function getNsName()
-    {
+    public function getNsName() {
         return $this->nsName;
     }
 
@@ -53,9 +51,8 @@ class SchemaDefinition extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setNsName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setNsName($var) {
+        GPBUtil::checkString($var, true);
         $this->nsName = $var;
 
         return $this;
@@ -65,8 +62,7 @@ class SchemaDefinition extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string jsonData = 2;</code>
      * @return string
      */
-    public function getJsonData()
-    {
+    public function getJsonData() {
         return $this->jsonData;
     }
 
@@ -75,13 +71,10 @@ class SchemaDefinition extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setJsonData($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setJsonData($var) {
+        GPBUtil::checkString($var, true);
         $this->jsonData = $var;
 
         return $this;
     }
-
 }
-

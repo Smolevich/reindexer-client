@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * message Connection options
  *
  * Generated from protobuf message <code>reindexer.grpc.ConnectOptions</code>
  */
-class ConnectOptions extends \Google\Protobuf\Internal\Message
-{
+class ConnectOptions extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>int64 expectedClusterID = 1;</code>
      */
@@ -54,7 +53,7 @@ class ConnectOptions extends \Google\Protobuf\Internal\Message
      *     @type int $storageType
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -63,8 +62,7 @@ class ConnectOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>int64 expectedClusterID = 1;</code>
      * @return int|string
      */
-    public function getExpectedClusterID()
-    {
+    public function getExpectedClusterID() {
         return $this->expectedClusterID;
     }
 
@@ -73,8 +71,7 @@ class ConnectOptions extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setExpectedClusterID($var)
-    {
+    public function setExpectedClusterID($var) {
         GPBUtil::checkInt64($var);
         $this->expectedClusterID = $var;
 
@@ -85,8 +82,7 @@ class ConnectOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool openNamespaces = 2;</code>
      * @return bool
      */
-    public function getOpenNamespaces()
-    {
+    public function getOpenNamespaces() {
         return $this->openNamespaces;
     }
 
@@ -95,8 +91,7 @@ class ConnectOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setOpenNamespaces($var)
-    {
+    public function setOpenNamespaces($var) {
         GPBUtil::checkBool($var);
         $this->openNamespaces = $var;
 
@@ -107,8 +102,7 @@ class ConnectOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool allowNamespaceErrors = 3;</code>
      * @return bool
      */
-    public function getAllowNamespaceErrors()
-    {
+    public function getAllowNamespaceErrors() {
         return $this->allowNamespaceErrors;
     }
 
@@ -117,8 +111,7 @@ class ConnectOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setAllowNamespaceErrors($var)
-    {
+    public function setAllowNamespaceErrors($var) {
         GPBUtil::checkBool($var);
         $this->allowNamespaceErrors = $var;
 
@@ -129,8 +122,7 @@ class ConnectOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool autorepair = 4;</code>
      * @return bool
      */
-    public function getAutorepair()
-    {
+    public function getAutorepair() {
         return $this->autorepair;
     }
 
@@ -139,8 +131,7 @@ class ConnectOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setAutorepair($var)
-    {
+    public function setAutorepair($var) {
         GPBUtil::checkBool($var);
         $this->autorepair = $var;
 
@@ -151,8 +142,7 @@ class ConnectOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool disableReplication = 5;</code>
      * @return bool
      */
-    public function getDisableReplication()
-    {
+    public function getDisableReplication() {
         return $this->disableReplication;
     }
 
@@ -161,8 +151,7 @@ class ConnectOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setDisableReplication($var)
-    {
+    public function setDisableReplication($var) {
         GPBUtil::checkBool($var);
         $this->disableReplication = $var;
 
@@ -173,8 +162,7 @@ class ConnectOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.StorageType storageType = 6;</code>
      * @return int
      */
-    public function getStorageType()
-    {
+    public function getStorageType() {
         return $this->storageType;
     }
 
@@ -183,13 +171,10 @@ class ConnectOptions extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setStorageType($var)
-    {
+    public function setStorageType($var) {
         GPBUtil::checkEnum($var, \Reindexer\Grpc\StorageType::class);
         $this->storageType = $var;
 
         return $this;
     }
-
 }
-

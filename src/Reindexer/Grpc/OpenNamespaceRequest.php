@@ -5,14 +5,13 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Generated from protobuf message <code>reindexer.grpc.OpenNamespaceRequest</code>
  */
-class OpenNamespaceRequest extends \Google\Protobuf\Internal\Message
-{
+class OpenNamespaceRequest extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>string dbName = 1;</code>
      */
@@ -32,7 +31,7 @@ class OpenNamespaceRequest extends \Google\Protobuf\Internal\Message
      *     @type \Reindexer\Grpc\StorageOptions $storageOptions
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -41,8 +40,7 @@ class OpenNamespaceRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string dbName = 1;</code>
      * @return string
      */
-    public function getDbName()
-    {
+    public function getDbName() {
         return $this->dbName;
     }
 
@@ -51,9 +49,8 @@ class OpenNamespaceRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDbName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setDbName($var) {
+        GPBUtil::checkString($var, true);
         $this->dbName = $var;
 
         return $this;
@@ -63,18 +60,15 @@ class OpenNamespaceRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.StorageOptions storageOptions = 2;</code>
      * @return \Reindexer\Grpc\StorageOptions|null
      */
-    public function getStorageOptions()
-    {
+    public function getStorageOptions() {
         return $this->storageOptions;
     }
 
-    public function hasStorageOptions()
-    {
+    public function hasStorageOptions() {
         return isset($this->storageOptions);
     }
 
-    public function clearStorageOptions()
-    {
+    public function clearStorageOptions() {
         unset($this->storageOptions);
     }
 
@@ -83,13 +77,10 @@ class OpenNamespaceRequest extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\StorageOptions $var
      * @return $this
      */
-    public function setStorageOptions($var)
-    {
+    public function setStorageOptions($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\StorageOptions::class);
         $this->storageOptions = $var;
 
         return $this;
     }
-
 }
-

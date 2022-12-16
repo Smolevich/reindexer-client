@@ -58,7 +58,6 @@ try {
         ]);
         list($response, $error) = $client->ModifyItem($modifyRequest)->wait();
     }
-
 } catch (\Throwable $e) {
     echo sprintf(
         'Error %s in file %s on line %s',

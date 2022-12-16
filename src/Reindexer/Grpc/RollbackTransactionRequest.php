@@ -5,14 +5,13 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Generated from protobuf message <code>reindexer.grpc.RollbackTransactionRequest</code>
  */
-class RollbackTransactionRequest extends \Google\Protobuf\Internal\Message
-{
+class RollbackTransactionRequest extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>int64 id = 1;</code>
      */
@@ -27,7 +26,7 @@ class RollbackTransactionRequest extends \Google\Protobuf\Internal\Message
      *     @type int|string $id
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -36,8 +35,7 @@ class RollbackTransactionRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>int64 id = 1;</code>
      * @return int|string
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -46,13 +44,10 @@ class RollbackTransactionRequest extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setId($var)
-    {
+    public function setId($var) {
         GPBUtil::checkInt64($var);
         $this->id = $var;
 
         return $this;
     }
-
 }
-

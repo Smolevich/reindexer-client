@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Options for QueryResults output stream
  *
  * Generated from protobuf message <code>reindexer.grpc.OutputFlags</code>
  */
-class OutputFlags extends \Google\Protobuf\Internal\Message
-{
+class OutputFlags extends \Google\Protobuf\Internal\Message {
     /**
      * Results encoding can be one of the following:
      * 1.JSON
@@ -74,7 +73,7 @@ class OutputFlags extends \Google\Protobuf\Internal\Message
      *           include all the joined documents to cjson
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -90,8 +89,7 @@ class OutputFlags extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.EncodingType encodingType = 1;</code>
      * @return int
      */
-    public function getEncodingType()
-    {
+    public function getEncodingType() {
         return $this->encodingType;
     }
 
@@ -107,8 +105,7 @@ class OutputFlags extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setEncodingType($var)
-    {
+    public function setEncodingType($var) {
         GPBUtil::checkEnum($var, \Reindexer\Grpc\EncodingType::class);
         $this->encodingType = $var;
 
@@ -121,8 +118,7 @@ class OutputFlags extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool withItemID = 2;</code>
      * @return bool
      */
-    public function getWithItemID()
-    {
+    public function getWithItemID() {
         return $this->withItemID;
     }
 
@@ -133,8 +129,7 @@ class OutputFlags extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setWithItemID($var)
-    {
+    public function setWithItemID($var) {
         GPBUtil::checkBool($var);
         $this->withItemID = $var;
 
@@ -147,8 +142,7 @@ class OutputFlags extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool withNsID = 3;</code>
      * @return bool
      */
-    public function getWithNsID()
-    {
+    public function getWithNsID() {
         return $this->withNsID;
     }
 
@@ -159,8 +153,7 @@ class OutputFlags extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setWithNsID($var)
-    {
+    public function setWithNsID($var) {
         GPBUtil::checkBool($var);
         $this->withNsID = $var;
 
@@ -173,8 +166,7 @@ class OutputFlags extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool withRank = 4;</code>
      * @return bool
      */
-    public function getWithRank()
-    {
+    public function getWithRank() {
         return $this->withRank;
     }
 
@@ -185,8 +177,7 @@ class OutputFlags extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setWithRank($var)
-    {
+    public function setWithRank($var) {
         GPBUtil::checkBool($var);
         $this->withRank = $var;
 
@@ -199,8 +190,7 @@ class OutputFlags extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool withJoinedItems = 5;</code>
      * @return bool
      */
-    public function getWithJoinedItems()
-    {
+    public function getWithJoinedItems() {
         return $this->withJoinedItems;
     }
 
@@ -211,13 +201,10 @@ class OutputFlags extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setWithJoinedItems($var)
-    {
+    public function setWithJoinedItems($var) {
         GPBUtil::checkBool($var);
         $this->withJoinedItems = $var;
 
         return $this;
     }
-
 }
-

@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Metadata for Namespace.
  *
  * Generated from protobuf message <code>reindexer.grpc.Metadata</code>
  */
-class Metadata extends \Google\Protobuf\Internal\Message
-{
+class Metadata extends \Google\Protobuf\Internal\Message {
     /**
      * namespace name
      *
@@ -48,7 +47,7 @@ class Metadata extends \Google\Protobuf\Internal\Message
      *           metadata, for Get operation this field is supposed to be empty
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -59,8 +58,7 @@ class Metadata extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string nsName = 1;</code>
      * @return string
      */
-    public function getNsName()
-    {
+    public function getNsName() {
         return $this->nsName;
     }
 
@@ -71,9 +69,8 @@ class Metadata extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setNsName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setNsName($var) {
+        GPBUtil::checkString($var, true);
         $this->nsName = $var;
 
         return $this;
@@ -85,8 +82,7 @@ class Metadata extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string key = 2;</code>
      * @return string
      */
-    public function getKey()
-    {
+    public function getKey() {
         return $this->key;
     }
 
@@ -97,9 +93,8 @@ class Metadata extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setKey($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setKey($var) {
+        GPBUtil::checkString($var, true);
         $this->key = $var;
 
         return $this;
@@ -111,8 +106,7 @@ class Metadata extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string value = 3;</code>
      * @return string
      */
-    public function getValue()
-    {
+    public function getValue() {
         return $this->value;
     }
 
@@ -123,13 +117,10 @@ class Metadata extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setValue($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setValue($var) {
+        GPBUtil::checkString($var, true);
         $this->value = $var;
 
         return $this;
     }
-
 }
-

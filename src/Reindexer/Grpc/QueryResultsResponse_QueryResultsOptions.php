@@ -9,8 +9,8 @@ if (false) {
      * This class is deprecated. Use Reindexer\Grpc2\QueryResultsResponse\QueryResultsOptions instead.
      * @deprecated
      */
-    class QueryResultsResponse_QueryResultsOptions {}
+    class QueryResultsResponse_QueryResultsOptions {
+    }
 }
 class_exists(QueryResultsResponse\QueryResultsOptions::class);
 @trigger_error('Reindexer\Grpc\QueryResultsResponse_QueryResultsOptions is deprecated and will be removed in the next major release. Use Reindexer\Grpc\QueryResultsResponse\QueryResultsOptions instead', E_USER_DEPRECATED);
-

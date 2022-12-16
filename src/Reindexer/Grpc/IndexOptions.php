@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Index options
  *
  * Generated from protobuf message <code>reindexer.grpc.IndexOptions</code>
  */
-class IndexOptions extends \Google\Protobuf\Internal\Message
-{
+class IndexOptions extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>bool isPk = 1;</code>
      */
@@ -64,7 +63,7 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      *     @type string $config
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -73,8 +72,7 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool isPk = 1;</code>
      * @return bool
      */
-    public function getIsPk()
-    {
+    public function getIsPk() {
         return $this->isPk;
     }
 
@@ -83,8 +81,7 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setIsPk($var)
-    {
+    public function setIsPk($var) {
         GPBUtil::checkBool($var);
         $this->isPk = $var;
 
@@ -95,8 +92,7 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool isArray = 2;</code>
      * @return bool
      */
-    public function getIsArray()
-    {
+    public function getIsArray() {
         return $this->isArray;
     }
 
@@ -105,8 +101,7 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setIsArray($var)
-    {
+    public function setIsArray($var) {
         GPBUtil::checkBool($var);
         $this->isArray = $var;
 
@@ -117,8 +112,7 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool isDense = 3;</code>
      * @return bool
      */
-    public function getIsDense()
-    {
+    public function getIsDense() {
         return $this->isDense;
     }
 
@@ -127,8 +121,7 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setIsDense($var)
-    {
+    public function setIsDense($var) {
         GPBUtil::checkBool($var);
         $this->isDense = $var;
 
@@ -139,8 +132,7 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool isSparse = 4;</code>
      * @return bool
      */
-    public function getIsSparse()
-    {
+    public function getIsSparse() {
         return $this->isSparse;
     }
 
@@ -149,8 +141,7 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setIsSparse($var)
-    {
+    public function setIsSparse($var) {
         GPBUtil::checkBool($var);
         $this->isSparse = $var;
 
@@ -161,8 +152,7 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.IndexOptions.RTreeType rtreeType = 5;</code>
      * @return int
      */
-    public function getRtreeType()
-    {
+    public function getRtreeType() {
         return $this->rtreeType;
     }
 
@@ -171,8 +161,7 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setRtreeType($var)
-    {
+    public function setRtreeType($var) {
         GPBUtil::checkEnum($var, \Reindexer\Grpc\IndexOptions\RTreeType::class);
         $this->rtreeType = $var;
 
@@ -183,8 +172,7 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.IndexOptions.CollateMode collateMode = 6;</code>
      * @return int
      */
-    public function getCollateMode()
-    {
+    public function getCollateMode() {
         return $this->collateMode;
     }
 
@@ -193,8 +181,7 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setCollateMode($var)
-    {
+    public function setCollateMode($var) {
         GPBUtil::checkEnum($var, \Reindexer\Grpc\IndexOptions\CollateMode::class);
         $this->collateMode = $var;
 
@@ -205,8 +192,7 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string sortOrdersTable = 7;</code>
      * @return string
      */
-    public function getSortOrdersTable()
-    {
+    public function getSortOrdersTable() {
         return $this->sortOrdersTable;
     }
 
@@ -215,9 +201,8 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSortOrdersTable($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setSortOrdersTable($var) {
+        GPBUtil::checkString($var, true);
         $this->sortOrdersTable = $var;
 
         return $this;
@@ -227,8 +212,7 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string config = 8;</code>
      * @return string
      */
-    public function getConfig()
-    {
+    public function getConfig() {
         return $this->config;
     }
 
@@ -237,13 +221,10 @@ class IndexOptions extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setConfig($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setConfig($var) {
+        GPBUtil::checkString($var, true);
         $this->config = $var;
 
         return $this;
     }
-
 }
-

@@ -9,8 +9,8 @@ if (false) {
      * This class is deprecated. Use Reindexer\Grpc2\IndexOptions\CollateMode instead.
      * @deprecated
      */
-    class IndexOptions_CollateMode {}
+    class IndexOptions_CollateMode {
+    }
 }
 class_exists(IndexOptions\CollateMode::class);
 @trigger_error('Reindexer\Grpc\IndexOptions_CollateMode is deprecated and will be removed in the next major release. Use Reindexer\Grpc\IndexOptions\CollateMode instead', E_USER_DEPRECATED);
-

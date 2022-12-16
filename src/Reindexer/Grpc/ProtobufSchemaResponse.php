@@ -5,14 +5,13 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Generated from protobuf message <code>reindexer.grpc.ProtobufSchemaResponse</code>
  */
-class ProtobufSchemaResponse extends \Google\Protobuf\Internal\Message
-{
+class ProtobufSchemaResponse extends \Google\Protobuf\Internal\Message {
     /**
      * text representation of .proto file
      *
@@ -38,7 +37,7 @@ class ProtobufSchemaResponse extends \Google\Protobuf\Internal\Message
      *           error code
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -49,8 +48,7 @@ class ProtobufSchemaResponse extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string proto = 1;</code>
      * @return string
      */
-    public function getProto()
-    {
+    public function getProto() {
         return $this->proto;
     }
 
@@ -61,9 +59,8 @@ class ProtobufSchemaResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setProto($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setProto($var) {
+        GPBUtil::checkString($var, true);
         $this->proto = $var;
 
         return $this;
@@ -75,18 +72,15 @@ class ProtobufSchemaResponse extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.ErrorResponse errorResponse = 2;</code>
      * @return \Reindexer\Grpc\ErrorResponse|null
      */
-    public function getErrorResponse()
-    {
+    public function getErrorResponse() {
         return $this->errorResponse;
     }
 
-    public function hasErrorResponse()
-    {
+    public function hasErrorResponse() {
         return isset($this->errorResponse);
     }
 
-    public function clearErrorResponse()
-    {
+    public function clearErrorResponse() {
         unset($this->errorResponse);
     }
 
@@ -97,13 +91,10 @@ class ProtobufSchemaResponse extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\ErrorResponse $var
      * @return $this
      */
-    public function setErrorResponse($var)
-    {
+    public function setErrorResponse($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\ErrorResponse::class);
         $this->errorResponse = $var;
 
         return $this;
     }
-
 }
-

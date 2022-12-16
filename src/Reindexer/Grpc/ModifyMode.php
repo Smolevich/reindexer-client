@@ -11,8 +11,7 @@ use UnexpectedValueException;
  *
  * Protobuf type <code>reindexer.grpc.ModifyMode</code>
  */
-class ModifyMode
-{
+class ModifyMode {
     /**
      * Generated from protobuf enum <code>UPSERT = 0;</code>
      */
@@ -37,24 +36,27 @@ class ModifyMode
         self::DELETE => 'DELETE',
     ];
 
-    public static function name($value)
-    {
+    public static function name($value) {
         if (!isset(self::$valueToName[$value])) {
             throw new UnexpectedValueException(sprintf(
-                    'Enum %s has no name defined for value %s', __CLASS__, $value));
+                'Enum %s has no name defined for value %s',
+                __CLASS__,
+                $value
+            ));
         }
         return self::$valueToName[$value];
     }
 
 
-    public static function value($name)
-    {
+    public static function value($name) {
         $const = __CLASS__ . '::' . strtoupper($name);
         if (!defined($const)) {
             throw new UnexpectedValueException(sprintf(
-                    'Enum %s has no value defined for name %s', __CLASS__, $name));
+                'Enum %s has no value defined for name %s',
+                __CLASS__,
+                $name
+            ));
         }
         return constant($const);
     }
 }
-

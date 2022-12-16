@@ -5,8 +5,8 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Error message, including code
@@ -14,8 +14,7 @@ use Google\Protobuf\Internal\GPBUtil;
  *
  * Generated from protobuf message <code>reindexer.grpc.ErrorResponse</code>
  */
-class ErrorResponse extends \Google\Protobuf\Internal\Message
-{
+class ErrorResponse extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>.reindexer.grpc.ErrorResponse.ErrorCode code = 1;</code>
      */
@@ -35,7 +34,7 @@ class ErrorResponse extends \Google\Protobuf\Internal\Message
      *     @type string $what
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -44,8 +43,7 @@ class ErrorResponse extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.ErrorResponse.ErrorCode code = 1;</code>
      * @return int
      */
-    public function getCode()
-    {
+    public function getCode() {
         return $this->code;
     }
 
@@ -54,8 +52,7 @@ class ErrorResponse extends \Google\Protobuf\Internal\Message
      * @param int $var
      * @return $this
      */
-    public function setCode($var)
-    {
+    public function setCode($var) {
         GPBUtil::checkEnum($var, \Reindexer\Grpc\ErrorResponse\ErrorCode::class);
         $this->code = $var;
 
@@ -66,8 +63,7 @@ class ErrorResponse extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string what = 2;</code>
      * @return string
      */
-    public function getWhat()
-    {
+    public function getWhat() {
         return $this->what;
     }
 
@@ -76,13 +72,10 @@ class ErrorResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setWhat($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setWhat($var) {
+        GPBUtil::checkString($var, true);
         $this->what = $var;
 
         return $this;
     }
-
 }
-

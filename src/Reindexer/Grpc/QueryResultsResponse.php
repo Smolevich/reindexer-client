@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Query execution results set
  *
  * Generated from protobuf message <code>reindexer.grpc.QueryResultsResponse</code>
  */
-class QueryResultsResponse extends \Google\Protobuf\Internal\Message
-{
+class QueryResultsResponse extends \Google\Protobuf\Internal\Message {
     /**
      * Bytes stream.
      *
@@ -48,7 +47,7 @@ class QueryResultsResponse extends \Google\Protobuf\Internal\Message
      *           status
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -59,8 +58,7 @@ class QueryResultsResponse extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bytes data = 1;</code>
      * @return string
      */
-    public function getData()
-    {
+    public function getData() {
         return $this->data;
     }
 
@@ -71,9 +69,8 @@ class QueryResultsResponse extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setData($var)
-    {
-        GPBUtil::checkString($var, False);
+    public function setData($var) {
+        GPBUtil::checkString($var, false);
         $this->data = $var;
 
         return $this;
@@ -85,18 +82,15 @@ class QueryResultsResponse extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.QueryResultsResponse.QueryResultsOptions options = 2;</code>
      * @return \Reindexer\Grpc\QueryResultsResponse\QueryResultsOptions|null
      */
-    public function getOptions()
-    {
+    public function getOptions() {
         return $this->options;
     }
 
-    public function hasOptions()
-    {
+    public function hasOptions() {
         return isset($this->options);
     }
 
-    public function clearOptions()
-    {
+    public function clearOptions() {
         unset($this->options);
     }
 
@@ -107,8 +101,7 @@ class QueryResultsResponse extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\QueryResultsResponse\QueryResultsOptions $var
      * @return $this
      */
-    public function setOptions($var)
-    {
+    public function setOptions($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\QueryResultsResponse\QueryResultsOptions::class);
         $this->options = $var;
 
@@ -121,18 +114,15 @@ class QueryResultsResponse extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.ErrorResponse errorResponse = 3;</code>
      * @return \Reindexer\Grpc\ErrorResponse|null
      */
-    public function getErrorResponse()
-    {
+    public function getErrorResponse() {
         return $this->errorResponse;
     }
 
-    public function hasErrorResponse()
-    {
+    public function hasErrorResponse() {
         return isset($this->errorResponse);
     }
 
-    public function clearErrorResponse()
-    {
+    public function clearErrorResponse() {
         unset($this->errorResponse);
     }
 
@@ -143,13 +133,10 @@ class QueryResultsResponse extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\ErrorResponse $var
      * @return $this
      */
-    public function setErrorResponse($var)
-    {
+    public function setErrorResponse($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\ErrorResponse::class);
         $this->errorResponse = $var;
 
         return $this;
     }
-
 }
-

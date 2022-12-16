@@ -14,8 +14,7 @@ class GrpcTest extends BaseTest {
         ]);
     }
 
-    public function testEnumDatabases()
-    {
+    public function testEnumDatabases() {
         $request = new \Reindexer\Grpc\CreateDatabaseRequest(['dbName' => $this->database]);
         list($response, $error) = $this->client->CreateDatabase($request)->wait();
         $request = new \Reindexer\Grpc\EnumDatabasesRequest();

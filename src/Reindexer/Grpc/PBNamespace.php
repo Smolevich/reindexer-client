@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Namespaces definition.
  *
  * Generated from protobuf message <code>reindexer.grpc.Namespace</code>
  */
-class PBNamespace extends \Google\Protobuf\Internal\Message
-{
+class PBNamespace extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>string dbName = 1;</code>
      */
@@ -49,7 +48,7 @@ class PBNamespace extends \Google\Protobuf\Internal\Message
      *     @type bool $isTemporary
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -58,8 +57,7 @@ class PBNamespace extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string dbName = 1;</code>
      * @return string
      */
-    public function getDbName()
-    {
+    public function getDbName() {
         return $this->dbName;
     }
 
@@ -68,9 +66,8 @@ class PBNamespace extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDbName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setDbName($var) {
+        GPBUtil::checkString($var, true);
         $this->dbName = $var;
 
         return $this;
@@ -80,8 +77,7 @@ class PBNamespace extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string name = 2;</code>
      * @return string
      */
-    public function getName()
-    {
+    public function getName() {
         return $this->name;
     }
 
@@ -90,9 +86,8 @@ class PBNamespace extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setName($var) {
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -102,18 +97,15 @@ class PBNamespace extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.StorageOptions storageOptions = 3;</code>
      * @return \Reindexer\Grpc\StorageOptions|null
      */
-    public function getStorageOptions()
-    {
+    public function getStorageOptions() {
         return $this->storageOptions;
     }
 
-    public function hasStorageOptions()
-    {
+    public function hasStorageOptions() {
         return isset($this->storageOptions);
     }
 
-    public function clearStorageOptions()
-    {
+    public function clearStorageOptions() {
         unset($this->storageOptions);
     }
 
@@ -122,8 +114,7 @@ class PBNamespace extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\StorageOptions $var
      * @return $this
      */
-    public function setStorageOptions($var)
-    {
+    public function setStorageOptions($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\StorageOptions::class);
         $this->storageOptions = $var;
 
@@ -134,8 +125,7 @@ class PBNamespace extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>repeated .reindexer.grpc.Index indexesDefinitions = 4;</code>
      * @return \Google\Protobuf\Internal\RepeatedField
      */
-    public function getIndexesDefinitions()
-    {
+    public function getIndexesDefinitions() {
         return $this->indexesDefinitions;
     }
 
@@ -144,8 +134,7 @@ class PBNamespace extends \Google\Protobuf\Internal\Message
      * @param array<\Reindexer\Grpc\Index>|\Google\Protobuf\Internal\RepeatedField $var
      * @return $this
      */
-    public function setIndexesDefinitions($var)
-    {
+    public function setIndexesDefinitions($var) {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \Reindexer\Grpc\Index::class);
         $this->indexesDefinitions = $arr;
 
@@ -156,8 +145,7 @@ class PBNamespace extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool isTemporary = 5;</code>
      * @return bool
      */
-    public function getIsTemporary()
-    {
+    public function getIsTemporary() {
         return $this->isTemporary;
     }
 
@@ -166,13 +154,10 @@ class PBNamespace extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setIsTemporary($var)
-    {
+    public function setIsTemporary($var) {
         GPBUtil::checkBool($var);
         $this->isTemporary = $var;
 
         return $this;
     }
-
 }
-

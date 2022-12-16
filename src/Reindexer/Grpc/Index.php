@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Index definition.
  *
  * Generated from protobuf message <code>reindexer.grpc.Index</code>
  */
-class Index extends \Google\Protobuf\Internal\Message
-{
+class Index extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>string name = 1;</code>
      */
@@ -57,7 +56,7 @@ class Index extends \Google\Protobuf\Internal\Message
      *           TTL (in seconds)
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -66,8 +65,7 @@ class Index extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string name = 1;</code>
      * @return string
      */
-    public function getName()
-    {
+    public function getName() {
         return $this->name;
     }
 
@@ -76,9 +74,8 @@ class Index extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setName($var) {
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
@@ -88,8 +85,7 @@ class Index extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>repeated string jsonPaths = 2;</code>
      * @return \Google\Protobuf\Internal\RepeatedField
      */
-    public function getJsonPaths()
-    {
+    public function getJsonPaths() {
         return $this->jsonPaths;
     }
 
@@ -98,8 +94,7 @@ class Index extends \Google\Protobuf\Internal\Message
      * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
      * @return $this
      */
-    public function setJsonPaths($var)
-    {
+    public function setJsonPaths($var) {
         $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
         $this->jsonPaths = $arr;
 
@@ -110,8 +105,7 @@ class Index extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string indexType = 3;</code>
      * @return string
      */
-    public function getIndexType()
-    {
+    public function getIndexType() {
         return $this->indexType;
     }
 
@@ -120,9 +114,8 @@ class Index extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setIndexType($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setIndexType($var) {
+        GPBUtil::checkString($var, true);
         $this->indexType = $var;
 
         return $this;
@@ -132,8 +125,7 @@ class Index extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string fieldType = 4;</code>
      * @return string
      */
-    public function getFieldType()
-    {
+    public function getFieldType() {
         return $this->fieldType;
     }
 
@@ -142,9 +134,8 @@ class Index extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setFieldType($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setFieldType($var) {
+        GPBUtil::checkString($var, true);
         $this->fieldType = $var;
 
         return $this;
@@ -154,18 +145,15 @@ class Index extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.IndexOptions options = 5;</code>
      * @return \Reindexer\Grpc\IndexOptions|null
      */
-    public function getOptions()
-    {
+    public function getOptions() {
         return $this->options;
     }
 
-    public function hasOptions()
-    {
+    public function hasOptions() {
         return isset($this->options);
     }
 
-    public function clearOptions()
-    {
+    public function clearOptions() {
         unset($this->options);
     }
 
@@ -174,8 +162,7 @@ class Index extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\IndexOptions $var
      * @return $this
      */
-    public function setOptions($var)
-    {
+    public function setOptions($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\IndexOptions::class);
         $this->options = $var;
 
@@ -188,8 +175,7 @@ class Index extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>int64 expireAfter = 6;</code>
      * @return int|string
      */
-    public function getExpireAfter()
-    {
+    public function getExpireAfter() {
         return $this->expireAfter;
     }
 
@@ -200,13 +186,10 @@ class Index extends \Google\Protobuf\Internal\Message
      * @param int|string $var
      * @return $this
      */
-    public function setExpireAfter($var)
-    {
+    public function setExpireAfter($var) {
         GPBUtil::checkInt64($var);
         $this->expireAfter = $var;
 
         return $this;
     }
-
 }
-

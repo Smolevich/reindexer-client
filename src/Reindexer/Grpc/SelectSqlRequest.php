@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * SQL Query message
  *
  * Generated from protobuf message <code>reindexer.grpc.SelectSqlRequest</code>
  */
-class SelectSqlRequest extends \Google\Protobuf\Internal\Message
-{
+class SelectSqlRequest extends \Google\Protobuf\Internal\Message {
     /**
      * Generated from protobuf field <code>string dbName = 1;</code>
      */
@@ -39,7 +38,7 @@ class SelectSqlRequest extends \Google\Protobuf\Internal\Message
      *     @type \Reindexer\Grpc\OutputFlags $flags
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -48,8 +47,7 @@ class SelectSqlRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string dbName = 1;</code>
      * @return string
      */
-    public function getDbName()
-    {
+    public function getDbName() {
         return $this->dbName;
     }
 
@@ -58,9 +56,8 @@ class SelectSqlRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setDbName($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setDbName($var) {
+        GPBUtil::checkString($var, true);
         $this->dbName = $var;
 
         return $this;
@@ -70,8 +67,7 @@ class SelectSqlRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string sql = 2;</code>
      * @return string
      */
-    public function getSql()
-    {
+    public function getSql() {
         return $this->sql;
     }
 
@@ -80,9 +76,8 @@ class SelectSqlRequest extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setSql($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setSql($var) {
+        GPBUtil::checkString($var, true);
         $this->sql = $var;
 
         return $this;
@@ -92,18 +87,15 @@ class SelectSqlRequest extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.reindexer.grpc.OutputFlags flags = 3;</code>
      * @return \Reindexer\Grpc\OutputFlags|null
      */
-    public function getFlags()
-    {
+    public function getFlags() {
         return $this->flags;
     }
 
-    public function hasFlags()
-    {
+    public function hasFlags() {
         return isset($this->flags);
     }
 
-    public function clearFlags()
-    {
+    public function clearFlags() {
         unset($this->flags);
     }
 
@@ -112,13 +104,10 @@ class SelectSqlRequest extends \Google\Protobuf\Internal\Message
      * @param \Reindexer\Grpc\OutputFlags $var
      * @return $this
      */
-    public function setFlags($var)
-    {
+    public function setFlags($var) {
         GPBUtil::checkMessage($var, \Reindexer\Grpc\OutputFlags::class);
         $this->flags = $var;
 
         return $this;
     }
-
 }
-

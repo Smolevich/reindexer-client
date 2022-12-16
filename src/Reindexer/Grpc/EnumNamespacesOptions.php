@@ -5,16 +5,15 @@
 namespace Reindexer\Grpc;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\RepeatedField;
 
 /**
  * Namespace options for EnumNamespace call.
  *
  * Generated from protobuf message <code>reindexer.grpc.EnumNamespacesOptions</code>
  */
-class EnumNamespacesOptions extends \Google\Protobuf\Internal\Message
-{
+class EnumNamespacesOptions extends \Google\Protobuf\Internal\Message {
     /**
      * Filter for names.
      *
@@ -56,7 +55,7 @@ class EnumNamespacesOptions extends \Google\Protobuf\Internal\Message
      *           Not to enumerate systems namespaces.
      * }
      */
-    public function __construct($data = NULL) {
+    public function __construct($data = null) {
         \GPBMetadata\Reindexer::initOnce();
         parent::__construct($data);
     }
@@ -67,8 +66,7 @@ class EnumNamespacesOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string filter = 1;</code>
      * @return string
      */
-    public function getFilter()
-    {
+    public function getFilter() {
         return $this->filter;
     }
 
@@ -79,9 +77,8 @@ class EnumNamespacesOptions extends \Google\Protobuf\Internal\Message
      * @param string $var
      * @return $this
      */
-    public function setFilter($var)
-    {
-        GPBUtil::checkString($var, True);
+    public function setFilter($var) {
+        GPBUtil::checkString($var, true);
         $this->filter = $var;
 
         return $this;
@@ -93,8 +90,7 @@ class EnumNamespacesOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool withClosed = 2;</code>
      * @return bool
      */
-    public function getWithClosed()
-    {
+    public function getWithClosed() {
         return $this->withClosed;
     }
 
@@ -105,8 +101,7 @@ class EnumNamespacesOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setWithClosed($var)
-    {
+    public function setWithClosed($var) {
         GPBUtil::checkBool($var);
         $this->withClosed = $var;
 
@@ -119,8 +114,7 @@ class EnumNamespacesOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool onlyNames = 3;</code>
      * @return bool
      */
-    public function getOnlyNames()
-    {
+    public function getOnlyNames() {
         return $this->onlyNames;
     }
 
@@ -131,8 +125,7 @@ class EnumNamespacesOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setOnlyNames($var)
-    {
+    public function setOnlyNames($var) {
         GPBUtil::checkBool($var);
         $this->onlyNames = $var;
 
@@ -145,8 +138,7 @@ class EnumNamespacesOptions extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>bool hideSystems = 4;</code>
      * @return bool
      */
-    public function getHideSystems()
-    {
+    public function getHideSystems() {
         return $this->hideSystems;
     }
 
@@ -157,13 +149,10 @@ class EnumNamespacesOptions extends \Google\Protobuf\Internal\Message
      * @param bool $var
      * @return $this
      */
-    public function setHideSystems($var)
-    {
+    public function setHideSystems($var) {
         GPBUtil::checkBool($var);
         $this->hideSystems = $var;
 
         return $this;
     }
-
 }
-

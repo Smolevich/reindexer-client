@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/common-part.php';
 
+use Reindexer\Grpc\EncodingType;
 use Reindexer\Grpc\ReindexerClient;
 
 try {
@@ -21,13 +22,14 @@ try {
     list($response, $error) = $client->createDatabase($request)->wait();
     $request = new Reindexer\Grpc\EnumDatabasesRequest();
     list($response, $error) = $client->enumDatabases($request)->wait();
+
     if ($response->getNames() !== null) {
         foreach ($response->getNames() as $name) {
             echo $name . PHP_EOL;
         }
     }
     $pbNamespace = new \Reindexer\Grpc\PBNamespace(['name' => 'statistics', 'dbName' => 'stats']);
-    $request = new \Reindexer\Grpc\AddNamespaceRequest(['namespace' => $pbNamespace]);
+    $request = new \Reindexer\Grpc\AddNamespaceRequest(['dbName' => 'stats', 'namespace' => $pbNamespace]);
     list($response, $error) = $client->addNamespace($request)->wait();
 
     $request = new \Reindexer\Grpc\OpenNamespaceRequest(['dbName' => 'stats']);
@@ -47,19 +49,14 @@ try {
     ];
 
     foreach ($users as $user) {
-        $request = new \Reindexer\Grpc\Query([
-            'encdoingType' => 1,
+        $modifyRequest = new \Reindexer\Grpc\ModifyItemRequest([
+            'dbName' => 'stats',
+            'nsName' => 'statistics',
+            'mode' => \Reindexer\Grpc\ModifyMode::UPSERT,
+            'encodingType' => EncodingType::JSON,
             'data' => json_encode($user),
         ]);
-        $updateRequest = new \Reindexer\Grpc\UpdateRequest([
-            'dbName' => 'stats',
-            'query' => $request,
-            'flags' => new \Reindexer\Grpc\OutputFlags(['encodingType' => 1]),
-        ]);
-        $responses = $client->ModifyItem($updateRequest)->responses();
-        foreach ($responses as $response) {
-            var_dump($response->getErrorResponse()->getMessage());
-        }
+        list($response, $error) = $client->ModifyItem($modifyRequest)->wait();
     }
 
 } catch (\Throwable $e) {

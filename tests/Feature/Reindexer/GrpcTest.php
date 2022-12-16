@@ -14,11 +14,6 @@ class GrpcTest extends BaseTest {
         ]);
     }
 
-    public function tearDown(): void
-    {
-        $this->client->Delete(new \Reindexer\Grpc\DeleteRequest(['dbName' => $this->database]));
-    }
-
     public function testEnumDatabases()
     {
         $request = new \Reindexer\Grpc\CreateDatabaseRequest(['dbName' => $this->database]);
@@ -31,14 +26,5 @@ class GrpcTest extends BaseTest {
         $this->assertNotNull($response->getNames());
         $this->assertIsObject($response->getNames());
         $this->assertSame($this->database, $response->getNames()[0]);
-    }
-
-    public function testDelete() {
-        $request = new \Reindexer\Grpc\CreateDatabaseRequest(['dbName' => $this->database . '_1']);
-        list($response, $error) = $this->client->CreateDatabase($request)->wait();
-        $this->client->Delete(new \Reindexer\Grpc\DeleteRequest(['dbName' => $this->database . '_1']));
-        $request = new \Reindexer\Grpc\EnumDatabasesRequest();
-        list($response, $error) = $this->client->enumDatabases($request)->wait();
-        $this->assertCount(0, $response->getNames());
     }
 }

@@ -204,8 +204,10 @@ class ReindexerClient extends \Grpc\BaseStub {
      * @param array $options call options
      * @return \Grpc\BidiStreamingCall
      */
-    public function ModifyItem($metadata = [], $options = []) {
-        return $this->_bidiRequest('/reindexer.grpc.Reindexer/ModifyItem',
+    public function ModifyItem(\Reindexer\Grpc\ModifyItemRequest $argument,
+       $metadata = [], $options = []) {
+        return $this->_simpleRequest('/reindexer.grpc.Reindexer/ModifyItem',
+        $argument,
         ['\Reindexer\Grpc\ErrorResponse','decode'],
         $metadata, $options);
     }

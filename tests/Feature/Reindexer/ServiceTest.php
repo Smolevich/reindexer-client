@@ -144,5 +144,33 @@ class ServiceTest extends BaseTest {
             ->getDecodedResponseBody(true);
 
         $this->assertEquals(3, count($response['items']));
+
+        $response = $this->queryService
+            ->createByHttpPut([
+                'namespace' => $this->namespaceName,
+                'type' => 'update',
+                'filters' => [
+                    [
+                        'field' => 'user_nickname',
+                        'cond' => 'EQ',
+                        'value' => 'LMonoceros',
+                    ]
+                ],
+                'update_fields' => [
+                    [
+                        'name' => 'user_nickname',
+                        'type' =>  'value',
+                        'values' => ['LMonoceros new']
+                    ]
+                ]
+            ])
+            ->getDecodedResponseBody(true);
+
+        $this->assertEquals(2, $response['updated']);
+
+        $response = $this->queryService
+            ->createByHttpGet("SELECT * FROM {$this->namespaceName} WHERE user_nickname = 'LMonoceros'")
+            ->getDecodedResponseBody(true);
+        $this->assertEquals(0, count($response['items']));
     }
 }

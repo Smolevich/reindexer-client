@@ -5,7 +5,7 @@ namespace Reindexer\Services;
 use Reindexer\BaseService;
 
 class Query extends BaseService {
-    public $database;
+    public string $database;
 
     public function getDatabase(): string {
         return $this->database ?? '';
@@ -22,6 +22,17 @@ class Query extends BaseService {
             'GET',
             $uri,
             null,
+            $this->defaultHeaders
+        );
+    }
+
+    public function createByHttpPut(mixed $query) {
+        $uri = sprintf('/api/%s/db/%s/query', $this->version, $this->getDatabase());
+
+        return $this->client->request(
+            'PUT',
+            $uri,
+            json_encode($query),
             $this->defaultHeaders
         );
     }

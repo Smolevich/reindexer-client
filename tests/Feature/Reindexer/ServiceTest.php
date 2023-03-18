@@ -164,5 +164,4 @@ class ServiceTest extends BaseTest {
         );
         $this->assertCount(2, $response->getRequestHeaders());
     }
-
 }

@@ -137,6 +137,7 @@ class ServiceTest extends BaseTest {
             ],
             $response->getDecodedResponseBody(true)
         );
+        $this->dbService->drop('unittests_3');
         $this->assertSame(
             $headers['User-Agent'],
             $response->getRequestHeaders()['User-Agent'][0]
@@ -147,7 +148,7 @@ class ServiceTest extends BaseTest {
     public function testSetHeaders() {
         $headers = ['User-Agent' => 'reindexer-php-client'];
         $this->dbService->setHeaders($headers);
-        $response = $this->dbService->create('unittests_3');
+        $response = $this->dbService->create('unittests_4');
         $this->assertSame(
             [
                 'success' => true,
@@ -156,6 +157,7 @@ class ServiceTest extends BaseTest {
             ],
             $response->getDecodedResponseBody(true)
         );
+        $this->dbService->drop('unittests_4');
         $this->assertSame(
             $headers['User-Agent'],
             $response->getRequestHeaders()['User-Agent'][0]

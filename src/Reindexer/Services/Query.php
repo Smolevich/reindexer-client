@@ -26,17 +26,6 @@ class Query extends BaseService {
         );
     }
 
-    public function createByHttpPut(mixed $query) {
-        $uri = sprintf('/api/%s/db/%s/query', $this->version, $this->getDatabase());
-
-        return $this->client->request(
-            'PUT',
-            $uri,
-            json_encode($query),
-            $this->defaultHeaders
-        );
-    }
-
     public function createSqlQueryByHttpPost(string $query) {
         $uri = sprintf('/api/%s/db/%s/sqlquery', $this->version, $this->getDatabase());
 

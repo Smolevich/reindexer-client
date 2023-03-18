@@ -8,7 +8,7 @@ use Reindexer\Entities\Index as IndexEntity;
 use Reindexer\Response;
 
 class Namespaces extends BaseService {
-    protected $database;
+    protected string $database;
 
     public function getDatabase(): string {
         return $this->database ?? '';

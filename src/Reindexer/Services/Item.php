@@ -5,8 +5,8 @@ namespace Reindexer\Services;
 use Reindexer\BaseService;
 
 class Item extends BaseService {
-    protected $database;
-    protected $namespace;
+    protected string $database;
+    protected string $namespace;
 
     public function getDatabase(): string {
         return $this->database ?? '';

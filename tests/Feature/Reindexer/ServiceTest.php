@@ -14,36 +14,14 @@ use Tests\Feature\Reindexer\Fixture\HabrPost;
 use Tests\Unit\Reindexer\BaseTest;
 
 class ServiceTest extends BaseTest {
-    private $namespaceName = 'unittests_ns';
-    private $database = 'unittests';
-    /**
-     *
-     * @var Namespaces $nsService
-     */
-    private $nsService;
-    /**
-     *
-     * @var Database $dbService
-     */
-    private $dbService;
+    private string $namespaceName = 'unittests_ns';
+    private string $database = 'unittests';
+    private Namespaces $nsService;
+    private Database $dbService;
 
-    /**
-     *
-     * @var ReindexerIndex $indexService
-     */
-    private $indexService;
-
-    /**
-     *
-     * @var Query $queryService
-     */
-    private $queryService;
-
-    /**
-     *
-     * @var Item $itemService
-     */
-    private $itemService;
+    private ReindexerIndex $indexService;
+    private Query $queryService;
+    private Item $itemService;
 
     public function setUp(): void {
         $host = getenv('REINDEXER_HOST');
@@ -144,33 +122,46 @@ class ServiceTest extends BaseTest {
             ->getDecodedResponseBody(true);
 
         $this->assertEquals(3, count($response['items']));
+    }
 
-        $response = $this->queryService
-            ->createByHttpPut([
-                'namespace' => $this->namespaceName,
-                'type' => 'update',
-                'filters' => [
-                    [
-                        'field' => 'user_nickname',
-                        'cond' => 'EQ',
-                        'value' => 'LMonoceros',
-                    ]
-                ],
-                'update_fields' => [
-                    [
-                        'name' => 'user_nickname',
-                        'type' =>  'value',
-                        'values' => ['LMonoceros new']
-                    ]
-                ]
-            ])
-            ->getDecodedResponseBody(true);
 
-        $this->assertEquals(2, $response['updated']);
+    public function testAddHeaders() {
+        $headers = ['User-Agent' => 'reindexer-php-client'];
+        $this->dbService->addHeaders($headers);
+        $response = $this->dbService->create('unittests_3');
+        $this->assertSame(
+            [
+                'success' => true,
+                'response_code' => 200,
+                'description' => ''
+            ],
+            $response->getDecodedResponseBody(true)
+        );
+        $this->dbService->drop('unittests_3');
+        $this->assertSame(
+            $headers['User-Agent'],
+            $response->getRequestHeaders()['User-Agent'][0]
+        );
+        $this->assertCount(3, $response->getRequestHeaders());
+    }
 
-        $response = $this->queryService
-            ->createByHttpGet("SELECT * FROM {$this->namespaceName} WHERE user_nickname = 'LMonoceros'")
-            ->getDecodedResponseBody(true);
-        $this->assertEquals(0, count($response['items']));
+    public function testSetHeaders() {
+        $headers = ['User-Agent' => 'reindexer-php-client'];
+        $this->dbService->setHeaders($headers);
+        $response = $this->dbService->create('unittests_4');
+        $this->assertSame(
+            [
+                'success' => true,
+                'response_code' => 200,
+                'description' => ''
+            ],
+            $response->getDecodedResponseBody(true)
+        );
+        $this->dbService->drop('unittests_4');
+        $this->assertSame(
+            $headers['User-Agent'],
+            $response->getRequestHeaders()['User-Agent'][0]
+        );
+        $this->assertCount(2, $response->getRequestHeaders());
     }
 }

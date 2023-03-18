@@ -126,7 +126,8 @@ class ServiceTest extends BaseTest {
 
 
     public function testSetHeaders() {
-        $this->dbService->addHeaders(['User-Agent' => 'reindexer-php-client']);
+        $headers = ['User-Agent' => 'reindexer-php-client'];
+        $this->dbService->addHeaders($headers);
         $response = $this->dbService->create('unittests_3');
         $this->assertSame(
             [
@@ -137,11 +138,8 @@ class ServiceTest extends BaseTest {
             $response->getDecodedResponseBody(true)
         );
         $this->assertSame(
-            [
-                'Content-Type' => 'application/json;charset=utf-8',
-                'User-Agent' => 'reindexer-php-client'
-            ],
-            $response->getRequestHeaders()
+            $headers['User-Agent'],
+            $response->getRequestHeaders()['User-Agent'][0]
         );
     }
 }

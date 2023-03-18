@@ -126,7 +126,7 @@ class ServiceTest extends BaseTest {
 
 
     public function testSetHeaders() {
-        $this->api->addHeaders(['User-Agent' => 'reindexer-php-client']);
+        $this->dbService->addHeaders(['User-Agent' => 'reindexer-php-client']);
         $response = $this->dbService->create('unittests_3');
         $this->assertSame(
             [

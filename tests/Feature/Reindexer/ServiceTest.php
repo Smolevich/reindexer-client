@@ -13,7 +13,8 @@ use Reindexer\Services\Query;
 use Tests\Feature\Reindexer\Fixture\HabrPost;
 use Tests\Unit\Reindexer\BaseTest;
 
-class ServiceTest extends BaseTest {
+class ServiceTest extends BaseTest
+{
     private string $namespaceName = 'unittests_ns';
     private string $database = 'unittests';
     private Namespaces $nsService;
@@ -23,7 +24,8 @@ class ServiceTest extends BaseTest {
     private Query $queryService;
     private Item $itemService;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         $host = getenv('REINDEXER_HOST');
         $this->config = [
             'host' => $host
@@ -42,11 +44,13 @@ class ServiceTest extends BaseTest {
         $this->nsService->create($this->namespaceName);
     }
 
-    public function tearDown(): void {
+    public function tearDown(): void
+    {
         $this->dbService->drop($this->database);
     }
 
-    public function testCreateAndDropDatabase() {
+    public function testCreateAndDropDatabase()
+    {
         $response = $this->dbService->create('unittests_2');
         $this->assertSame(
             [
@@ -61,7 +65,8 @@ class ServiceTest extends BaseTest {
         $this->assertEquals(1, count($databases['items']));
     }
 
-    public function testCreateIndexes() {
+    public function testCreateIndexes()
+    {
         $indexId = (new Index())
             ->setCollateMode('none')
             ->setName('id')
@@ -81,7 +86,8 @@ class ServiceTest extends BaseTest {
         $this->assertEquals($indexId->getCollateMode(), $body['items'][0]['collate_mode']);
     }
 
-    public function testQuery() {
+    public function testQuery()
+    {
         $items = HabrPost::DATA;
         $indexLink = (new Index())
             ->setCollateMode('none')
@@ -125,7 +131,8 @@ class ServiceTest extends BaseTest {
     }
 
 
-    public function testAddHeaders() {
+    public function testAddHeaders()
+    {
         $headers = ['User-Agent' => 'reindexer-php-client'];
         $this->dbService->addHeaders($headers);
         $response = $this->dbService->create('unittests_3');
@@ -145,7 +152,8 @@ class ServiceTest extends BaseTest {
         $this->assertCount(3, $response->getRequestHeaders());
     }
 
-    public function testSetHeaders() {
+    public function testSetHeaders()
+    {
         $headers = ['User-Agent' => 'reindexer-php-client'];
         $this->dbService->setHeaders($headers);
         $response = $this->dbService->create('unittests_4');

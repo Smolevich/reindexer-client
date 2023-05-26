@@ -7,18 +7,22 @@ use Reindexer\BaseService;
 use Reindexer\Entities\Index as IndexEntity;
 use Reindexer\Response;
 
-class Namespaces extends BaseService {
+class Namespaces extends BaseService
+{
     protected string $database;
 
-    public function getDatabase(): string {
+    public function getDatabase(): string
+    {
         return $this->database ?? '';
     }
 
-    public function setDatabase(string $database): void {
+    public function setDatabase(string $database): void
+    {
         $this->database = $database;
     }
 
-    public function getList(string $sortOrder = 'asc'): Response {
+    public function getList(string $sortOrder = 'asc'): Response
+    {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces',
             $this->version,
@@ -37,7 +41,8 @@ class Namespaces extends BaseService {
         );
     }
 
-    public function create(string $name, array $indexes = []): Response {
+    public function create(string $name, array $indexes = []): Response
+    {
         $body = [
             'name' => $name,
             'storage' => [
@@ -65,7 +70,8 @@ class Namespaces extends BaseService {
         );
     }
 
-    public function drop(string $name): Response {
+    public function drop(string $name): Response
+    {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s',
             $this->version,
@@ -81,7 +87,8 @@ class Namespaces extends BaseService {
         );
     }
 
-    public function get(string $name): Response {
+    public function get(string $name): Response
+    {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s',
             $this->version,
@@ -97,7 +104,8 @@ class Namespaces extends BaseService {
         );
     }
 
-    public function truncate(string $name): Response {
+    public function truncate(string $name): Response
+    {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/truncate',
             $this->version,
@@ -113,7 +121,8 @@ class Namespaces extends BaseService {
         );
     }
 
-    public function rename(string $oldName, string $newName): Response {
+    public function rename(string $oldName, string $newName): Response
+    {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/rename/%s',
             $this->version,
@@ -172,7 +181,8 @@ class Namespaces extends BaseService {
         );
     }
 
-    public function addMetaDataKey(string $name, string $key, string $value): Response {
+    public function addMetaDataKey(string $name, string $key, string $value): Response
+    {
         $uri = new Uri(
             sprintf(
                 '/api/%s/db/%s/namespaces/%s/metabykey',
@@ -190,7 +200,8 @@ class Namespaces extends BaseService {
         );
     }
 
-    public function getMetaDataKey(string $name, string $key): Response {
+    public function getMetaDataKey(string $name, string $key): Response
+    {
         $uri = new Uri(
             sprintf(
                 '/api/%s/db/%s/namespaces/%s/metabykey/%s',

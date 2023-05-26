@@ -4,27 +4,33 @@ namespace Reindexer\Services;
 
 use Reindexer\BaseService;
 
-class Item extends BaseService {
+class Item extends BaseService
+{
     protected string $database;
     protected string $namespace;
 
-    public function getDatabase(): string {
+    public function getDatabase(): string
+    {
         return $this->database ?? '';
     }
 
-    public function setDatabase(string $database): void {
+    public function setDatabase(string $database): void
+    {
         $this->database = $database;
     }
 
-    public function getNamespace(): string {
+    public function getNamespace(): string
+    {
         return $this->namespace ?? '';
     }
 
-    public function setNamespace(string $namespace): void {
+    public function setNamespace(string $namespace): void
+    {
         $this->namespace = $namespace;
     }
 
-    public function add(array $data = []) {
+    public function add(array $data = [])
+    {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
@@ -40,7 +46,8 @@ class Item extends BaseService {
         );
     }
 
-    public function update(array $data = []) {
+    public function update(array $data = [])
+    {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
@@ -56,7 +63,8 @@ class Item extends BaseService {
         );
     }
 
-    public function delete(array $data = []) {
+    public function delete(array $data = [])
+    {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
@@ -72,7 +80,8 @@ class Item extends BaseService {
         );
     }
 
-    public function get(int $limit = 0, int $offset = 0, string $sortField = '', string $sortOrder = '') {
+    public function get(int $limit = 0, int $offset = 0, string $sortField = '', string $sortOrder = '')
+    {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,

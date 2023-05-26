@@ -4,24 +4,28 @@ namespace Tests\Unit\Reindexer\Services;
 use Reindexer\Services\Namespaces;
 use Tests\Unit\Reindexer\BaseTest;
 
-class NamespacesTest extends BaseTest {
+class NamespacesTest extends BaseTest
+{
     /**
      * @var Namespaces
      */
     private $service;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         $this->api = $this->createApiMock(['request']);
         $this->service = new Namespaces($this->api);
     }
 
-    public function testGetDatabase() {
+    public function testGetDatabase()
+    {
         $expected = 'database';
         $this->service->setDatabase($expected);
         $this->assertEquals($expected, $this->service->getDatabase());
     }
 
-    public function testGetList() {
+    public function testGetList()
+    {
         $responseData = [
             'items' => [
                 [
@@ -42,7 +46,8 @@ class NamespacesTest extends BaseTest {
     /**
      * @covers \Reindexer\Services\Namespaces
      */
-    public function testGet() {
+    public function testGet()
+    {
         $responseData = [
             'name' => 'namespace_one',
             'storage' => [
@@ -74,7 +79,8 @@ class NamespacesTest extends BaseTest {
         $this->assertEquals(json_encode($responseData), $actual->getResponseBody());
     }
 
-    public function testTruncate() {
+    public function testTruncate()
+    {
         $responseData = [
             "success" =>  true,
             "response_code" => 0,
@@ -87,7 +93,8 @@ class NamespacesTest extends BaseTest {
         $this->assertEquals(json_encode($responseData), $actual->getResponseBody());
     }
 
-    public function testRename() {
+    public function testRename()
+    {
         $responseData = [
             "success" =>  true,
             "response_code" => 0,
@@ -100,7 +107,8 @@ class NamespacesTest extends BaseTest {
         $this->assertEquals(json_encode($responseData), $actual->getResponseBody());
     }
 
-    public function testGetMetaDataKey() {
+    public function testGetMetaDataKey()
+    {
         $responseData = [
             "success" =>  true,
             "response_code" => 0,
@@ -113,7 +121,8 @@ class NamespacesTest extends BaseTest {
         $this->assertEquals(json_encode($responseData), $actual->getResponseBody());
     }
 
-    public function testGetMetaList() {
+    public function testGetMetaList()
+    {
         $responseData = [
             "total_items" =>  0,
             "meta" => [],

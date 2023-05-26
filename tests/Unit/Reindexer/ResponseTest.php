@@ -6,8 +6,10 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Reindexer\Response;
 
-class ResponseTest extends BaseTest {
-    public function setUp(): void {
+class ResponseTest extends BaseTest
+{
+    public function setUp(): void
+    {
         $this->response = new Response();
         $this->info = [
             'http_code' => 200,
@@ -18,7 +20,8 @@ class ResponseTest extends BaseTest {
     /**
      * @dataProvider responseProvider
      */
-    public function testGetResponseBody($request, $response, $decodedData) {
+    public function testGetResponseBody($request, $response, $decodedData)
+    {
         $this->response->setRequest($request)
             ->setResponse($response);
         $this->assertEquals(
@@ -35,7 +38,8 @@ class ResponseTest extends BaseTest {
         );
     }
 
-    public function testGetCode() {
+    public function testGetCode()
+    {
         $this->response->setInfo($this->info);
         $this->assertEquals($this->info['http_code'], $this->response->getCode());
     }
@@ -43,7 +47,8 @@ class ResponseTest extends BaseTest {
     /**
      * @dataProvider responseProvider
      */
-    public function testGetRequestHeaders($request, $response) {
+    public function testGetRequestHeaders($request, $response)
+    {
         $this->response->setRequest($request)
             ->setResponse($response);
         $this->assertEquals(
@@ -52,7 +57,8 @@ class ResponseTest extends BaseTest {
         );
     }
 
-    public function responseProvider() {
+    public function responseProvider()
+    {
         return [
             [
                 new Request('GET', 'api/v1/db'),

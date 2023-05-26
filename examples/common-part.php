@@ -4,15 +4,18 @@ use Reindexer\Client\Api;
 use Reindexer\LoggerInterface;
 use Reindexer\Response;
 
-class Configuration {
+class Configuration
+{
     protected $api;
     protected $config;
 
-    public function __construct(array $config = []) {
+    public function __construct(array $config = [])
+    {
         $this->config = $config;
     }
 
-    public function getApi(): Api {
+    public function getApi(): Api
+    {
         if (empty($this->api)) {
             $this->api = new Api($this->config['endpoint'], $this->config['client_config']);
             $this->api->setLogger(new ApiLogger());
@@ -22,8 +25,10 @@ class Configuration {
     }
 }
 
-class ApiLogger implements LoggerInterface {
-    public function logResponse(Response $response): void {
+class ApiLogger implements LoggerInterface
+{
+    public function logResponse(Response $response): void
+    {
         echo sprintf(
             '==== api request info ===='.PHP_EOL.
             'Content-Type: %s'.PHP_EOL.

@@ -2,7 +2,8 @@
 
 namespace Reindexer\Entities;
 
-class Index extends Entity {
+class Index extends Entity
+{
     private $name;
     private $jsonPaths;
     private $fieldType;
@@ -27,101 +28,121 @@ class Index extends Entity {
         'sortOrderLetters' => 'sort_order_letters',
     ];
 
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
-    public function setName(string $name) {
+    public function setName(string $name)
+    {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getJsonPaths(): array {
+    public function getJsonPaths(): array
+    {
         return $this->jsonPaths ?? [];
     }
 
-    public function setJsonPaths(array $jsonPaths): self {
+    public function setJsonPaths(array $jsonPaths): self
+    {
         $this->jsonPaths = $jsonPaths;
 
         return $this;
     }
 
-    public function getFieldType(): string {
+    public function getFieldType(): string
+    {
         return $this->fieldType;
     }
 
-    public function setFieldType($fieldType): self {
+    public function setFieldType($fieldType): self
+    {
         $this->fieldType = $fieldType;
 
         return $this;
     }
 
-    public function isPk() {
+    public function isPk()
+    {
         return $this->isPk;
     }
 
-    public function setIsPk(bool $isPk) {
+    public function setIsPk(bool $isPk)
+    {
         $this->isPk = $isPk;
 
         return $this;
     }
 
-    public function isArray(): bool {
+    public function isArray(): bool
+    {
         return $this->isArray;
     }
 
-    public function setIsArray(bool $isArray): self {
+    public function setIsArray(bool $isArray): self
+    {
         $this->isArray = $isArray;
 
         return $this;
     }
 
-    public function isDense(): bool {
+    public function isDense(): bool
+    {
         return $this->isDense;
     }
 
-    public function setIsDense(bool $isDense): self {
+    public function setIsDense(bool $isDense): self
+    {
         $this->isDense = $isDense;
 
         return $this;
     }
 
-    public function isAppendable(): bool {
+    public function isAppendable(): bool
+    {
         return $this->isAppendable;
     }
 
-    public function setIsAppendable(bool $isAppendable): self {
+    public function setIsAppendable(bool $isAppendable): self
+    {
         $this->isAppendable = $isAppendable;
 
         return $this;
     }
 
-    public function getCollateMode(): string {
+    public function getCollateMode(): string
+    {
         return $this->collateMode;
     }
 
-    public function setCollateMode(string $collateMode): self {
+    public function setCollateMode(string $collateMode): self
+    {
         $this->collateMode = $collateMode;
 
         return $this;
     }
 
-    public function getSortOrderLetters(): string {
+    public function getSortOrderLetters(): string
+    {
         return $this->sortOrderLetters;
     }
 
-    public function setSortOrderLetters(string $sortOrderLetters): self {
+    public function setSortOrderLetters(string $sortOrderLetters): self
+    {
         $this->sortOrderLetters = $sortOrderLetters;
 
         return $this;
     }
 
-    public function getIndexType(): string {
+    public function getIndexType(): string
+    {
         return $this->indexType;
     }
 
-    public function setIndexType(string $indexType): self {
+    public function setIndexType(string $indexType): self
+    {
         $this->indexType = $indexType;
 
         return $this;

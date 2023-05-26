@@ -4,20 +4,24 @@ namespace Reindexer\Client;
 
 use Reindexer\Response;
 
-abstract class BaseApi {
+abstract class BaseApi
+{
     protected $host;
     protected $config;
 
-    public function __construct(string $host, array $config = []) {
+    public function __construct(string $host, array $config = [])
+    {
         $this->host = $host;
         $this->config = $config;
     }
 
-    public function getHost(): string {
+    public function getHost(): string
+    {
         return $this->host;
     }
 
-    public function setHost(string $host) {
+    public function setHost(string $host)
+    {
         $this->host = $host;
     }
 

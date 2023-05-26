@@ -2,6 +2,7 @@
 
 namespace Reindexer;
 
-interface LoggerInterface {
+interface LoggerInterface
+{
     public function logResponse(Response $response);
 }

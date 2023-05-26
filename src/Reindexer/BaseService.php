@@ -4,7 +4,8 @@ namespace Reindexer;
 
 use Reindexer\Client\BaseApi;
 
-abstract class BaseService {
+abstract class BaseService
+{
     protected BaseApi $client;
     protected string $version = 'v1';
     protected $mapJsonFields = [];
@@ -13,23 +14,27 @@ abstract class BaseService {
         'Content-Type' => 'application/json;charset=utf-8'
     ];
 
-    public function __construct(BaseApi $client) {
+    public function __construct(BaseApi $client)
+    {
         $this->client = $client;
     }
 
-    public function setVersion(string $version): self {
+    public function setVersion(string $version): self
+    {
         $this->version = $version;
 
         return $this;
     }
 
-    public function setHeaders(array $headers): self {
+    public function setHeaders(array $headers): self
+    {
         $this->defaultHeaders = $headers;
 
         return $this;
     }
 
-    public function addHeaders(array $headers): self {
+    public function addHeaders(array $headers): self
+    {
         $this->defaultHeaders = array_merge($this->defaultHeaders, $headers);
 
         return $this;

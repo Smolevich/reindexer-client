@@ -118,10 +118,10 @@ class ServiceTest extends BaseTest {
         $this->assertEquals(2, count($response['items']));
 
         $response = $this->queryService
-            ->createByHttpGet("SELECT * FROM {$this->namespaceName} WHERE rating > 446")
-            ->getDecodedResponseBody(true);
+            ->createByHttpGet("SELECT * FROM {$this->namespaceName} WHERE rating > 446");
 
-        $this->assertEquals(3, count($response['items']));
+        $this->assertEquals(3, count($response->getDecodedResponseBody(true)['items']));
+        $this->assertEquals(3, count($response->getDecodedResponseBody()->items));
     }
 
 

@@ -66,7 +66,7 @@ class Response {
         return $stream->getContents();
     }
 
-    public function getDecodedResponseBody(bool $isAssoc = false): array {
+    public function getDecodedResponseBody(bool $isAssoc = false): mixed {
         return json_decode($this->getResponseBody(), $isAssoc) ?? [];
     }
 

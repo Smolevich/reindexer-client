@@ -2,7 +2,8 @@
 
 namespace Reindexer\Enum;
 
-class IndexType {
+class IndexType
+{
     const HASH = 'hash';
     const TREE = 'tree';
     const TEXT = 'text';

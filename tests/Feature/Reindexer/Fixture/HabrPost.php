@@ -2,7 +2,8 @@
 
 namespace Tests\Feature\Reindexer\Fixture;
 
-class HabrPost {
+class HabrPost
+{
     public const DATA = [
         [
             'link' => 'https://habr.com/en/post/448530/',

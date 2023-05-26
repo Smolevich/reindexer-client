@@ -2,7 +2,8 @@
 
 namespace Reindexer\Enum;
 
-class FieldType {
+class FieldType
+{
     const INT = 'int';
     const INT64 = 'int64';
     const DOUBLE = 'double';

@@ -2,7 +2,8 @@
 
 namespace Reindexer\Entities;
 
-class SdlQuery extends Entity {
+class SdlQuery extends Entity
+{
     protected $namespace;
     protected $limit;
     protected $offset;

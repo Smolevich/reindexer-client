@@ -5,8 +5,10 @@ namespace Reindexer\Services;
 use Reindexer\BaseService;
 use Reindexer\Entities\Index as IndexEntity;
 
-class Index extends BaseService {
-    public function create(IndexEntity $index, string $database, string $namespace) {
+class Index extends BaseService
+{
+    public function create(IndexEntity $index, string $database, string $namespace)
+    {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/indexes',
             $this->version,
@@ -22,7 +24,8 @@ class Index extends BaseService {
         );
     }
 
-    public function get(string $database, string $namespace) {
+    public function get(string $database, string $namespace)
+    {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/indexes',
             $this->version,
@@ -38,7 +41,8 @@ class Index extends BaseService {
         );
     }
 
-    public function delete(string $database, string $namespace, string $name) {
+    public function delete(string $database, string $namespace, string $name)
+    {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/indexes/%s',
             $this->version,

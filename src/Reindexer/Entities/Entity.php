@@ -4,12 +4,15 @@ namespace Reindexer\Entities;
 
 use \ReflectionProperty;
 
-abstract class Entity {
-    public function getBody(): array {
+abstract class Entity
+{
+    public function getBody(): array
+    {
         return $this->parseValue($this);
     }
 
-    protected function parseValue($instance): array {
+    protected function parseValue($instance): array
+    {
         $result = [];
         $reflectionClass = new \ReflectionClass($instance);
         $properties = $reflectionClass->getProperties(ReflectionProperty::IS_PRIVATE);

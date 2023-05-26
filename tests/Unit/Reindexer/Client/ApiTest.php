@@ -7,29 +7,35 @@ use GuzzleHttp\Psr7\Response;
 use Reindexer\Client\Api;
 use Tests\Unit\Reindexer\BaseTest;
 
-class ApiTest extends BaseTest {
-    public function setUp(): void {
+class ApiTest extends BaseTest
+{
+    public function setUp(): void
+    {
         $this->config = [
             'host' => 'http://reindexer:9800'
         ];
         $this->api = new Api($this->config['host']);
     }
 
-    public function testGetHost() {
+    public function testGetHost()
+    {
         $this->api->setHost('reindexer2:9800');
         $this->assertEquals('reindexer2:9800', $this->api->getHost());
     }
 
-    public function testCreateApiInstanceThrowExceptionIfHostEmpty() {
+    public function testCreateApiInstanceThrowExceptionIfHostEmpty()
+    {
         $this->expectException(\TypeError::class);
         $api = new Api(null);
     }
 
-    public function testGetClient() {
+    public function testGetClient()
+    {
         $this->assertInstanceOf(Client::class, $this->api->getClient());
     }
 
-    public function testRequest() {
+    public function testRequest()
+    {
         $expectedResponse = new Response(
             200,
             [

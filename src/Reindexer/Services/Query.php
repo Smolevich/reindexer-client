@@ -4,18 +4,22 @@ namespace Reindexer\Services;
 
 use Reindexer\BaseService;
 
-class Query extends BaseService {
+class Query extends BaseService
+{
     public string $database;
 
-    public function getDatabase(): string {
+    public function getDatabase(): string
+    {
         return $this->database ?? '';
     }
 
-    public function setDatabase(string $database): void {
+    public function setDatabase(string $database): void
+    {
         $this->database = $database;
     }
 
-    public function createByHttpGet(string $query) {
+    public function createByHttpGet(string $query)
+    {
         $uri = sprintf('/api/%s/db/%s/query?q=%s', $this->version, $this->getDatabase(), urlencode($query));
 
         return $this->client->request(
@@ -26,7 +30,8 @@ class Query extends BaseService {
         );
     }
 
-    public function createSqlQueryByHttpPost(string $query) {
+    public function createSqlQueryByHttpPost(string $query)
+    {
         $uri = sprintf('/api/%s/db/%s/sqlquery', $this->version, $this->getDatabase());
 
         return $this->client->request(
@@ -37,7 +42,8 @@ class Query extends BaseService {
         );
     }
 
-    public function createSdlQueryByHttpPost(string $query) {
+    public function createSdlQueryByHttpPost(string $query)
+    {
         $uri = sprintf('/api/%s/db/%s/query', $this->version, $this->getDatabase());
 
         return $this->client->request(

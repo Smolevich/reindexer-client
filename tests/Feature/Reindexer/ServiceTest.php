@@ -172,4 +172,23 @@ class ServiceTest extends BaseTest
         );
         $this->assertCount(2, $response->getRequestHeaders());
     }
+
+    public function testSchema()
+    {
+        $config = [
+            'type' =>  'namespaces',
+            'namespaces' => [
+                'wal_size' => 5000000
+            ]
+        ];
+        $response = $this->nsService->schema($this->namespaceName, $config);
+        $this->assertSame(
+            [
+                'success' => true,
+                'response_code' => 200,
+                'description' => ''
+            ],
+            $response->getDecodedResponseBody(true)
+        );
+    }
 }

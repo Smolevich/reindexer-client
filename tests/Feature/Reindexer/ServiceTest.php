@@ -5,6 +5,7 @@ namespace Tests\Feature\Reindexer;
 use Reindexer\Client\Api;
 use Reindexer\Entities\Index;
 use Reindexer\Enum\IndexType;
+use Reindexer\Response;
 use Reindexer\Services\Database;
 use Reindexer\Services\Index as ReindexerIndex;
 use Reindexer\Services\Item;
@@ -190,5 +191,27 @@ class ServiceTest extends BaseTest
             ],
             $response->getDecodedResponseBody(true)
         );
+    }
+
+    public function testSetReplication(): Response
+    {
+        $config = [
+            'type' => 'namespaces',
+            'replication' => [
+                'role' => 'master',
+                'cluster_id' => 2,
+                'server_id' =>  0
+            ]
+        ];
+        $this->itemService->setNamespace(urlencode('#config'));
+        $response = $this->itemService->update($config);
+        $this->assertSame(
+            [
+                'success' => true,
+                'updated' => 1,
+            ],
+            $response->getDecodedResponseBody(true)
+        );
+
     }
 }

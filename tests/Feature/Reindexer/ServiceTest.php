@@ -193,7 +193,7 @@ class ServiceTest extends BaseTest
         );
     }
 
-    public function testSetReplication(): Response
+    public function testSetReplication()
     {
         $config = [
             'type' => 'namespaces',
@@ -207,8 +207,8 @@ class ServiceTest extends BaseTest
         $response = $this->itemService->update($config);
         $this->assertSame(
             [
-                'success' => true,
                 'updated' => 1,
+                'success' => true,
             ],
             $response->getDecodedResponseBody(true)
         );

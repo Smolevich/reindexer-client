@@ -212,6 +212,5 @@ class ServiceTest extends BaseTest
             ],
             $response->getDecodedResponseBody(true)
         );
-
     }
 }

@@ -11,13 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['8.0', '8.1']
+        php: ['8.0', '8.1', '8.2']
         include:
         - operating-system: 'ubuntu-latest'
           composer-flags: ' --prefer-stable'
           php: '8.0'
         - operating-system: 'ubuntu-latest'
           php: '8.1'
+          composer-flags: ' --prefer-stable'
+        - operating-system: 'ubuntu-latest'
+          php: '8.2'
           composer-flags: ' --prefer-stable'
     services:
       reindexer:

@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/Smolevich/reindexer-client.svg?branch=master)](https://travis-ci.org/Smolevich/reindexer-client)
-[![Coverage Status](https://coveralls.io/repos/github/Smolevich/reindexer-client/badge.svg?branch=master)](https://coveralls.io/github/Smolevich/reindexer-client?branch=master)
+[![CI](https://github.com/Smolevich/reindexer-client/actions/workflows/ci.yml/badge.svg)](https://github.com/Smolevich/reindexer-client/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Smolevich/reindexer-client/graph/badge.svg?token=61non7vjiK)](https://codecov.io/gh/Smolevich/reindexer-client)
 # PHP client for work with [reindexer](https://github.com/Restream/reindexer)
 
 ## Installation

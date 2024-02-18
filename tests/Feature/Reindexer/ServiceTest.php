@@ -5,6 +5,7 @@ namespace Tests\Feature\Reindexer;
 use Reindexer\Client\Api;
 use Reindexer\Entities\Index;
 use Reindexer\Enum\IndexType;
+use Reindexer\Response;
 use Reindexer\Services\Database;
 use Reindexer\Services\Index as ReindexerIndex;
 use Reindexer\Services\Item;
@@ -171,5 +172,45 @@ class ServiceTest extends BaseTest
             $response->getRequestHeaders()['User-Agent'][0]
         );
         $this->assertCount(2, $response->getRequestHeaders());
+    }
+
+    public function testSchema()
+    {
+        $config = [
+            'type' =>  'namespaces',
+            'namespaces' => [
+                'wal_size' => 5000000
+            ]
+        ];
+        $response = $this->nsService->schema($this->namespaceName, $config);
+        $this->assertSame(
+            [
+                'success' => true,
+                'response_code' => 200,
+                'description' => ''
+            ],
+            $response->getDecodedResponseBody(true)
+        );
+    }
+
+    public function testSetReplication()
+    {
+        $config = [
+            'type' => 'namespaces',
+            'replication' => [
+                'role' => 'master',
+                'cluster_id' => 2,
+                'server_id' =>  0
+            ]
+        ];
+        $this->itemService->setNamespace(urlencode('#config'));
+        $response = $this->itemService->update($config);
+        $this->assertSame(
+            [
+                'updated' => 1,
+                'success' => true,
+            ],
+            $response->getDecodedResponseBody(true)
+        );
     }
 }

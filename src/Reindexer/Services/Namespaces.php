@@ -219,4 +219,23 @@ class Namespaces extends BaseService
             $this->defaultHeaders
         );
     }
+
+    public function schema(string $name, array $config): Response
+    {
+        $uri = new Uri(
+            sprintf(
+                '/api/%s/db/%s/namespaces/%s/schema',
+                $this->version,
+                $this->getDatabase(),
+                $name
+            )
+        );
+
+        return $this->client->request(
+            'PUT',
+            (string)$uri,
+            json_encode($config),
+            $this->defaultHeaders
+        );
+    }
 }

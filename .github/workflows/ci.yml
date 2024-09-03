@@ -59,7 +59,7 @@ jobs:
     - name: Run style-fixer
       run: vendor/bin/php-cs-fixer fix --config .php-cs-fixer.php --dry-run
     - name: "Download coverage files"
-      uses: "actions/download-artifact@v2"
+      uses: "actions/download-artifact@v4.1.7"
       with:
         path: "reports"
     - uses: codecov/codecov-action@v2

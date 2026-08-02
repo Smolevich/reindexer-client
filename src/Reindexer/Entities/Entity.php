@@ -24,7 +24,6 @@ abstract class Entity
         );
 
         foreach ($properties as $property) {
-            $property->setAccessible(true);
             $value = $property->getValue($instance);
 
             if (is_null($value)) {

@@ -6,3 +6,5 @@ composer.lock
 coverage.xml
 /build/
 .php-cs-fixer.cache
+/infection.log
+/infection-summary.log

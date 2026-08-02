@@ -98,7 +98,7 @@ class Response
 
     public function getCode(): int
     {
-        return $this->getInfo()['http_code'] ?? $this->getResponse()->getStatusCode() ?? 0;
+        return $this->getInfo()['http_code'] ?? $this->getResponse()->getStatusCode();
     }
 
     public function getRequestParams(): string

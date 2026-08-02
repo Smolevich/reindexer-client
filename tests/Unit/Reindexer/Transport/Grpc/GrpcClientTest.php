@@ -854,6 +854,178 @@ class GrpcClientTest extends TestCase
         $this->client->createDatabase('db');
     }
 
+    public function testConnectPassesExplicitOptionsInstance(): void
+    {
+        $options = new \Reindexer\Grpc\ConnectOptions();
+        $options->setExpectedClusterID(7);
+
+        $captured = null;
+        $this->stub->method('Connect')
+            ->willReturnCallback(function (ConnectRequest $request) use (&$captured) {
+                $captured = $request;
+
+                return $this->unaryCall($this->okError());
+            });
+
+        $this->client->connect('mydb', null, '', '', $options);
+
+        $this->assertSame($options, $captured->getConnectOpts());
+        $this->assertSame(7, $captured->getConnectOpts()->getExpectedClusterID());
+    }
+
+    public function testEnumNamespacesDefaultsToClosedExcludedAndEmptyFilter(): void
+    {
+        $this->connectClient();
+        $captured = null;
+        $this->stub->method('EnumNamespaces')
+            ->willReturnCallback(function ($request) use (&$captured) {
+                $captured = $request;
+
+                return $this->unaryCall(new EnumNamespacesResponse());
+            });
+
+        $this->client->enumNamespaces();
+
+        $this->assertSame('', $captured->getOptions()->getFilter());
+        $this->assertFalse($captured->getOptions()->getWithClosed());
+    }
+
+    public function testEnumNamespacesPropagatesServerError(): void
+    {
+        $this->connectClient();
+        $response = new EnumNamespacesResponse();
+        $response->setErrorResponse($this->failedError(ErrorCode::errCodeForbidden, 'denied'));
+        $this->stub->method('EnumNamespaces')->willReturn($this->unaryCall($response));
+
+        $this->expectException(GrpcException::class);
+        $this->expectExceptionCode(ErrorCode::errCodeForbidden);
+        $this->client->enumNamespaces();
+    }
+
+    /**
+     * Every unary RPC must map a server ErrorResponse to a GrpcException.
+     */
+    #[DataProvider('unaryErrorProvider')]
+    public function testUnaryRpcErrorMapping(string $stubMethod, callable $invoker): void
+    {
+        $this->connectClient();
+        $this->stub->method($stubMethod)->willReturn(
+            $this->unaryCall($this->failedError(ErrorCode::errCodeLogic, 'server said no'))
+        );
+
+        $this->expectException(GrpcException::class);
+        $this->expectExceptionMessage('Reindexer gRPC error 4: server said no');
+        $invoker($this->client);
+    }
+
+    public static function unaryErrorProvider(): array
+    {
+        return [
+            'createDatabase' => ['CreateDatabase', static fn (GrpcClient $c) => $c->createDatabase('db')],
+            'openNamespace' => ['OpenNamespace', static fn (GrpcClient $c) => $c->openNamespace('ns')],
+            'closeNamespace' => ['CloseNamespace', static fn (GrpcClient $c) => $c->closeNamespace('ns')],
+            'dropNamespace' => ['DropNamespace', static fn (GrpcClient $c) => $c->dropNamespace('ns')],
+            'truncateNamespace' => ['TruncateNamespace', static fn (GrpcClient $c) => $c->truncateNamespace('ns')],
+            'addIndex' => ['AddIndex', static fn (GrpcClient $c) => $c->addIndex('ns', ['name' => 'i'])],
+            'updateIndex' => ['UpdateIndex', static fn (GrpcClient $c) => $c->updateIndex('ns', ['name' => 'i'])],
+            'dropIndex' => ['DropIndex', static fn (GrpcClient $c) => $c->dropIndex('ns', ['name' => 'i'])],
+            'commitTransaction' => ['CommitTransaction', static fn (GrpcClient $c) => $c->commitTransaction(1)],
+            'rollbackTransaction' => ['RollbackTransaction', static fn (GrpcClient $c) => $c->rollbackTransaction(1)],
+        ];
+    }
+
+    public function testModifyItemsSignalsEndOfWrites(): void
+    {
+        $this->connectClient();
+        $written = [];
+        $call = $this->bidiCall($written);
+        $call->expects($this->once())->method('writesDone');
+        $this->stub->method('ModifyItem')->willReturn($call);
+
+        $this->client->modifyItems('items', [['id' => 1]]);
+    }
+
+    public function testAddTxItemsSignalsEndOfWrites(): void
+    {
+        $this->connectClient();
+        $written = [];
+        $call = $this->bidiCall($written);
+        $call->expects($this->once())->method('writesDone');
+        $this->stub->method('AddTxItem')->willReturn($call);
+
+        $this->client->addTxItems(1, [['id' => 1]]);
+    }
+
+    public function testAddTxItemsThrowsOnServerError(): void
+    {
+        $this->connectClient();
+        $written = [];
+        $this->stub->method('AddTxItem')->willReturn(
+            $this->bidiCall($written, [$this->failedError(ErrorCode::errCodeBadTransaction, 'bad tx')])
+        );
+
+        $this->expectException(GrpcException::class);
+        $this->expectExceptionMessage('Reindexer gRPC error 15: bad tx');
+        $this->client->addTxItems(1, [['id' => 1]]);
+    }
+
+    public function testAddTxItemsChecksTransportStatus(): void
+    {
+        $this->connectClient();
+        $written = [];
+        $this->stub->method('AddTxItem')->willReturn(
+            $this->bidiCall($written, [], (object) ['code' => 13, 'details' => 'internal'])
+        );
+
+        $this->expectException(GrpcException::class);
+        $this->expectExceptionMessage('gRPC call failed with status 13: internal');
+        $this->client->addTxItems(1, [['id' => 1]]);
+    }
+
+    public function testDecodeHandlesJsonNestedExactlyAtDepthLimit(): void
+    {
+        // depth 512 is the exact json_decode limit used by the client
+        $payload = str_repeat('[', 511) . '1' . str_repeat(']', 511);
+        $this->connectClient();
+        $this->stub->method('ExecSql')->willReturn($this->streamingCall([
+            $this->queryResult($payload),
+        ]));
+
+        $items = iterator_to_array($this->client->execSql('SELECT 1'), false);
+
+        $this->assertCount(1, $items);
+    }
+
+    public function testDecodeRejectsJsonBeyondDepthLimit(): void
+    {
+        $payload = str_repeat('[', 512) . '1' . str_repeat(']', 512);
+        $this->connectClient();
+        $this->stub->method('ExecSql')->willReturn($this->streamingCall([
+            $this->queryResult($payload),
+        ]));
+
+        try {
+            iterator_to_array($this->client->execSql('SELECT 1'), false);
+            $this->fail('Expected GrpcException');
+        } catch (GrpcException $e) {
+            $this->assertStringContainsString('Failed to decode JSON query results', $e->getMessage());
+            $this->assertSame(0, $e->getCode());
+            $this->assertInstanceOf(\JsonException::class, $e->getPrevious());
+        }
+    }
+
+    public function testStatusCodeIsComparedNumerically(): void
+    {
+        // the grpc extension may expose status->code loosely typed;
+        // a string "0" must still be treated as OK
+        $this->stub->method('CreateDatabase')->willReturn(
+            $this->unaryCall($this->okError(), (object) ['code' => '0', 'details' => ''])
+        );
+
+        $this->client->createDatabase('db');
+        $this->addToAssertionCount(1);
+    }
+
     #[DataProvider('guardedMethodProvider')]
     public function testRpcMethodsRequireConnect(callable $invoker): void
     {

@@ -14,7 +14,8 @@
         "friendsofphp/php-cs-fixer": "^3.64",
         "php-coveralls/php-coveralls": "^2.7",
         "grpc/grpc": "^1.57",
-        "google/protobuf": "^4.26 || ^5.0"
+        "google/protobuf": "^4.26 || ^5.0",
+        "infection/infection": "^0.34.1"
     },
     "suggest": {
         "ext-grpc": "Required for the gRPC transport (install via pecl/pie, >= 1.42)",
@@ -45,5 +46,10 @@
         "proto-gen": "protoc --proto_path=proto --php_out=src/Grpc/Generated --grpc_out=src/Grpc/Generated --plugin=protoc-gen-grpc=$(which grpc_php_plugin) proto/reindexer.proto",
         "style-fix": "php-cs-fixer fix",
         "check-fix": "php-cs-fixer fix --dry-run"
+    },
+    "config": {
+        "allow-plugins": {
+            "infection/extension-installer": true
+        }
     }
 }

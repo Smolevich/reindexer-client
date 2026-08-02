@@ -30,7 +30,8 @@ jobs:
     - name: Show php and composer version
       run: php -v && composer -V
     - name: Assert grpc extension is NOT loaded
-      run: php -r 'exit(extension_loaded("grpc") ? 1 : 0);'
+      run: |
+        php -r 'exit(extension_loaded("grpc") ? 1 : 0);'
     - name: Install dependencies
       run: composer install --prefer-dist --no-interaction --no-progress
     - name: Run Unit suite
@@ -74,7 +75,8 @@ jobs:
         tools: composer
         coverage: none
     - name: Assert grpc extension IS loaded
-      run: php -r 'exit(extension_loaded("grpc") ? 0 : 1);'
+      run: |
+        php -r 'exit(extension_loaded("grpc") ? 0 : 1);'
     - name: Install dependencies
       run: composer install --prefer-dist --no-interaction --no-progress
     - name: Run Unit suite (with ext-grpc present)

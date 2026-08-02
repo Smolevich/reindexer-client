@@ -33,7 +33,7 @@ try {
         echo sprintf('Database %s successfully created.' . PHP_EOL, $databaseName);
     }
 
-    if (!array_search($namespaceName, array_column($existNamespaces, 'name'))) {
+    if (!in_array($namespaceName, array_column($existNamespaces, 'name'), true)) {
         $indexId = new IndexEntity();
         $indexId->setCollateMode(CollateMode::NONE)
             ->setName('id')

@@ -9,7 +9,6 @@ use Reindexer\Entities\Index;
 use Reindexer\Enum\CollateMode;
 use Reindexer\Enum\FieldType;
 use Reindexer\Enum\IndexType;
-use Reindexer\Response;
 use Reindexer\Services\Database;
 use Reindexer\Services\Index as ReindexerIndex;
 use Reindexer\Services\Item;
@@ -35,7 +34,7 @@ class ServiceTest extends BaseTest
     {
         $host = getenv('REINDEXER_HOST');
         $this->config = [
-            'host' => $host
+            'host' => $host,
         ];
         $this->api = new Api($this->config['host']);
         $this->dbService = new Database($this->api);
@@ -63,7 +62,7 @@ class ServiceTest extends BaseTest
             [
                 'success' => true,
                 'response_code' => 200,
-                'description' => ''
+                'description' => '',
             ],
             $response->getDecodedResponseBody(true)
         );
@@ -137,7 +136,6 @@ class ServiceTest extends BaseTest
         $this->assertEquals(3, count($response->getDecodedResponseBody()->items));
     }
 
-
     public function testAddHeaders()
     {
         $headers = ['User-Agent' => 'reindexer-php-client'];
@@ -147,7 +145,7 @@ class ServiceTest extends BaseTest
             [
                 'success' => true,
                 'response_code' => 200,
-                'description' => ''
+                'description' => '',
             ],
             $response->getDecodedResponseBody(true)
         );
@@ -168,7 +166,7 @@ class ServiceTest extends BaseTest
             [
                 'success' => true,
                 'response_code' => 200,
-                'description' => ''
+                'description' => '',
             ],
             $response->getDecodedResponseBody(true)
         );
@@ -183,17 +181,17 @@ class ServiceTest extends BaseTest
     public function testSchema()
     {
         $config = [
-            'type' =>  'namespaces',
+            'type' => 'namespaces',
             'namespaces' => [
-                'wal_size' => 5000000
-            ]
+                'wal_size' => 5000000,
+            ],
         ];
         $response = $this->nsService->schema($this->namespaceName, $config);
         $this->assertSame(
             [
                 'success' => true,
                 'response_code' => 200,
-                'description' => ''
+                'description' => '',
             ],
             $response->getDecodedResponseBody(true)
         );
@@ -206,8 +204,8 @@ class ServiceTest extends BaseTest
             'replication' => [
                 'role' => 'master',
                 'cluster_id' => 2,
-                'server_id' =>  0
-            ]
+                'server_id' => 0,
+            ],
         ];
         $this->itemService->setNamespace(urlencode('#config'));
         $response = $this->itemService->update($config);

@@ -13,7 +13,7 @@ abstract class BaseService
     protected array $mapJsonFields = [];
 
     protected array $defaultHeaders = [
-        'Content-Type' => 'application/json;charset=utf-8'
+        'Content-Type' => 'application/json;charset=utf-8',
     ];
 
     public function __construct(BaseApi $client)

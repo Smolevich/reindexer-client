@@ -23,10 +23,10 @@ class Index extends Entity
 
     protected array $mapJsonFields = [
         'name' => 'name',
-        'jsonPaths'  => 'json_paths',
-        'fieldType'  => 'field_type',
+        'jsonPaths' => 'json_paths',
+        'fieldType' => 'field_type',
         'indexType' => 'index_type',
-        'isPk'  => 'is_pk',
+        'isPk' => 'is_pk',
         'isArray' => 'is_array',
         'isDense' => 'is_dense',
         'isAppendable' => 'is_appendable',

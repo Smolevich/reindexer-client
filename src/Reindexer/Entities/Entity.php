@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Reindexer\Entities;
 
-use \ReflectionProperty;
+use ReflectionProperty;
 
 abstract class Entity
 {

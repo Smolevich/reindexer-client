@@ -15,9 +15,9 @@ class HabrPost
             'hubs' => [
                 'Information Security',
                 'Web services monetization',
-                'Content-marketing'
+                'Content-marketing',
             ],
-            'rating' => 622
+            'rating' => 622,
         ],
         [
             'link' => 'https://habr.com/en/post/454078/',
@@ -29,7 +29,7 @@ class HabrPost
                 'Information Security',
                 'Cellular communication',
             ],
-            'rating' => 480
+            'rating' => 480,
         ],
         [
             'link' => 'https://habr.com/en/post/451898/',
@@ -39,9 +39,9 @@ class HabrPost
             'hubs' => [
                 'Start-up development',
                 'Legislation in IT',
-                'IT career'
+                'IT career',
             ],
-            'rating' => 447
+            'rating' => 447,
         ],
         [
             'link' => 'https://habr.com/en/post/438514/',
@@ -50,9 +50,9 @@ class HabrPost
             'hubs' => [
                 'Information Security',
                 'IT-companies',
-                'IT career'
+                'IT career',
             ],
-            'rating' => 443
-        ]
+            'rating' => 443,
+        ],
     ];
 }

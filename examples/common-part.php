@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Reindexer\Client\Api;
 use Reindexer\LoggerInterface;
 use Reindexer\Response;
@@ -30,11 +32,11 @@ class ApiLogger implements LoggerInterface
     public function logResponse(Response $response): void
     {
         echo sprintf(
-            '==== api request info ===='.PHP_EOL.
-            'Content-Type: %s'.PHP_EOL.
-            'Date: %s'.PHP_EOL.
-            'Http_code: %s'.PHP_EOL.
-            'Url: %s'.PHP_EOL,
+            '==== api request info ====' . PHP_EOL .
+            'Content-Type: %s' . PHP_EOL .
+            'Date: %s' . PHP_EOL .
+            'Http_code: %s' . PHP_EOL .
+            'Url: %s' . PHP_EOL,
             $response->getResponseHeaders()['Content-Type'][0] ?? '',
             $response->getResponseHeaders()['Date'][0] ?? '',
             $response->getCode(),

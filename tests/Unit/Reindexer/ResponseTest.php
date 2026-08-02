@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Unit\Reindexer;
 
 use GuzzleHttp\Psr7\Request;
-use PHPUnit\Framework\Attributes\DataProvider;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Reindexer\Response;
 
 class ResponseTest extends BaseTest
@@ -18,7 +18,7 @@ class ResponseTest extends BaseTest
         $this->response = new Response();
         $this->info = [
             'http_code' => 200,
-            'content_type' => 'application/json; charset=utf-8'
+            'content_type' => 'application/json; charset=utf-8',
         ];
     }
 
@@ -65,8 +65,8 @@ class ResponseTest extends BaseTest
                 new Request('GET', 'api/v1/db'),
                 new GuzzleResponse(200, [], '{"items": []}'),
                 [
-                    "items" => []
-                ]
+                    'items' => [],
+                ],
             ],
             [
                 new Request(
@@ -79,9 +79,9 @@ class ResponseTest extends BaseTest
                 [
                     'success' => true,
                     'response_code' => 200,
-                    'description' => ''
-                ]
-            ]
+                    'description' => '',
+                ],
+            ],
         ];
     }
 }

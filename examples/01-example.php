@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/common-part.php';
 
@@ -28,7 +30,7 @@ try {
 
     if (!in_array($databaseName, $existDatabases)) {
         $response = $dbService->create($databaseName);
-        echo sprintf('Database %s successfully created.'.PHP_EOL, $databaseName);
+        echo sprintf('Database %s successfully created.' . PHP_EOL, $databaseName);
     }
 
     if (!array_search($namespaceName, array_column($existNamespaces, 'name'))) {

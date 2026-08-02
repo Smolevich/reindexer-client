@@ -32,7 +32,7 @@ class Namespaces extends BaseService
         );
 
         if (!empty($sortOrder)) {
-            $uri .= '?sort_order='. $sortOrder;
+            $uri .= '?sort_order=' . $sortOrder;
         }
 
         return $this->client->request(
@@ -48,9 +48,9 @@ class Namespaces extends BaseService
         $body = [
             'name' => $name,
             'storage' => [
-                'enabled' => true
+                'enabled' => true,
             ],
-            'indexes' => []
+            'indexes' => [],
         ];
 
         foreach ($indexes as $index) {

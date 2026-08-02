@@ -16,7 +16,7 @@ class Database extends BaseService
             'POST',
             $uri,
             json_encode([
-                'name' => $name
+                'name' => $name,
             ]),
             $this->defaultHeaders
         );

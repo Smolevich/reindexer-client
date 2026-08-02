@@ -8,3 +8,6 @@ coverage.xml
 .php-cs-fixer.cache
 /infection.log
 /infection-summary.log
+/benchmarks/data/*
+!/benchmarks/data/sample-100.ndjson
+/.phpbench/

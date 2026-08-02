@@ -36,7 +36,7 @@ class Database extends BaseService
 
     public function drop(string $name): Response
     {
-        $uri = sprintf('/api/%s/db/%s', $this->version, $name);
+        $uri = sprintf('/api/%s/db/%s', $this->version, $this->encodePathSegment($name));
         return $this->client->request(
             'DELETE',
             $uri,

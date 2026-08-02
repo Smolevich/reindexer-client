@@ -37,8 +37,8 @@ class Item extends BaseService
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
-            $this->getDatabase(),
-            $this->getNamespace()
+            $this->encodePathSegment($this->getDatabase()),
+            $this->encodePathSegment($this->getNamespace())
         );
 
         return $this->client->request(
@@ -54,8 +54,8 @@ class Item extends BaseService
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
-            $this->getDatabase(),
-            $this->getNamespace()
+            $this->encodePathSegment($this->getDatabase()),
+            $this->encodePathSegment($this->getNamespace())
         );
 
         return $this->client->request(
@@ -71,8 +71,8 @@ class Item extends BaseService
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
-            $this->getDatabase(),
-            $this->getNamespace()
+            $this->encodePathSegment($this->getDatabase()),
+            $this->encodePathSegment($this->getNamespace())
         );
 
         return $this->client->request(
@@ -88,8 +88,8 @@ class Item extends BaseService
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
             $this->version,
-            $this->getDatabase(),
-            $this->getNamespace()
+            $this->encodePathSegment($this->getDatabase()),
+            $this->encodePathSegment($this->getNamespace())
         );
         $params = [];
 

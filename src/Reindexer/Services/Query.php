@@ -23,7 +23,7 @@ class Query extends BaseService
 
     public function createByHttpGet(string $query): Response
     {
-        $uri = sprintf('/api/%s/db/%s/query?q=%s', $this->version, $this->getDatabase(), urlencode($query));
+        $uri = sprintf('/api/%s/db/%s/query?q=%s', $this->version, $this->encodePathSegment($this->getDatabase()), urlencode($query));
 
         return $this->client->request(
             'GET',
@@ -35,7 +35,7 @@ class Query extends BaseService
 
     public function createSqlQueryByHttpPost(string $query): Response
     {
-        $uri = sprintf('/api/%s/db/%s/sqlquery', $this->version, $this->getDatabase());
+        $uri = sprintf('/api/%s/db/%s/sqlquery', $this->version, $this->encodePathSegment($this->getDatabase()));
 
         return $this->client->request(
             'POST',
@@ -50,7 +50,7 @@ class Query extends BaseService
      */
     public function createSdlQueryByHttpPost(array|string $query): Response
     {
-        $uri = sprintf('/api/%s/db/%s/query', $this->version, $this->getDatabase());
+        $uri = sprintf('/api/%s/db/%s/query', $this->version, $this->encodePathSegment($this->getDatabase()));
 
         return $this->client->request(
             'POST',

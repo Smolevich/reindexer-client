@@ -28,7 +28,7 @@ class Namespaces extends BaseService
         $uri = sprintf(
             '/api/%s/db/%s/namespaces',
             $this->version,
-            $this->getDatabase()
+            $this->encodePathSegment($this->getDatabase())
         );
 
         if (!empty($sortOrder)) {
@@ -61,7 +61,7 @@ class Namespaces extends BaseService
         $uri = sprintf(
             '/api/%s/db/%s/namespaces',
             $this->version,
-            $this->getDatabase()
+            $this->encodePathSegment($this->getDatabase())
         );
 
         return $this->client->request(
@@ -77,8 +77,8 @@ class Namespaces extends BaseService
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s',
             $this->version,
-            $this->getDatabase(),
-            $name
+            $this->encodePathSegment($this->getDatabase()),
+            $this->encodePathSegment($name)
         );
 
         return $this->client->request(
@@ -94,8 +94,8 @@ class Namespaces extends BaseService
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s',
             $this->version,
-            $this->getDatabase(),
-            $name
+            $this->encodePathSegment($this->getDatabase()),
+            $this->encodePathSegment($name)
         );
 
         return $this->client->request(
@@ -111,8 +111,8 @@ class Namespaces extends BaseService
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/truncate',
             $this->version,
-            $this->getDatabase(),
-            $name
+            $this->encodePathSegment($this->getDatabase()),
+            $this->encodePathSegment($name)
         );
 
         return $this->client->request(
@@ -128,9 +128,9 @@ class Namespaces extends BaseService
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/rename/%s',
             $this->version,
-            $this->getDatabase(),
-            $oldName,
-            $newName
+            $this->encodePathSegment($this->getDatabase()),
+            $this->encodePathSegment($oldName),
+            $this->encodePathSegment($newName)
         );
 
         return $this->client->request(
@@ -152,8 +152,8 @@ class Namespaces extends BaseService
             sprintf(
                 '/api/%s/db/%s/namespaces/%s/metalist',
                 $this->version,
-                $this->getDatabase(),
-                $name
+                $this->encodePathSegment($this->getDatabase()),
+                $this->encodePathSegment($name)
             )
         );
         $params = [];
@@ -190,8 +190,8 @@ class Namespaces extends BaseService
             sprintf(
                 '/api/%s/db/%s/namespaces/%s/metabykey',
                 $this->version,
-                $this->getDatabase(),
-                $name
+                $this->encodePathSegment($this->getDatabase()),
+                $this->encodePathSegment($name)
             )
         );
 
@@ -209,9 +209,9 @@ class Namespaces extends BaseService
             sprintf(
                 '/api/%s/db/%s/namespaces/%s/metabykey/%s',
                 $this->version,
-                $this->getDatabase(),
-                $name,
-                $key
+                $this->encodePathSegment($this->getDatabase()),
+                $this->encodePathSegment($name),
+                $this->encodePathSegment($key)
             )
         );
 
@@ -229,8 +229,8 @@ class Namespaces extends BaseService
             sprintf(
                 '/api/%s/db/%s/namespaces/%s/schema',
                 $this->version,
-                $this->getDatabase(),
-                $name
+                $this->encodePathSegment($this->getDatabase()),
+                $this->encodePathSegment($name)
             )
         );
 

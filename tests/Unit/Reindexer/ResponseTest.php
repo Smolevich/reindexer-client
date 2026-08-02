@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Reindexer;
 
 use GuzzleHttp\Psr7\Request;
+use PHPUnit\Framework\Attributes\DataProvider;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Reindexer\Response;
 
@@ -21,9 +22,7 @@ class ResponseTest extends BaseTest
         ];
     }
 
-    /**
-     * @dataProvider responseProvider
-     */
+    #[DataProvider('responseProvider')]
     public function testGetResponseBody($request, $response, $decodedData)
     {
         $this->response->setRequest($request)
@@ -48,10 +47,8 @@ class ResponseTest extends BaseTest
         $this->assertEquals($this->info['http_code'], $this->response->getCode());
     }
 
-    /**
-     * @dataProvider responseProvider
-     */
-    public function testGetRequestHeaders($request, $response)
+    #[DataProvider('responseProvider')]
+    public function testGetRequestHeaders($request, $response, $decodedData)
     {
         $this->response->setRequest($request)
             ->setResponse($response);
@@ -61,7 +58,7 @@ class ResponseTest extends BaseTest
         );
     }
 
-    public function responseProvider()
+    public static function responseProvider(): array
     {
         return [
             [

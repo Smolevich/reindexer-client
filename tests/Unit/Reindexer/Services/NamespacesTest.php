@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Reindexer\Services;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Reindexer\Client\Api;
 use Reindexer\Services\Namespaces;
 use Tests\Unit\Reindexer\BaseTest;
 
+#[CoversClass(Namespaces::class)]
 class NamespacesTest extends BaseTest
 {
     private MockObject $api;
@@ -46,9 +48,6 @@ class NamespacesTest extends BaseTest
         $this->assertEquals(json_encode($responseData), $actual->getResponseBody());
     }
 
-    /**
-     * @covers \Reindexer\Services\Namespaces
-     */
     public function testGet()
     {
         $responseData = [

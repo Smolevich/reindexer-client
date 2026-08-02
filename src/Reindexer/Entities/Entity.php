@@ -1,17 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reindexer\Entities;
 
 use \ReflectionProperty;
 
 abstract class Entity
 {
+    protected array $mapJsonFields = [];
+
     public function getBody(): array
     {
         return $this->parseValue($this);
     }
 
-    protected function parseValue($instance): array
+    protected function parseValue(object $instance): array
     {
         $result = [];
         $reflectionClass = new \ReflectionClass($instance);

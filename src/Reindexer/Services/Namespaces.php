@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reindexer\Services;
 
 use GuzzleHttp\Psr7\Uri;
@@ -154,6 +156,7 @@ class Namespaces extends BaseService
                 $name
             )
         );
+        $params = [];
 
         if ($limit) {
             $params['limit'] = $limit;

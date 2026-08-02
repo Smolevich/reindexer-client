@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reindexer;
 
 use Reindexer\Client\BaseApi;
@@ -8,9 +10,9 @@ abstract class BaseService
 {
     protected BaseApi $client;
     protected string $version = 'v1';
-    protected $mapJsonFields = [];
+    protected array $mapJsonFields = [];
 
-    protected $defaultHeaders = [
+    protected array $defaultHeaders = [
         'Content-Type' => 'application/json;charset=utf-8'
     ];
 

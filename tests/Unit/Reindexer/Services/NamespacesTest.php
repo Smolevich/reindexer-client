@@ -1,15 +1,18 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Tests\Unit\Reindexer\Services;
 
+use PHPUnit\Framework\MockObject\MockObject;
+use Reindexer\Client\Api;
 use Reindexer\Services\Namespaces;
 use Tests\Unit\Reindexer\BaseTest;
 
 class NamespacesTest extends BaseTest
 {
-    /**
-     * @var Namespaces
-     */
-    private $service;
+    private MockObject $api;
+    private Namespaces $service;
 
     public function setUp(): void
     {

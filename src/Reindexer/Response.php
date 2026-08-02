@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reindexer;
 
 use GuzzleHttp\Psr7\Request;
@@ -8,11 +10,11 @@ use Psr\Http\Message\StreamInterface;
 
 class Response
 {
-    protected $response;
-    protected $responseContents = '';
-    protected $request;
-    protected $info;
-    protected $error;
+    protected ?ResponseInterface $response = null;
+    protected string $responseContents = '';
+    protected ?Request $request = null;
+    protected ?array $info = null;
+    protected ?string $error = null;
 
     public function setRequest(Request $request): self
     {
@@ -33,7 +35,7 @@ class Response
         return $this;
     }
 
-    public function getResponse() : ResponseInterface
+    public function getResponse(): ResponseInterface
     {
         return $this->response;
     }
@@ -50,7 +52,7 @@ class Response
 
     public function getInfo(): array
     {
-        return $this->info;
+        return $this->info ?? [];
     }
 
     public function setInfo(array $info): self

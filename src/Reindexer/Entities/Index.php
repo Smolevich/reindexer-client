@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reindexer\Entities;
 
 use Reindexer\Enum\CollateMode;
@@ -8,18 +10,18 @@ use Reindexer\Enum\IndexType;
 
 class Index extends Entity
 {
-    private $name;
-    private $jsonPaths;
-    private $fieldType;
-    private $indexType;
-    private $isPk = false;
-    private $isArray = false;
-    private $isDense = false;
-    private $isAppendable = false;
-    private $collateMode = CollateMode::NONE;
-    private $sortOrderLetters;
+    private ?string $name = null;
+    private ?array $jsonPaths = null;
+    private ?FieldType $fieldType = null;
+    private ?IndexType $indexType = null;
+    private bool $isPk = false;
+    private bool $isArray = false;
+    private bool $isDense = false;
+    private bool $isAppendable = false;
+    private CollateMode $collateMode = CollateMode::NONE;
+    private ?string $sortOrderLetters = null;
 
-    protected $mapJsonFields = [
+    protected array $mapJsonFields = [
         'name' => 'name',
         'jsonPaths'  => 'json_paths',
         'fieldType'  => 'field_type',
@@ -32,12 +34,12 @@ class Index extends Entity
         'sortOrderLetters' => 'sort_order_letters',
     ];
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(string $name)
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -68,12 +70,12 @@ class Index extends Entity
         return $this;
     }
 
-    public function isPk()
+    public function isPk(): bool
     {
         return $this->isPk;
     }
 
-    public function setIsPk(bool $isPk)
+    public function setIsPk(bool $isPk): self
     {
         $this->isPk = $isPk;
 
@@ -130,7 +132,7 @@ class Index extends Entity
 
     public function getSortOrderLetters(): string
     {
-        return $this->sortOrderLetters;
+        return $this->sortOrderLetters ?? '';
     }
 
     public function setSortOrderLetters(string $sortOrderLetters): self

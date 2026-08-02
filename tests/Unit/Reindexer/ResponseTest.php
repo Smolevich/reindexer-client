@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Reindexer;
 
 use GuzzleHttp\Psr7\Request;
@@ -8,6 +10,8 @@ use Reindexer\Response;
 
 class ResponseTest extends BaseTest
 {
+    private Response $response;
+    private array $info;
     public function setUp(): void
     {
         $this->response = new Response();

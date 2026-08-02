@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Reindexer\Indexes;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Reindexer\Client\Api;
 use Reindexer\Entities\Index;
 use Reindexer\Enum\CollateMode;
@@ -11,8 +14,8 @@ use Tests\Unit\Reindexer\BaseTest;
 
 class IndexTest extends BaseTest
 {
-    protected $index;
-    protected $client;
+    protected Index $index;
+    protected Api&MockObject $client;
 
     public function setUp(): void
     {

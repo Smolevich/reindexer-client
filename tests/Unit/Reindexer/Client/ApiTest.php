@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Reindexer\Client;
 
 use GuzzleHttp\Client;
@@ -9,6 +11,8 @@ use Tests\Unit\Reindexer\BaseTest;
 
 class ApiTest extends BaseTest
 {
+    private array $config;
+    private Api $api;
     public function setUp(): void
     {
         $this->config = [

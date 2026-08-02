@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Reindexer;
 
 use Reindexer\Client\Api;
@@ -18,6 +20,8 @@ use Tests\Unit\Reindexer\BaseTest;
 
 class ServiceTest extends BaseTest
 {
+    private array $config;
+    private Api $api;
     private string $namespaceName = 'unittests_ns';
     private string $database = 'unittests';
     private Namespaces $nsService;

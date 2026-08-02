@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reindexer\Services;
 
 use Reindexer\BaseService;
+use Reindexer\Response;
 
 class Item extends BaseService
 {
@@ -29,7 +32,7 @@ class Item extends BaseService
         $this->namespace = $namespace;
     }
 
-    public function add(array $data = [])
+    public function add(array $data = []): Response
     {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
@@ -46,7 +49,7 @@ class Item extends BaseService
         );
     }
 
-    public function update(array $data = [])
+    public function update(array $data = []): Response
     {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
@@ -63,7 +66,7 @@ class Item extends BaseService
         );
     }
 
-    public function delete(array $data = [])
+    public function delete(array $data = []): Response
     {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
@@ -80,7 +83,7 @@ class Item extends BaseService
         );
     }
 
-    public function get(int $limit = 0, int $offset = 0, string $sortField = '', string $sortOrder = '')
+    public function get(int $limit = 0, int $offset = 0, string $sortField = '', string $sortOrder = ''): Response
     {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',

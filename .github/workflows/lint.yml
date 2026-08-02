@@ -7,6 +7,10 @@ on:
   pull_request:
 
 jobs:
+  # Style checks run on a single pinned PHP on purpose: php-cs-fixer output
+  # does not depend on the runtime version, so a matrix would only multiply
+  # CI minutes (Guzzle and Symfony pin their static checks the same way).
+  # Runtime compatibility with PHP 8.2-8.5 is covered by the tests workflow.
   php-cs-fixer:
     runs-on: ubuntu-latest
     steps:

@@ -1,0 +1,78 @@
+# Native (host-arch) Reindexer server built from source.
+#
+# Why this exists: the official reindexer/reindexer image is published for
+# amd64 only, so on arm64 hosts (Apple Silicon) it runs under qemu/Rosetta
+# emulation while every other engine in the comparison
+# (docs/benchmarks-engines.md) ships a native arm64 image. This Dockerfile
+# builds the exact same v5.15.0 tag natively for the build host's
+# architecture:
+#
+#   docker build -f benchmarks/engines/Dockerfile.reindexer-arm64 \
+#       -t reindexer-native:v5.15.0 .
+#
+# Deliberate deviations from the official Alpine image (see
+# cpp_src/cmd/reindexer_server/contrib/Dockerfile in the reindexer repo):
+#   - ENABLE_GRPC stays OFF (its default): the benchmarks only use HTTP and
+#     cproto, and skipping gRPC drops the grpc/protobuf toolchain from the
+#     build entirely.
+#   - BUILD_ANN_INDEXES=builtin: no ANN/vector indexes in the bench schema,
+#     and "all" (the default) would pull in FAISS + OpenBLAS, which the
+#     official image builds from source at NEHALEM-era x86 tuning anyway.
+#     ("none" does not compile at v5.15.0 — core select code references
+#     KnnRawResult unconditionally.)
+#   - LINK_RESOURCES=OFF: no embedded web face; the server is queried over
+#     the REST API only.
+#   - CMAKE_BUILD_TYPE=Release (official uses RelWithDebInfo, same -O level,
+#     minus debug info).
+# Kept for parity: tcmalloc (gperftools) and libunwind, which the official
+# image links and which affect allocator performance.
+
+FROM debian:trixie-slim AS build
+
+# g++-13 instead of trixie's default g++-14: Debian's gcc 14.2.0 hits a
+# reproducible internal compiler error (segfault) on reindexer's
+# cpp_src/tools/errors.h; gcc 13 compiles the tree fine.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        g++-13 make cmake git ca-certificates \
+        libsnappy-dev libleveldb-dev libunwind-dev libgoogle-perftools-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 --branch v5.15.0 https://github.com/Restream/reindexer /src
+
+# Single source patch: the aarch64 crash-backtrace helper calls the clang-only
+# __builtin_ptrauth_strip builtin, which gcc does not provide. Pointer
+# authentication is not enabled on plain Linux aarch64 builds, so stripping the
+# PAC bits is a no-op there; substitute the raw pointer. Cold debug-only code
+# path — no effect on query performance.
+RUN sed -i \
+        's/__builtin_ptrauth_strip(reinterpret_cast<void\*>(ip), 0)/reinterpret_cast<void*>(ip)/' \
+        /src/cpp_src/debug/backtrace.cc
+
+WORKDIR /src/build
+
+RUN cmake .. \
+        -DCMAKE_C_COMPILER=gcc-13 \
+        -DCMAKE_CXX_COMPILER=g++-13 \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_ANN_INDEXES=builtin \
+        -DLINK_RESOURCES=OFF \
+        -DENABLE_OPENSSL=OFF \
+    && make -j"$(nproc)" reindexer_server \
+    && make install -C cpp_src/cmd/reindexer_server
+
+FROM debian:trixie-slim
+
+# Runtime uses the -dev packages: their names are stable across Debian
+# releases (the runtime lib packages get renamed by ABI transitions) and the
+# few extra headers cost nothing here.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libsnappy-dev libleveldb-dev libunwind-dev libgoogle-perftools-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=build /usr/local/bin/reindexer_server /usr/local/bin/reindexer_server
+
+VOLUME /data
+EXPOSE 9088 6534
+
+ENTRYPOINT ["reindexer_server", "--db", "/data", \
+            "--httpaddr", "0.0.0.0:9088", "--rpcaddr", "0.0.0.0:6534"]

@@ -18,9 +18,11 @@ described in detail in the [Dataset section of benchmarks.md](benchmarks.md#data
   warmed, benchmarked, measured for memory and shut down before the next one
   starts. Nothing else runs on the Docker VM (15.6 GiB) during a run, so the
   RSS numbers are directly comparable.
-- **Same session.** All numbers in this document — including the Reindexer
-  ones — were measured in a single session on 2026-08-02 on the same machine.
-  The Reindexer HTTP subjects were re-run, not copied from older tables.
+- **Same machine, same day.** The four-engine numbers were measured in a
+  single session on 2026-08-02 on the same machine; the Reindexer HTTP
+  subjects were re-run, not copied from older tables. The native-arm64
+  Reindexer column was measured in a follow-up session on the same day, same
+  machine and VM settings, with the engine again running alone.
 - **Official images, pinned versions** (see the table below and
   [`benchmarks/docker-compose-engines.yml`](../benchmarks/docker-compose-engines.yml)).
   Elasticsearch runs single-node with a capped 4 GiB heap
@@ -31,14 +33,29 @@ described in detail in the [Dataset section of benchmarks.md](benchmarks.md#data
 - **phpbench** for the latency scenarios (5 iterations, warmup 1; revs per
   subject in the tables). Bulk load is a one-shot operation timed by the
   loader scripts themselves.
-- **⚠️ Reindexer runs under CPU emulation, the other engines do not.**
-  The host is an arm64 Mac; `reindexer/reindexer:v5.15.0` is only published
-  for amd64 and runs under qemu/Rosetta emulation inside the Docker VM, while
-  `elasticsearch`, `typesense` and `getmeili/meilisearch` all ship native
-  arm64 images. **The three competitors therefore have a hardware advantage
-  in every table below. This is not corrected for or normalized away** — on
-  native hardware Reindexer's absolute numbers would be better than shown
-  here. Keep this in mind before reading any latency table.
+- **⚠️ Reindexer is measured twice: official image (emulated) and a native
+  build.** The host is an arm64 Mac; `reindexer/reindexer:v5.15.0` is only
+  published for amd64 and runs under qemu/Rosetta emulation inside the Docker
+  VM, while `elasticsearch`, `typesense` and `getmeili/meilisearch` all ship
+  native arm64 images. To remove that handicap the comparison also includes
+  the **same v5.15.0 tag built from source natively for arm64** — one
+  command:
+
+  ```bash
+  docker build -f benchmarks/engines/Dockerfile.reindexer-arm64 \
+      -t reindexer-native:v5.15.0 benchmarks/engines
+  ```
+
+  The build (see [`Dockerfile.reindexer-arm64`](../benchmarks/engines/Dockerfile.reindexer-arm64))
+  clones the upstream `v5.15.0` tag and compiles it with gcc 13 in Release
+  mode, **without gRPC** (the benchmarks only use HTTP; gRPC is off by
+  default upstream and skipping it drops the whole grpc/protobuf toolchain
+  from the build), without FAISS ANN indexes and without the web UI, while
+  keeping tcmalloc and libunwind for allocator parity with the official
+  image. ~3 min build on an M4 Pro. Both Reindexer columns are kept in every
+  table: the emulated one is what you actually get running the official
+  image on Apple Silicon, and the delta between the two is a direct measure
+  of the emulation tax.
 - **Document ids.** Real HF ids contain `/` and `.` (e.g.
   `google-bert/bert-base-uncased`). Meilisearch primary keys only allow
   `[a-zA-Z0-9_-]` and Typesense ids must be URL-safe, so those two engines get
@@ -57,7 +74,8 @@ described in detail in the [Dataset section of benchmarks.md](benchmarks.md#data
 |---|---|
 | Machine | Apple M4 Pro, 64 GB RAM, macOS (arm64) |
 | Docker | Docker Desktop 29.6.1; VM: 6 CPUs, **15.6 GiB RAM** |
-| Reindexer | reindexer/reindexer:v5.15.0 — **amd64, emulated** |
+| Reindexer (official image) | reindexer/reindexer:v5.15.0 — **amd64, emulated** |
+| Reindexer (native) | reindexer-native:v5.15.0 — **arm64, built from source** ([`Dockerfile.reindexer-arm64`](../benchmarks/engines/Dockerfile.reindexer-arm64): same v5.15.0 tag, gcc 13, Release, no gRPC) |
 | Elasticsearch | elasticsearch:9.4.4 — arm64 native, single node, 4 GiB heap |
 | Typesense | typesense/typesense:30.2 — arm64 native |
 | Meilisearch | getmeili/meilisearch:v1.51.0 — arm64 native |
@@ -98,14 +116,17 @@ query suite (client containers excluded).
 | Engine | Load time | Throughput | RSS empty | RSS after load | RSS after benches |
 |---|---|---|---|---|---|
 | Reindexer v5.15.0 *(emulated)* | 32.1 s + 28.9 s fulltext build | 92 100 rec/s | 28 MiB | 2.20 GiB (10.02 GiB after fulltext build) | 10.03 GiB |
+| Reindexer v5.15.0 *(native arm64, from source)* | **21.9 s** + 23.6 s fulltext build | **135 400 rec/s** | 18 MiB | 1.87 GiB (9.84 GiB after fulltext build) | 9.84 GiB |
 | Elasticsearch 9.4.4 | 55.5 s | 53 400 rec/s | 4.47 GiB (4 GiB heap preallocated) | 4.66 GiB | 4.70 GiB |
 | Typesense 30.2 | 122.8 s | 24 100 rec/s | 144 MiB | 1.79 GiB | 1.94 GiB |
 | Meilisearch v1.51.0 | 48.4 s | 61 100 rec/s | 42 MiB | 1.01 GiB | 1.02 GiB |
 
-Reindexer's HTTP bulk load is the fastest despite emulation (92K rec/s), but
+Reindexer's HTTP bulk load is the fastest even under emulation (92K rec/s)
+and pulls further ahead natively (135K rec/s — 1.47× the emulated rate), but
 its composite fulltext index is built lazily on the first fulltext query and
-costs another ~29 s and, above all, ~7.8 GiB of RAM — with the fulltext index
-built, Reindexer is by far the heaviest resident of the four. Elasticsearch's
+costs another ~24–29 s and, above all, ~7.8 GiB of RAM — with the fulltext
+index built, Reindexer is by far the heaviest resident of the four in either
+variant. Elasticsearch's
 RSS is dominated by its fixed 4 GiB heap: actual index data adds only
 ~200 MiB on top (index size on disk: 681 MB). All loads used batched bulk
 APIs: Reindexer 5000/batch (HTTP POST /items), Elasticsearch `_bulk`
@@ -118,21 +139,27 @@ succeeded, i.e. until the data is searchable).
 
 phpbench through the official PHP clients, 5 iterations per subject, warmup 1.
 Mean time per operation; mode in parentheses where it differs notably from
-the mean. **Reindexer is the only engine running under CPU emulation.**
+the mean. The *(emulated)* column is the official amd64 image under
+emulation; *(native)* is the same v5.15.0 built from source for arm64.
 
-| Scenario | revs×its | Reindexer *(emulated)* | Elasticsearch | Typesense | Meilisearch |
-|---|---|---|---|---|---|
-| Point lookup by id | 200×5 | **131 μs** | 377 μs | 183 μs | 164 μs |
-| Filter + sort (`downloads`/`pipeline_tag`, likes desc) | 50×5 | **425 μs** | 1.97 ms | 18.5 ms | 1.72 ms |
-| Array contains (`tags` = 'llama') | 50×5 | **395 μs** | 1.70 ms | 11.6 ms | 1.65 ms |
-| Date range (90 d) + sort | 50×5 | **337 μs** | 1.78 ms | 42.1 ms | 1.81 ms |
-| Fulltext 'bert'/'llama' | 50×5 | 506 μs (mode 394 μs, ±45%) | 2.14 ms | **322 μs** | 10.9 ms |
-| Facet `pipeline_tag`, filtered set | 10×5 | **390 μs** | 1.12 ms (mode 936 μs) | 686 μs | 1.28 ms |
+| Scenario | revs×its | Reindexer *(emulated)* | Reindexer *(native arm64, from source)* | Elasticsearch | Typesense | Meilisearch |
+|---|---|---|---|---|---|---|
+| Point lookup by id | 200×5 | 131 μs | **118 μs** | 377 μs | 183 μs | 164 μs |
+| Filter + sort (`downloads`/`pipeline_tag`, likes desc) | 50×5 | 425 μs | **367 μs** | 1.97 ms | 18.5 ms | 1.72 ms |
+| Array contains (`tags` = 'llama') | 50×5 | 395 μs | **363 μs** | 1.70 ms | 11.6 ms | 1.65 ms |
+| Date range (90 d) + sort | 50×5 | 337 μs | **287 μs** | 1.78 ms | 42.1 ms | 1.81 ms |
+| Fulltext 'bert'/'llama' | 50×5 | 506 μs (mode 394 μs, ±45%) | 363 μs (mode 345 μs, ±10%) | 2.14 ms | **322 μs** | 10.9 ms |
+| Facet `pipeline_tag`, filtered set | 10×5 | 390 μs | **304 μs** | 1.12 ms (mode 936 μs) | 686 μs | 1.28 ms |
 
 rstdev is ≤ ±5% for most Reindexer/Typesense/Meilisearch subjects; noisier
-outliers: Reindexer fulltext ±45% (the two alternating terms have different
-result-set sizes), Elasticsearch ±9–34% across subjects, Meilisearch fulltext
-±22%.
+outliers: emulated Reindexer fulltext ±45% (the two alternating terms have
+different result-set sizes; natively the same subject settles to ±10%),
+Elasticsearch ±9–34% across subjects, Meilisearch fulltext ±22%.
+
+The emulation tax on this workload is 9–39% per scenario (largest on
+fulltext and the filtered facet) and ~47% on bulk-load throughput — worth
+keeping in mind when reading any published benchmark of an amd64-only image
+on Apple Silicon.
 
 For context, the Reindexer transport suite re-run from the same session (same
 numbers as [benchmarks.md](benchmarks.md), confirming the environment did not
@@ -148,29 +175,42 @@ engines and reflects a hot production working set, not cold-start latency.
 
 ## Conclusions
 
-- **Reindexer wins every structured-query scenario, under emulation.** Point
-  lookup 131 μs vs 164–377 μs, and filter/sort/array/date-range queries are
-  4–5× faster than Elasticsearch and Meilisearch and 25–100× faster than
-  Typesense on this dataset. With native-arm64 competitors vs an emulated
-  Reindexer binary, the real gap on equal hardware is larger than shown.
-- **The price is memory.** With the composite fulltext index built, Reindexer
-  holds 10.0 GiB RSS — 5× Typesense (1.9 GiB), 10× Meilisearch (1.0 GiB), 2×
+- **Reindexer wins every structured-query scenario — even emulated, and by
+  more natively.** Native point lookup is 118 μs vs 164–377 μs, and native
+  filter/sort/array/date-range queries are 5–6× faster than Elasticsearch
+  and Meilisearch and 30–150× faster than Typesense on this dataset. The
+  earlier "the real gap on equal hardware is larger than shown" caveat is
+  now measured, not hypothetical: on equal (native) hardware every
+  structural scenario gains another 9–17% and the filtered facet 28%.
+- **The emulation tax is real but does not change any ranking.** Emulated →
+  native: 9–39% faster queries, 92K → 135K rec/s ingest (+47%), fulltext
+  index build 28.9 s → 23.6 s, and slightly lower RSS (9.84 vs 10.03 GiB
+  after benches). Every scenario Reindexer won under emulation it also wins
+  natively, and the one it lost it still loses — see the next point.
+- **The price is memory, and the native build does not change it.** With the
+  composite fulltext index built, Reindexer holds 10.0 GiB RSS emulated /
+  9.84 GiB native — 5× Typesense (1.9 GiB), 10× Meilisearch (1.0 GiB), 2×
   Elasticsearch (4.7 GiB, of which 4 GiB is a fixed heap). Without the
   fulltext index Reindexer sits at 2.2 GiB, competitive with the others; the
   fulltext structure alone costs ~7.8 GiB (~2.6 KiB/record) and is the reason
   a 15.6 GiB VM caps out at ~6.9M records ([benchmarks.md](benchmarks.md#memory-footprint-server-rss-docker-stats)).
-- **Fulltext is Typesense's home turf and Meilisearch's weak spot here.**
-  Typesense answers 'bert'/'llama' in 322 μs — the only scenario where an
-  engine beats Reindexer (506 μs mean under emulation). Meilisearch needs
-  ~11 ms per fulltext query (typo tolerance and relevancy ranking are always
-  on); Elasticsearch's `multi_match` costs ~2.1 ms.
+- **Fulltext stays Typesense's home turf — native hardware narrows the gap
+  but does not close it.** Typesense answers 'bert'/'llama' in 322 μs;
+  emulated Reindexer needed 506 μs (57% behind), native Reindexer 363 μs
+  mean / 345 μs mode — within ~13% of Typesense, with run-to-run noise
+  dropping from ±45% to ±10%. So most of Reindexer's apparent fulltext
+  deficit was the emulation tax, but on equal hardware Typesense still holds
+  the single scenario it wins. Meilisearch needs ~11 ms per fulltext query
+  (typo tolerance and relevancy ranking are always on); Elasticsearch's
+  `multi_match` costs ~2.1 ms.
 - **Typesense is not built for filter-heavy browsing at this scale**: wildcard
   query + numeric filter + sort takes 18–42 ms over 2.96M docs, two orders of
   magnitude behind Reindexer, while its point lookups (183 μs) and facets
   (686 μs) are excellent.
 - **Everyone ingests 2.96M records comfortably inside 60 minutes** — no
   engine needed the checkpoint rule. Reindexer's HTTP bulk load is the
-  fastest raw ingest (32 s, 92K rec/s, plus a lazy 29 s fulltext build on
+  fastest raw ingest (32 s emulated / 21.9 s native at 135K rec/s, plus a
+  lazy 29 s / 23.6 s fulltext build on
   first query); Meilisearch surprised with 48 s end-to-end (v1.51's indexer
   is fast — but note its fulltext structures then answer queries 10× slower
   than the others); Elasticsearch took 56 s, Typesense 123 s (its import is
@@ -201,3 +241,22 @@ docker compose -f docker-compose-tests.yml -f benchmarks/docker-compose-engines.
 Same flow with `--profile typesense` / `--profile meili` and the matching
 `load-*.php` / `*Bench.php`; for Reindexer use `composer bench-load` and
 `benchmarks/engines/ReindexerHttpBench.php` against the `reindexer` service.
+
+For the native-arm64 Reindexer column, build the from-source image and point
+the same loader/bench at it:
+
+```bash
+# build (~3 min on an M4 Pro) and start
+docker build -f benchmarks/engines/Dockerfile.reindexer-arm64 \
+    -t reindexer-native:v5.15.0 benchmarks/engines
+docker compose -f docker-compose-tests.yml -f benchmarks/docker-compose-engines.yml \
+    --profile reindexer-native up -d reindexer-native
+
+# load, warm the fulltext index (first fulltext query builds it), bench
+docker compose -f docker-compose-tests.yml -f benchmarks/docker-compose-engines.yml \
+    run --rm --no-deps -e REINDEXER_HOST=http://reindexer-native:9088 \
+    php-grpc php benchmarks/load.php --transport=http --file=benchmarks/data/models-full.ndjson
+docker compose -f docker-compose-tests.yml -f benchmarks/docker-compose-engines.yml \
+    run --rm --no-deps -e REINDEXER_HOST=http://reindexer-native:9088 \
+    php-grpc vendor/bin/phpbench run benchmarks/engines/ReindexerHttpBench.php --report=transport
+```

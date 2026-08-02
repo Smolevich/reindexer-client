@@ -186,7 +186,7 @@ Integration suites read `REINDEXER_HOST` / `REINDEXER_GRPC_TARGET` from the envi
 
 Summary: on this setup HTTP is faster in every scenario — gRPC adds ~60–90 μs of per-call overhead and its bidirectional bulk stream is synchronous in PHP. The practical benefit of the gRPC transport is streaming semantics (results are yielded as a generator without buffering the whole payload), not latency.
 
-There is also a cross-engine comparison — Reindexer vs Elasticsearch vs Typesense vs Meilisearch on the same 2.96M-record dataset and scenarios: [docs/benchmarks-engines.md](docs/benchmarks-engines.md).
+There is also a cross-engine comparison — Reindexer vs Elasticsearch vs Typesense vs Meilisearch on the same 2.96M-record dataset and scenarios, with Reindexer measured both as the official amd64 image (emulated on Apple Silicon) and as a native arm64 build from source: [docs/benchmarks-engines.md](docs/benchmarks-engines.md).
 
 ## API coverage
 

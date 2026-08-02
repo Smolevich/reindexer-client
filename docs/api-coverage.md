@@ -1,17 +1,17 @@
-# Аудит покрытия API: reindexer-client (PHP, v3.0.0) vs Reindexer v5.15.0
+# API coverage audit: reindexer-client (PHP, v3.0.0) vs Reindexer v5.15.0
 
-Источники:
-- REST: `cpp_src/server/contrib/server.yml` (Restream/reindexer, master, 7066 строк) — 55 пар endpoint+method.
-- gRPC: `proto/reindexer.proto` в репо клиента — 27 RPC сервиса `Reindexer`.
-- Клиент: `src/Reindexer/Services/{Database,Namespaces,Index,Item,Query}.php`, `src/Reindexer/Client/Api.php`, `src/Reindexer/Transport/Grpc/GrpcClient.php`.
+Sources:
+- REST: `cpp_src/server/contrib/server.yml` (Restream/reindexer, master, 7066 lines) — 55 endpoint+method pairs.
+- gRPC: `proto/reindexer.proto` in the client repo — 27 RPCs of the `Reindexer` service.
+- Client: `src/Reindexer/Services/{Database,Namespaces,Index,Item,Query}.php`, `src/Reindexer/Client/Api.php`, `src/Reindexer/Transport/Grpc/GrpcClient.php`.
 
-`Client/Api.php` — чистый Guzzle-транспорт (`request($method,$uri,...)`), сам endpoints не знает; всё покрытие определяется Services.
+`Client/Api.php` is a pure Guzzle transport (`request($method,$uri,...)`) with no knowledge of endpoints; all coverage is determined by the Services.
 
-## 1. REST-покрытие
+## 1. REST coverage
 
-Легенда: ✅ покрыт напрямую; 🟡 достижим косвенно (тем же URL через generic-метод, отдельного метода SDK нет); ❌ не покрыт.
+Legend: ✅ covered directly; 🟡 reachable indirectly (same URL via a generic method, no dedicated SDK method); ❌ not covered.
 
-| Endpoint | Method | Статус | Метод SDK |
+| Endpoint | Method | Status | SDK method |
 |---|---|---|---|
 | `/db` | GET | ✅ | `Database::getList` |
 | `/db` | POST | ✅ | `Database::create` |
@@ -24,61 +24,61 @@
 | `/db/{db}/namespaces/{name}/rename/{newname}` | GET | ✅ | `Namespaces::rename` |
 | `/db/{db}/namespaces/{name}/metalist` | GET | ✅ | `Namespaces::getMetaList` |
 | `/db/{db}/namespaces/{name}/metabykey/{key}` | GET | ✅ | `Namespaces::getMetaDataKey` |
-| `/db/{db}/namespaces/{name}/metabykey/{key}` | DELETE | ❌ | удаление меты нет |
+| `/db/{db}/namespaces/{name}/metabykey/{key}` | DELETE | ❌ | no meta deletion |
 | `/db/{db}/namespaces/{name}/metabykey` | PUT | ✅ | `Namespaces::addMetaDataKey` |
-| `/db/{db}/namespaces/{name}/items` | GET | ✅ | `Item::get` (только limit/offset/sort; без filter, fields, format, sharding, with_vectors, with_columns) |
-| `/db/{db}/namespaces/{name}/items` | PUT | ✅ | `Item::update` (без precepts, format) |
-| `/db/{db}/namespaces/{name}/items` | POST | ✅ | `Item::add` (без precepts, format) |
-| `/db/{db}/namespaces/{name}/items` | DELETE | ✅ | `Item::delete` (без precepts) |
-| `/db/{db}/namespaces/{name}/items` | PATCH (upsert) | ❌ | upsert по HTTP нет |
+| `/db/{db}/namespaces/{name}/items` | GET | ✅ | `Item::get` (limit/offset/sort only; no filter, fields, format, sharding, with_vectors, with_columns) |
+| `/db/{db}/namespaces/{name}/items` | PUT | ✅ | `Item::update` (no precepts, format) |
+| `/db/{db}/namespaces/{name}/items` | POST | ✅ | `Item::add` (no precepts, format) |
+| `/db/{db}/namespaces/{name}/items` | DELETE | ✅ | `Item::delete` (no precepts) |
+| `/db/{db}/namespaces/{name}/items` | PATCH (upsert) | ❌ | no upsert over HTTP |
 | `/db/{db}/namespaces/{name}/indexes` | GET | ✅ | `Index::get` |
 | `/db/{db}/namespaces/{name}/indexes` | POST | ✅ | `Index::create` |
-| `/db/{db}/namespaces/{name}/indexes` | PUT (update index) | ❌ | изменить индекс нельзя, только drop+create |
+| `/db/{db}/namespaces/{name}/indexes` | PUT (update index) | ❌ | no way to update an index, only drop+create |
 | `/db/{db}/namespaces/{name}/indexes/{indexname}` | DELETE | ✅ | `Index::delete` |
-| `/db/{db}/namespaces/{name}/schema` | GET | ❌ | чтения JSON-schema нет |
+| `/db/{db}/namespaces/{name}/schema` | GET | ❌ | no JSON-schema read |
 | `/db/{db}/namespaces/{name}/schema` | PUT | ✅ | `Namespaces::schema` |
-| `/db/{db}/protobuf_schema` | GET | ❌ | protobuf-схемы не выгружаются |
+| `/db/{db}/protobuf_schema` | GET | ❌ | protobuf schemas are not exported |
 | `/query/convert/sql` | POST (SQL→DSL) | ❌ | |
 | `/query/convert/dsl` | POST (DSL→SQL) | ❌ | |
-| `/db/{db}/query` | GET (SQL select) | ✅ | `Query::createByHttpGet` (без with_columns/width/format) |
-| `/db/{db}/query` | PUT (DSL update) | ❌ | update-запрос через DSL нет |
+| `/db/{db}/query` | GET (SQL select) | ✅ | `Query::createByHttpGet` (no with_columns/width/format) |
+| `/db/{db}/query` | PUT (DSL update) | ❌ | no update query via DSL |
 | `/db/{db}/query` | POST (DSL select) | ✅ | `Query::createSdlQueryByHttpPost` |
 | `/db/{db}/query` | DELETE (SQL delete) | ❌ | |
-| `/db/{db}/namespaces/{name}/transactions/begin` | POST | ❌ | HTTP-транзакций нет вообще |
+| `/db/{db}/namespaces/{name}/transactions/begin` | POST | ❌ | no HTTP transactions at all |
 | `/db/{db}/transactions/{tx_id}/commit` | POST | ❌ | |
 | `/db/{db}/transactions/{tx_id}/rollback` | POST | ❌ | |
 | `/db/{db}/transactions/{tx_id}/items` | PUT | ❌ | |
 | `/db/{db}/transactions/{tx_id}/items` | POST | ❌ | |
 | `/db/{db}/transactions/{tx_id}/items` | DELETE | ❌ | |
 | `/db/{db}/transactions/{tx_id}/items` | PATCH | ❌ | |
-| `/db/{db}/transactions/{tx_id}/query` | GET (SQL в tx) | ❌ | |
+| `/db/{db}/transactions/{tx_id}/query` | GET (SQL in tx) | ❌ | |
 | `/db/{db}/transactions/{tx_id}/query` | DELETE | ❌ | |
-| `/db/{db}/suggest` | GET (SQL-автодополнение) | ❌ | |
+| `/db/{db}/suggest` | GET (SQL autocompletion) | ❌ | |
 | `/db/{db}/sqlquery` | POST (SQL) | ✅ | `Query::createSqlQueryByHttpPost` |
-| `/check` | GET (health/версия сервера) | ❌ | |
+| `/check` | GET (health/server version) | ❌ | |
 | `/allocator/drop_cache` | POST | ❌ | |
 | `/allocator/info` | GET | ❌ | |
 | `/user/role` | GET | ❌ | |
-| `/db/{db}/namespaces/#activitystats/items` | GET | 🟡 | `Item::get` с namespace `#activitystats` |
-| `/db/{db}/namespaces/#clientsstats/items` | GET | 🟡 | то же |
-| `/db/{db}/namespaces/#replicationstats/items` | GET | 🟡 | то же |
-| `/db/{db}/namespaces/#memstats/items` | GET | 🟡 | то же |
-| `/db/{db}/namespaces/#perfstats/items` | GET | 🟡 | то же |
-| `/db/{db}/namespaces/#queriesperfstats/items` | GET | 🟡 | то же |
-| `/db/{db}/namespaces/#config/items` | GET | 🟡 | то же |
-| `/db/{db}/namespaces/#config/items` | PUT | 🟡 | `Item::update` с namespace `#config` |
+| `/db/{db}/namespaces/#activitystats/items` | GET | 🟡 | `Item::get` with namespace `#activitystats` |
+| `/db/{db}/namespaces/#clientsstats/items` | GET | 🟡 | same |
+| `/db/{db}/namespaces/#replicationstats/items` | GET | 🟡 | same |
+| `/db/{db}/namespaces/#memstats/items` | GET | 🟡 | same |
+| `/db/{db}/namespaces/#perfstats/items` | GET | 🟡 | same |
+| `/db/{db}/namespaces/#queriesperfstats/items` | GET | 🟡 | same |
+| `/db/{db}/namespaces/#config/items` | GET | 🟡 | same |
+| `/db/{db}/namespaces/#config/items` | PUT | 🟡 | `Item::update` with namespace `#config` |
 | `/db/default_configs` | GET | ❌ | |
 
-Итог REST: **23/55 напрямую = 42%**; с учётом косвенно достижимых системных namespace — 31/55 = 56%. Полностью отсутствуют 24 endpoint.
+REST total: **23/55 directly = 42%**; counting indirectly reachable system namespaces — 31/55 = 56%. 24 endpoints are entirely missing.
 
-## 2. gRPC-покрытие (`GrpcClient.php` vs `proto/reindexer.proto`, 27 RPC)
+## 2. gRPC coverage (`GrpcClient.php` vs `proto/reindexer.proto`, 27 RPCs)
 
-| RPC | Статус | Метод обёртки |
+| RPC | Status | Wrapper method |
 |---|---|---|
 | Connect | ✅ | `connect` |
 | CreateDatabase | ✅ | `createDatabase` |
 | OpenNamespace | ✅ | `openNamespace` |
-| AddNamespace | ❌ | (только Open; Add с полным NamespaceDefinition не экспонирован) |
+| AddNamespace | ❌ | (Open only; Add with a full NamespaceDefinition is not exposed) |
 | CloseNamespace | ✅ | `closeNamespace` |
 | DropNamespace | ✅ | `dropNamespace` |
 | TruncateNamespace | ✅ | `truncateNamespace` |
@@ -86,7 +86,7 @@
 | UpdateIndex | ✅ | `updateIndex` |
 | DropIndex | ✅ | `dropIndex` |
 | SetSchema | ❌ | |
-| EnumNamespaces | ✅ | `enumNamespaces` (onlyNames+hideSystems захардкожены → полные NamespaceDefinition недоступны) |
+| EnumNamespaces | ✅ | `enumNamespaces` (onlyNames+hideSystems are hardcoded → full NamespaceDefinition is unavailable) |
 | EnumDatabases | ✅ | `enumDatabases` |
 | ModifyItem (bidi stream) | ✅ | `modifyItems` |
 | ExecSql (stream) | ✅ | `execSql` |
@@ -103,54 +103,54 @@
 | CommitTransaction | ✅ | `commitTransaction` |
 | RollbackTransaction | ✅ | `rollbackTransaction` |
 
-Итог gRPC: **20/27 = 74%**. Не экспонированы 7 RPC: AddNamespace, SetSchema, GetMeta, PutMeta, EnumMeta, DeleteMeta, GetProtobufSchema.
+gRPC total: **20/27 = 74%**. 7 RPCs are not exposed: AddNamespace, SetSchema, GetMeta, PutMeta, EnumMeta, DeleteMeta, GetProtobufSchema.
 
-Ограничения внутри экспонированных RPC:
-- `buildIndex()` игнорирует поля proto `IndexOptions.collateMode`, `rtreeType`, `sortOrdersTable`, `config` (fulltext/float-vector конфиг) — хотя proto их поддерживает.
-- Кодировка жёстко JSON (`EncodingType::JSON`); CJSON/MSGPACK/PROTOBUF и `OutputFlags` `withRank`/`withJoinedItems`/`withItemID` недоступны.
+Limitations within the exposed RPCs:
+- `buildIndex()` ignores the proto fields `IndexOptions.collateMode`, `rtreeType`, `sortOrdersTable`, `config` (fulltext/float-vector config) — even though the proto supports them.
+- Encoding is hardwired to JSON (`EncodingType::JSON`); CJSON/MSGPACK/PROTOBUF and the `OutputFlags` `withRank`/`withJoinedItems`/`withItemID` are unavailable.
 
-## 3. Возможности внутри endpoints
+## 3. Capabilities within endpoints
 
-| Возможность | Спека v5.15 | Клиент | Вердикт |
+| Capability | Spec v5.15 | Client | Verdict |
 |---|---|---|---|
-| precepts (`serial()`, `now()`) | query-param у items POST/PUT/DELETE/PATCH и tx items | нет в `Item::*`; в proto `ModifyItemRequest` поля precepts нет вовсе | **не поддержано ни в одном транспорте** |
-| IndexType | `hash, tree, text, rtree, ttl, '-'` | enum: `hash, tree, text, '-'` | **нет `rtree`, `ttl`** |
-| FieldType | `int, int64, double, string, bool, composite, point` | нет `point` | **нет `point`** (geo) |
-| Index entity поля | + `is_sparse`, `is_no_column`, `expire_after`, `rtree_type`, `is_simple_tag`, `config` (FulltextConfig / FloatVectorConfig) | только name/json_paths/типы/is_pk/is_array/is_dense/is_appendable/collate/sort_order | **TTL, rtree, sparse, fulltext-конфиг, вектора недоступны через типизированный API** (а `Index::create` принимает только `IndexEntity` → и raw-массивом не обойти по HTTP) |
-| Fulltext-конфиг (FulltextConfig) | `config` в IndexDef | ни в HTTP-entity, ни в gRPC `buildIndex` | не поддержано |
-| KNN / float_vector (hnsw/ivf, KNN-фильтры, `with_vectors`) | есть в спеке master | нигде не отражено | не поддержано |
-| Агрегации, joined queries, explain | в Query DSL (`aggregations`, `filters[].join_query`, `explain`) | pass-through: `Query::createSdlQueryByHttpPost` и `GrpcClient::select` принимают сырой массив/JSON → работает | ✅ работает, но без типизации |
-| `SdlQuery` entity | актуальный DSL: `merge_queries`, join внутри `filters`, `explain`, `req_total: disabled/enabled/cached`, `update_fields`, `drop_fields`, `type` | ключи `joined`/`merged` (устаревший DSL), `reqTotal` bool, нет explain/update_fields/drop_fields | **дрейф от спеки**: типизированный билдер частично генерирует невалидный/устаревший DSL |
-| Protobuf schemas | `GET /db/{db}/protobuf_schema`, RPC GetProtobufSchema, `schema` GET | только `schema` PUT | не поддержано |
-| Форматы ответа (json/msgpack/protobuf/csv-file), `with_columns`, `width`, `sharding` | query-params items/query | не экспонированы | не поддержано |
+| precepts (`serial()`, `now()`) | query param on items POST/PUT/DELETE/PATCH and tx items | absent from `Item::*`; the proto `ModifyItemRequest` has no precepts field at all | **not supported in either transport** |
+| IndexType | `hash, tree, text, rtree, ttl, '-'` | enum: `hash, tree, text, '-'` | **no `rtree`, `ttl`** |
+| FieldType | `int, int64, double, string, bool, composite, point` | no `point` | **no `point`** (geo) |
+| Index entity fields | + `is_sparse`, `is_no_column`, `expire_after`, `rtree_type`, `is_simple_tag`, `config` (FulltextConfig / FloatVectorConfig) | only name/json_paths/types/is_pk/is_array/is_dense/is_appendable/collate/sort_order | **TTL, rtree, sparse, fulltext config and vectors are unreachable through the typed API** (and `Index::create` accepts only `IndexEntity` → a raw array workaround is not possible over HTTP) |
+| Fulltext config (FulltextConfig) | `config` in IndexDef | neither in the HTTP entity nor in gRPC `buildIndex` | not supported |
+| KNN / float_vector (hnsw/ivf, KNN filters, `with_vectors`) | present in the master spec | not reflected anywhere | not supported |
+| Aggregations, joined queries, explain | in Query DSL (`aggregations`, `filters[].join_query`, `explain`) | pass-through: `Query::createSdlQueryByHttpPost` and `GrpcClient::select` accept a raw array/JSON → works | ✅ works, but untyped |
+| `SdlQuery` entity | current DSL: `merge_queries`, join inside `filters`, `explain`, `req_total: disabled/enabled/cached`, `update_fields`, `drop_fields`, `type` | keys `joined`/`merged` (legacy DSL), `reqTotal` bool, no explain/update_fields/drop_fields | **drift from the spec**: the typed builder partially generates invalid/legacy DSL |
+| Protobuf schemas | `GET /db/{db}/protobuf_schema`, RPC GetProtobufSchema, `schema` GET | only `schema` PUT | not supported |
+| Response formats (json/msgpack/protobuf/csv-file), `with_columns`, `width`, `sharding` | query params on items/query | not exposed | not supported |
 
-## 4. Приоритизированные пробелы
+## 4. Prioritized gaps
 
-### (a) Важные для реальных пользователей
-1. **HTTP-транзакции** (9 endpoints) — атомарные bulk-записи; в gRPC есть, но HTTP-only пользователи (большинство PHP-хостингов без ext-grpc) лишены их полностью.
-2. **precepts** — `serial()`/`now()` это стандартный способ автоинкремента и timestamps в Reindexer; сейчас недостижимо в принципе.
-3. **`PUT /indexes` (update index) + типы `ttl`/`rtree` + `is_sparse`/`expire_after`/fulltext `config`** — без этого нельзя ни изменить индекс без потери, ни создать TTL/geo/настроенный fulltext-индекс.
-4. **`PATCH /items` (upsert)** — самый используемый режим записи в Reindexer-клиентах других языков.
-5. **`PUT /query` и `DELETE /query`** — update/delete по условию без выборки; сейчас только через сырой SQL `sqlquery`.
-6. **Актуализация `SdlQuery`** — устаревшие ключи `joined`/`merged` вместо `merge_queries`/`filters[].join_query` дают тихо игнорируемый DSL.
-7. **gRPC meta (GetMeta/PutMeta/EnumMeta/DeleteMeta) + HTTP `DELETE metabykey`** — асимметрия: мету можно писать/читать по HTTP, но не удалять; по gRPC — вообще ничего.
+### (a) Important for real users
+1. **HTTP transactions** (9 endpoints) — atomic bulk writes; available over gRPC, but HTTP-only users (most PHP hostings lack ext-grpc) are left without them entirely.
+2. **precepts** — `serial()`/`now()` is the standard way to get auto-increment and timestamps in Reindexer; currently unreachable altogether.
+3. **`PUT /indexes` (update index) + the `ttl`/`rtree` types + `is_sparse`/`expire_after`/fulltext `config`** — without these one can neither update an index without losing it nor create a TTL/geo/tuned fulltext index.
+4. **`PATCH /items` (upsert)** — the most used write mode in Reindexer clients for other languages.
+5. **`PUT /query` and `DELETE /query`** — conditional update/delete without a select; currently only via raw SQL `sqlquery`.
+6. **Bringing `SdlQuery` up to date** — the legacy keys `joined`/`merged` instead of `merge_queries`/`filters[].join_query` produce silently ignored DSL.
+7. **gRPC meta (GetMeta/PutMeta/EnumMeta/DeleteMeta) + HTTP `DELETE metabykey`** — an asymmetry: meta can be written/read over HTTP but not deleted; over gRPC — nothing at all.
 
-### (b) Нишевые
-1. `GET /check`, `GET /db/{db}/namespaces/#memstats` и пр. — мониторинг; частично достижимо через `Item::get('#memstats')`, но удобные типизированные хелперы были бы полезны для ops.
-2. `GET /db/{db}/suggest`, `/query/convert/*` — нужны админкам/IDE-подобным инструментам, не приложениям.
-3. `GET schema` / `protobuf_schema` / gRPC SetSchema+GetProtobufSchema — нужны только тем, кто гоняет protobuf-кодировку.
-4. KNN / float_vector индексы — новая функциональность v5; для vector search из PHP спрос пока точечный (и через raw DSL select он частично проходит).
-5. Форматы msgpack/protobuf/csv и `with_columns`/`width` — оптимизация трафика и консольный вывод.
-6. gRPC `AddNamespace` (с полным NamespaceDefinition) и не-JSON EncodingType в gRPC.
+### (b) Niche
+1. `GET /check`, `GET /db/{db}/namespaces/#memstats` etc. — monitoring; partially reachable via `Item::get('#memstats')`, but convenient typed helpers would be useful for ops.
+2. `GET /db/{db}/suggest`, `/query/convert/*` — needed by admin panels/IDE-like tools, not applications.
+3. `GET schema` / `protobuf_schema` / gRPC SetSchema+GetProtobufSchema — needed only by those running the protobuf encoding.
+4. KNN / float_vector indexes — new v5 functionality; demand for vector search from PHP is still sporadic (and it partially works via raw DSL select).
+5. The msgpack/protobuf/csv formats and `with_columns`/`width` — traffic optimization and console output.
+6. gRPC `AddNamespace` (with a full NamespaceDefinition) and non-JSON EncodingType in gRPC.
 
-### (c) Сознательно можно не делать
-1. `/allocator/drop_cache`, `/allocator/info` — низкоуровневый tcmalloc-тюнинг, это задача ops-инструментов, не клиентской библиотеки.
-2. `/user/role` — интроспекция прав текущего пользователя, нужна только UI-админке (face).
-3. `/db/default_configs` — дефолтные конфиги для UI-редактора конфигурации.
-4. Системные `#...stats` как отдельные методы — уже достижимы generic `Item::get`, отдельные обёртки дублируют URL.
-5. `GET /db/{db}/transactions/{tx_id}/query` (SQL внутри tx по HTTP) — если делать HTTP-транзакции, можно ограничиться items+commit/rollback: SQL-в-tx редко используется даже в официальных клиентах.
+### (c) Deliberately skippable
+1. `/allocator/drop_cache`, `/allocator/info` — low-level tcmalloc tuning; a job for ops tools, not a client library.
+2. `/user/role` — introspection of the current user's permissions, needed only by the admin UI (face).
+3. `/db/default_configs` — default configs for the UI configuration editor.
+4. System `#...stats` as dedicated methods — already reachable via the generic `Item::get`; dedicated wrappers would duplicate the URL.
+5. `GET /db/{db}/transactions/{tx_id}/query` (SQL inside a tx over HTTP) — if HTTP transactions get implemented, items+commit/rollback is enough: SQL-in-tx is rarely used even in the official clients.
 
-## 5. Итог
+## 5. Summary
 
-- **REST: 42%** (23/55 напрямую; 56% с учётом косвенно достижимых системных namespace).
-- **gRPC: 74%** (20/27 RPC).
+- **REST: 42%** (23/55 directly; 56% counting indirectly reachable system namespaces).
+- **gRPC: 74%** (20/27 RPCs).

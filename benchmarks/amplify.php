@@ -27,10 +27,16 @@ declare(strict_types=1);
 const AUTHOR_POOL_SIZE = 50000;
 const PROGRESS_STEP = 1_000_000;
 
-$options = getopt('', ['factor:', 'in::', 'out::']);
+$options = getopt('', ['factor:', 'in::', 'out::', 'skip-originals', 'suffix-offset::']);
 $factor = max(2, (int) ($options['factor'] ?? 10));
 $inFile = (string) ($options['in'] ?? __DIR__ . '/data/models-full.ndjson');
 $outFile = (string) ($options['out'] ?? __DIR__ . '/data/models-amplified.ndjson');
+// with --skip-originals only the mutated copies are written (useful for
+// appending synthetic records on top of an already-loaded real dataset)
+$skipOriginals = array_key_exists('skip-originals', $options);
+// copies are numbered suffixOffset+1 .. suffixOffset+factor-1: lets several
+// runs produce non-colliding ids (e.g. second wave with --suffix-offset=1)
+$suffixOffset = max(0, (int) ($options['suffix-offset'] ?? 0));
 
 if (!is_file($inFile)) {
     fwrite(STDERR, "Input file $inFile not found. Run: composer bench-seed -- --count=all --out=$inFile\n");
@@ -93,12 +99,14 @@ while (($line = fgets($in)) !== false) {
         continue;
     }
 
-    fwrite($out, $line . "\n");
-    $written++;
+    if (!$skipOriginals) {
+        fwrite($out, $line . "\n");
+        $written++;
+    }
 
     for ($n = 1; $n < $factor; $n++) {
         $copy = $record;
-        $copy['id'] = $record['id'] . '~' . $n;
+        $copy['id'] = $record['id'] . '~' . ($suffixOffset + $n);
         $copy['author'] = $pool[mt_rand(0, $poolSize - 1)];
         $copy['downloads'] = noise((int) $record['downloads']);
         $copy['likes'] = noise((int) $record['likes']);

@@ -10,6 +10,9 @@
  *
  * Uses the public API https://huggingface.co/api/models with cursor pagination
  * (the cursor comes back in the Link response header). Retries on 429/5xx.
+ * Anonymous requests are rate-limited harder; export HF_TOKEN (a read-only
+ * Hugging Face token) to authenticate. The token is only read from the
+ * environment and never logged.
  *
  * Records are written to the NDJSON file as they arrive; memory stays flat
  * regardless of the target size. Duplicate ids are possible across page
@@ -38,8 +41,14 @@ if (!is_dir($outDir) && !mkdir($outDir, 0777, true) && !is_dir($outDir)) {
     exit(1);
 }
 
+$headers = ['User-Agent' => USER_AGENT];
+$hfToken = (string) getenv('HF_TOKEN');
+if ($hfToken !== '') {
+    $headers['Authorization'] = 'Bearer ' . $hfToken;
+}
+
 $client = new Client([
-    'headers' => ['User-Agent' => USER_AGENT],
+    'headers' => $headers,
     'timeout' => 60,
     'http_errors' => false,
 ]);
@@ -174,11 +183,12 @@ while ($url !== null && $written < $target) {
     if ($written >= $nextProgressAt || $written >= $target) {
         $elapsed = microtime(true) - $startedAt;
         printf(
-            "page %d: %d records (%.0fs, %.0f rec/s)\n",
+            "page %d: %d records (%.0fs, %.0f rec/s, mem %.0fMB)\n",
             $page,
             $written,
             $elapsed,
-            $written / max($elapsed, 0.001)
+            $written / max($elapsed, 0.001),
+            memory_get_usage(true) / 1048576
         );
         $nextProgressAt += 100_000;
     }

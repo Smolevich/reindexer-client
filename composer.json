@@ -1,6 +1,18 @@
 {
     "name": "smolevich/reindexer-client",
-    "description": "PHP client for using database reindexer",
+    "description": "PHP SDK for Reindexer — embeddable in-memory document database with full-text and faceted search (HTTP + gRPC transports)",
+    "keywords": [
+        "reindexer",
+        "search-engine",
+        "full-text-search",
+        "faceted-search",
+        "in-memory-database",
+        "document-database",
+        "grpc",
+        "sdk",
+        "elasticsearch-alternative",
+        "algolia-alternative"
+    ],
     "type": "library",
     "minimum-stability": "stable",
     "license": "MIT",

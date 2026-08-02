@@ -148,4 +148,23 @@ class QueryFeatureTest extends FeatureCase
 
         $this->assertSame([100], array_column($body['items'], 'id'));
     }
+
+    public function testFacetAggregationOverFilteredSetViaDsl(): void
+    {
+        $body = $this->queryService->createSdlQueryByHttpPost([
+            'namespace' => $this->ns,
+            'filters' => [['field' => 'rating', 'cond' => 'GE', 'value' => 20]],
+            'aggregations' => [['type' => 'facet', 'fields' => ['author']]],
+        ])->getDecodedResponseBody(true);
+
+        $this->assertSame('facet', $body['aggregations'][0]['type']);
+        $this->assertSame(['author'], $body['aggregations'][0]['fields']);
+
+        $facets = [];
+        foreach ($body['aggregations'][0]['facets'] as $facet) {
+            $facets[$facet['values'][0]] = $facet['count'];
+        }
+        // rating >= 20 leaves alice ×2 (30, 50) and bob ×2 (20, 40)
+        $this->assertSame(['alice' => 2, 'bob' => 2], $facets);
+    }
 }

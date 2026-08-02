@@ -3,12 +3,49 @@
 
 # reindexer-client
 
-PHP client for [Reindexer](https://github.com/Restream/reindexer), an embeddable in-memory document database.
+PHP SDK for [Reindexer](https://github.com/Restream/reindexer) — a fast, embeddable in-memory document database with full-text and faceted search, written in C++. Single binary, SQL plus a JSON query DSL, secondary/array/composite indexes, aggregations, morphology-aware full-text out of the box.
 
 Two transports:
 
 - **HTTP** — covers the Reindexer REST API: databases, namespaces, indexes, items, SQL and Query-DSL queries, namespace metadata. Only requires Guzzle.
 - **gRPC** (optional) — wrapper around stubs generated from `proto/reindexer.proto` (Reindexer v5.15.0): DDL, SQL/Query-DSL queries with server-streaming results, bulk item modification and transactions over bidirectional streams. Requires the `grpc` PHP extension; the HTTP transport works without it.
+
+## Choosing a search engine: Elasticsearch, Algolia or Reindexer
+
+A common fork when you need full-text + faceted search over millions of documents from PHP:
+
+| | Elasticsearch / OpenSearch | Algolia | Reindexer |
+|---|---|---|---|
+| Deployment | JVM cluster to operate | SaaS, nothing to run | single C++ binary / Docker container |
+| Data location | disk + page cache | their cloud | RAM (dataset must fit in memory) |
+| Full-text search | yes, rich | yes | yes: stemming/morphology (en/ru), typo tolerance, ranking |
+| Faceted search | yes | yes | yes, `facet` aggregations |
+| Query language | JSON Query DSL | API calls | SQL + JSON DSL |
+| Cost of ownership | cluster ops | per-record / per-search pricing | one process, MIT license |
+
+Reindexer is the lightweight corner of this triangle. If your dataset fits in RAM on one machine — which on modern hardware means datasets in the hundreds of millions of documents, given enough memory — you get sub-millisecond queries with full-text and facets from a single process, without operating a cluster or paying per record. In [our benchmarks](docs/benchmarks.md) point lookups over HTTP take ~150 μs and filtered+sorted queries ~400 μs end-to-end from PHP. If you need horizontal scaling far beyond one node's RAM, or a fully managed service, the other two columns exist for a reason.
+
+### Full-text and faceted search in five lines
+
+```php
+// Full-text index — morphology works out of the box ("базы" matches "база данных")
+$indexService->create(
+    (new IndexEntity())->setName('body')->setJsonPaths(['body'])
+        ->setFieldType(FieldType::STRING)->setIndexType(IndexType::TEXT),
+    'mydb',
+    'products'
+);
+$found = $queryService->createByHttpGet("SELECT * FROM products WHERE body = 'поиск'");
+
+// Facets over a filtered result set (JSON DSL, aggregations pass through as-is)
+$facets = $queryService->createSdlQueryByHttpPost([
+    'namespace' => 'products',
+    'filters' => [['field' => 'price', 'cond' => 'GE', 'value' => 100]],
+    'aggregations' => [['type' => 'facet', 'fields' => ['brand']]],
+])->getDecodedResponseBody(true)['aggregations'];
+```
+
+Both snippets are exercised against a real server in the integration suites (`IndexTypesTest` covers the morphology case, `QueryFeatureTest` the facet aggregation).
 
 ## Requirements
 
@@ -146,6 +183,10 @@ Integration suites read `REINDEXER_HOST` / `REINDEXER_GRPC_TARGET` from the envi
 `benchmarks/` contains a phpbench suite comparing the two transports on the Hugging Face Hub model catalog (20 000 records). Results and methodology: [docs/benchmarks.md](docs/benchmarks.md).
 
 Summary: on this setup HTTP is faster in every scenario — gRPC adds ~60–90 μs of per-call overhead and its bidirectional bulk stream is synchronous in PHP. The practical benefit of the gRPC transport is streaming semantics (results are yielded as a generator without buffering the whole payload), not latency.
+
+## API coverage
+
+The SDK covers the everyday surface (databases, namespaces, indexes, items, SQL and DSL queries, aggregations, metadata over HTTP; DDL, streaming queries, bulk writes and transactions over gRPC), but not yet 100% of the server API: roughly 42% of REST endpoints and 20 of 27 gRPC RPCs as of v3.0.0. The full endpoint-by-endpoint audit — including known gaps such as HTTP transactions, precepts (`serial()`/`now()`), TTL/RTree index types and DSL builder drift — lives in [docs/api-coverage.md](docs/api-coverage.md) and doubles as the 3.1 roadmap.
 
 ## Upgrading from 2.x
 

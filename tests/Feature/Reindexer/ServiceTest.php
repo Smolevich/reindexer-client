@@ -57,6 +57,7 @@ class ServiceTest extends BaseTest
 
     public function testCreateAndDropDatabase()
     {
+        $before = $this->dbService->getList()->getDecodedResponseBody(true);
         $response = $this->dbService->create('unittests_2');
         $this->assertSame(
             [
@@ -66,9 +67,12 @@ class ServiceTest extends BaseTest
             ],
             $response->getDecodedResponseBody(true)
         );
+        $created = $this->dbService->getList()->getDecodedResponseBody(true);
+        $this->assertContains('unittests_2', $created['items']);
         $this->dbService->drop('unittests_2');
         $databases = $this->dbService->getList()->getDecodedResponseBody(true);
-        $this->assertEquals(1, count($databases['items']));
+        $this->assertNotContains('unittests_2', $databases['items']);
+        $this->assertCount(count($before['items']), $databases['items']);
     }
 
     public function testCreateIndexes()

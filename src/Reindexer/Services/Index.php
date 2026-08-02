@@ -22,7 +22,7 @@ class Index extends BaseService
         return $this->client->request(
             'POST',
             $uri,
-            json_encode($index->getBody()),
+            json_encode($index->getBody(), JSON_UNESCAPED_UNICODE),
             $this->defaultHeaders
         );
     }

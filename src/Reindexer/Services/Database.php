@@ -17,7 +17,7 @@ class Database extends BaseService
             $uri,
             json_encode([
                 'name' => $name,
-            ]),
+            ], JSON_UNESCAPED_UNICODE),
             $this->defaultHeaders
         );
     }

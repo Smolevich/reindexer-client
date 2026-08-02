@@ -168,12 +168,13 @@ class NamespacesRequestTest extends TestCase
         );
     }
 
-    public function testGetMetaDataKeyUsesPutWithKeyInUri(): void
+    public function testGetMetaDataKeyUsesGetWithKeyInUri(): void
     {
         $this->service->getMetaDataKey('ns', 'meta_key');
 
         $call = $this->api->lastCall();
-        $this->assertSame('PUT', $call['method']);
+        // regression: used to send PUT, which the server answers with 404
+        $this->assertSame('GET', $call['method']);
         $this->assertSame('/api/v1/db/db/namespaces/ns/metabykey/meta_key', $call['uri']);
         $this->assertNull($call['body']);
     }

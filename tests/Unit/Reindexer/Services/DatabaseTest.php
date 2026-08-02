@@ -34,12 +34,13 @@ class DatabaseTest extends TestCase
         $this->assertSame('application/json;charset=utf-8', $call['headers']['Content-Type']);
     }
 
-    public function testCreateEscapesUnicodeName(): void
+    public function testCreateSendsUnicodeNameUnescaped(): void
     {
         $this->service->create('база');
 
-        $this->assertSame(json_encode(['name' => 'база']), $this->api->lastCall()['body']);
-        $this->assertSame('база', json_decode($this->api->lastCall()['body'], true)['name']);
+        // reindexer 5.x mangles \uXXXX surrogate escapes, so the client
+        // must send raw UTF-8 (JSON_UNESCAPED_UNICODE)
+        $this->assertSame('{"name":"база"}', $this->api->lastCall()['body']);
     }
 
     public function testGetListSendsGetWithoutBody(): void

@@ -65,7 +65,7 @@ class QueryTest extends TestCase
         $this->assertSame($sql, $call['body'], 'SQL must be passed as-is, not JSON encoded');
     }
 
-    public function testCreateSdlQueryByHttpPostJsonEncodesBody(): void
+    public function testCreateSdlQueryByHttpPostPassesRawJsonStringThrough(): void
     {
         $query = '{"namespace":"ns"}';
         $this->service->createSdlQueryByHttpPost($query);
@@ -73,7 +73,21 @@ class QueryTest extends TestCase
         $call = $this->api->lastCall();
         $this->assertSame('POST', $call['method']);
         $this->assertSame('/api/v1/db/db/query', $call['uri']);
-        $this->assertSame(json_encode($query), $call['body']);
+        $this->assertSame($query, $call['body'], 'raw JSON must not be double-encoded (used to 500 on the server)');
+    }
+
+    public function testCreateSdlQueryByHttpPostEncodesArrayDsl(): void
+    {
+        $this->service->createSdlQueryByHttpPost([
+            'namespace' => 'ns',
+            'limit' => 2,
+            'filters' => [['field' => 'rating', 'cond' => 'GT', 'value' => 10]],
+        ]);
+
+        $this->assertSame(
+            '{"namespace":"ns","limit":2,"filters":[{"field":"rating","cond":"GT","value":10}]}',
+            $this->api->lastCall()['body']
+        );
     }
 
     public function testVersionOverrideIsRespected(): void

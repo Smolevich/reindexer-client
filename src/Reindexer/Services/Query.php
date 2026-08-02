@@ -45,14 +45,17 @@ class Query extends BaseService
         );
     }
 
-    public function createSdlQueryByHttpPost(string $query): Response
+    /**
+     * @param array<string, mixed>|string $query Query-DSL as array or raw JSON string
+     */
+    public function createSdlQueryByHttpPost(array|string $query): Response
     {
         $uri = sprintf('/api/%s/db/%s/query', $this->version, $this->getDatabase());
 
         return $this->client->request(
             'POST',
             $uri,
-            json_encode($query),
+            is_array($query) ? json_encode($query, JSON_UNESCAPED_UNICODE) : $query,
             $this->defaultHeaders
         );
     }

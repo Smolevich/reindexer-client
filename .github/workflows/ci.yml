@@ -7,7 +7,9 @@ on:
   pull_request:
 
 jobs:
-  build:
+  # HTTP transport: must work WITHOUT the grpc extension.
+  # Runs Unit + Feature suites against a real reindexer server.
+  http:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -27,10 +29,16 @@ jobs:
         coverage: xdebug
     - name: Show php and composer version
       run: php -v && composer -V
+    - name: Assert grpc extension is NOT loaded
+      run: php -r 'exit(extension_loaded("grpc") ? 1 : 0);'
     - name: Install dependencies
       run: composer install --prefer-dist --no-interaction --no-progress
-    - name: Run unit and feature tests
-      run: vendor/bin/phpunit --coverage-clover=coverage.xml
+    - name: Run Unit suite
+      run: vendor/bin/phpunit --testsuite Unit --coverage-clover=coverage.xml
+      env:
+        XDEBUG_MODE: coverage
+    - name: Run Feature suite (HTTP integration)
+      run: vendor/bin/phpunit --testsuite Feature
       env:
         REINDEXER_HOST: "http://127.0.0.1:9088"
     - name: Check code style
@@ -42,3 +50,54 @@ jobs:
       with:
         files: coverage.xml
         verbose: true
+
+  # gRPC transport: same code with ext-grpc, runs the GrpcFeature suite
+  # against the reindexer gRPC endpoint.
+  grpc:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.2', '8.4']
+    services:
+      reindexer:
+        image: reindexer/reindexer:v5.15.0
+        ports:
+          - 9088:9088
+          - 16534:16534
+    steps:
+    - uses: actions/checkout@v4
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: grpc
+        tools: composer
+        coverage: none
+    - name: Assert grpc extension IS loaded
+      run: php -r 'exit(extension_loaded("grpc") ? 0 : 1);'
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-interaction --no-progress
+    - name: Run Unit suite (with ext-grpc present)
+      run: vendor/bin/phpunit --testsuite Unit
+    - name: Run GrpcFeature suite (gRPC integration)
+      run: vendor/bin/phpunit --testsuite GrpcFeature
+      env:
+        REINDEXER_GRPC_TARGET: "127.0.0.1:16534"
+
+  # Mutation testing on the Unit suite. Threshold is the achieved MSI (98%)
+  # minus a small buffer for new-code noise.
+  mutation:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+        tools: composer
+        coverage: xdebug
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-interaction --no-progress
+    - name: Run infection
+      run: vendor/bin/infection --threads=max --no-progress --min-msi=95
+      env:
+        XDEBUG_MODE: coverage

@@ -19,7 +19,9 @@ abstract class Entity
     {
         $result = [];
         $reflectionClass = new \ReflectionClass($instance);
-        $properties = $reflectionClass->getProperties(ReflectionProperty::IS_PRIVATE);
+        $properties = $reflectionClass->getProperties(
+            ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED
+        );
 
         foreach ($properties as $property) {
             $property->setAccessible(true);

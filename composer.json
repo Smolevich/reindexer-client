@@ -15,7 +15,7 @@
         "php-coveralls/php-coveralls": "^2.7",
         "grpc/grpc": "^1.57",
         "google/protobuf": "^4.26 || ^5.0",
-        "infection/infection": "^0.34.1",
+        "infection/infection": "^0.29 || ^0.34",
         "phpbench/phpbench": "^1.7"
     },
     "suggest": {

@@ -50,7 +50,7 @@
         "check-fix": "php-cs-fixer fix --dry-run",
         "bench-seed": "php benchmarks/seed.php",
         "bench-load": "php benchmarks/load.php",
-        "bench": "phpbench run --report=aggregate"
+        "bench": "phpbench run --report=transport"
     },
     "config": {
         "allow-plugins": {

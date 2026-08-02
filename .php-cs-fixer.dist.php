@@ -6,7 +6,7 @@ $finder = PhpCsFixer\Finder::create()
     ->ignoreDotFiles(false)
     ->ignoreVCSIgnored(true)
     ->in(__DIR__)
-    ->exclude(['vendor', '.docker'])
+    ->exclude(['vendor', '.docker', 'src/Grpc/Generated'])
     ->name('*.php')
 ;
 

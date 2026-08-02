@@ -14,7 +14,7 @@ services:
     networks: ['app-stack']
 
   reindexer:
-    image: reindexer/reindexer
+    image: reindexer/reindexer:v5.15.0
     volumes:
       - reindexer-data:/data
     networks: ['app-stack']

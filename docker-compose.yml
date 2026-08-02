@@ -33,6 +33,7 @@ services:
     ports:
       - 6534:6534
       - 9088:9088
+      - 16534:16534
     networks: ['app-stack']
 
 volumes:

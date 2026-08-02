@@ -16,6 +16,9 @@
     <testsuite name="Feature">
       <directory suffix="Test.php">tests/Feature</directory>
     </testsuite>
+    <testsuite name="GrpcFeature">
+      <directory suffix="Test.php">tests/GrpcFeature</directory>
+    </testsuite>
   </testsuites>
   <source>
     <include>
@@ -24,5 +27,6 @@
   </source>
   <php>
     <env name="REINDEXER_HOST" value=""/>
+    <env name="REINDEXER_GRPC_TARGET" value=""/>
   </php>
 </phpunit>

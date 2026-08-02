@@ -13,10 +13,25 @@ services:
       - reindexer
     networks: ['app-stack']
 
+  php-grpc:
+    build:
+      context: .
+      dockerfile: Dockerfile.grpc
+    environment:
+      REINDEXER_HOST: http://reindexer:9088
+      REINDEXER_GRPC_TARGET: reindexer:16534
+    volumes:
+      - .:/app:cached
+    depends_on:
+      - reindexer
+    networks: ['app-stack']
+
   reindexer:
     image: reindexer/reindexer:v5.15.0
     volumes:
       - reindexer-data:/data
+    ports:
+      - 16534:16534
     networks: ['app-stack']
 
 volumes:

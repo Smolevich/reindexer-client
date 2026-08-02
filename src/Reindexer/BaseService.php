@@ -41,4 +41,13 @@ abstract class BaseService
 
         return $this;
     }
+
+    /**
+     * Encodes a single URI path segment (database, namespace, index or meta-key
+     * name) so characters like "/", "?" or "#" cannot alter the endpoint.
+     */
+    protected function encodePathSegment(string $segment): string
+    {
+        return rawurlencode($segment);
+    }
 }

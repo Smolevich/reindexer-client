@@ -22,6 +22,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Reindexer\Benchmarks\Support\HfModels;
 use Reindexer\Client\Api;
+use Reindexer\Grpc\ModifyMode;
 use Reindexer\Transport\Grpc\GrpcClient;
 
 const PROGRESS_STEP = 100_000;
@@ -123,14 +124,16 @@ if ($transport === 'http') {
     foreach (HfModels::readNdjson($file, $limit, $offset) as $line) {
         $batch[] = $line;
         if (count($batch) >= $batchSize) {
-            $client->modifyItems($ns, $batch);
+            // INSERT keeps the write semantics symmetric with the HTTP loader
+            // (batched POST /items), so transport numbers stay comparable.
+            $client->modifyItems($ns, $batch, ModifyMode::INSERT);
             $loaded += count($batch);
             $batch = [];
             $progress($loaded);
         }
     }
     if ($batch !== []) {
-        $client->modifyItems($ns, $batch);
+        $client->modifyItems($ns, $batch, ModifyMode::INSERT);
         $loaded += count($batch);
     }
 }

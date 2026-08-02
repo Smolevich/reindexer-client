@@ -90,6 +90,36 @@ class QueryTest extends TestCase
         );
     }
 
+    public function testCreateSdlQueryByHttpPostAcceptsSdlQueryEntity(): void
+    {
+        // regression: passing an SdlQuery entity used to raise a TypeError
+        $query = new class () extends \Reindexer\Entities\SdlQuery {
+            public function __construct()
+            {
+                $this->namespace = 'items';
+                $this->limit = 5;
+                $this->filters = [['field' => 'name', 'cond' => 'EQ', 'value' => 'значение']];
+            }
+        };
+
+        $this->service->createSdlQueryByHttpPost($query);
+
+        $call = $this->api->lastCall();
+        $this->assertSame('POST', $call['method']);
+        $this->assertSame('/api/v1/db/db/query', $call['uri']);
+        $this->assertSame(
+            '{"namespace":"items","limit":5,"filters":[{"field":"name","cond":"EQ","value":"значение"}]}',
+            $call['body']
+        );
+    }
+
+    public function testCreateSdlQueryByHttpPostKeepsUnicodeUnescaped(): void
+    {
+        $this->service->createSdlQueryByHttpPost(['namespace' => 'ns', 'filters' => [['value' => 'кириллица']]]);
+
+        $this->assertStringContainsString('"кириллица"', $this->api->lastCall()['body']);
+    }
+
     public function testVersionOverrideIsRespected(): void
     {
         $this->service->setVersion('v9');

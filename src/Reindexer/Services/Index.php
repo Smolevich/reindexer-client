@@ -15,14 +15,14 @@ class Index extends BaseService
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/indexes',
             $this->version,
-            $database,
-            $namespace
+            $this->encodePathSegment($database),
+            $this->encodePathSegment($namespace)
         );
 
         return $this->client->request(
             'POST',
             $uri,
-            json_encode($index->getBody(), JSON_UNESCAPED_UNICODE),
+            json_encode($index->getBody(), JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
             $this->defaultHeaders
         );
     }
@@ -32,8 +32,8 @@ class Index extends BaseService
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/indexes',
             $this->version,
-            $database,
-            $namespace
+            $this->encodePathSegment($database),
+            $this->encodePathSegment($namespace)
         );
 
         return $this->client->request(
@@ -49,9 +49,9 @@ class Index extends BaseService
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/indexes/%s',
             $this->version,
-            $database,
-            $namespace,
-            $name
+            $this->encodePathSegment($database),
+            $this->encodePathSegment($namespace),
+            $this->encodePathSegment($name)
         );
 
         return $this->client->request(

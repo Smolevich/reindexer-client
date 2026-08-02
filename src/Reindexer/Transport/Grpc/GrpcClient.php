@@ -75,13 +75,30 @@ class GrpcClient
 
     public static function assertGrpcAvailable(): void
     {
-        if (!extension_loaded('grpc')) {
+        self::assertGrpcDependencies(
+            extension_loaded('grpc'),
+            class_exists(\Grpc\BaseStub::class),
+            class_exists(\Google\Protobuf\Internal\Message::class),
+        );
+    }
+
+    /**
+     * @internal split from assertGrpcAvailable() so every missing-dependency
+     *           branch stays unit-testable in environments where the real
+     *           packages are installed
+     */
+    public static function assertGrpcDependencies(
+        bool $extensionLoaded,
+        bool $grpcPackageInstalled,
+        bool $protobufPackageInstalled,
+    ): void {
+        if (!$extensionLoaded) {
             throw new \RuntimeException(
                 'reindexer-client: gRPC transport requires the "grpc" PHP extension (pecl install grpc).'
             );
         }
 
-        if (!class_exists(\Grpc\BaseStub::class)) {
+        if (!$grpcPackageInstalled || !$protobufPackageInstalled) {
             throw new \RuntimeException(
                 'reindexer-client: gRPC transport requires composer packages grpc/grpc and google/protobuf.'
             );
@@ -349,24 +366,30 @@ class GrpcClient
         $dbName = $this->requireDbName();
         $call = $this->stub->ModifyItem();
 
-        foreach ($items as $item) {
-            $request = new ModifyItemRequest();
-            $request->setDbName($dbName)
-                ->setNsName($nsName)
-                ->setMode($mode)
-                ->setEncodingType(EncodingType::JSON)
-                ->setData($this->encodeJson($item));
-            $call->write($request);
+        try {
+            foreach ($items as $item) {
+                $request = new ModifyItemRequest();
+                $request->setDbName($dbName)
+                    ->setNsName($nsName)
+                    ->setMode($mode)
+                    ->setEncodingType(EncodingType::JSON)
+                    ->setData($this->encodeJson($item));
+                $call->write($request);
+            }
+
+            $call->writesDone();
+
+            /** @var ErrorResponse|null $response */
+            while (($response = $call->read()) !== null) {
+                $this->throwIfError($response);
+            }
+
+            $this->assertStatusOk($call->getStatus());
+        } catch (\Throwable $e) {
+            $call->cancel();
+
+            throw $e;
         }
-
-        $call->writesDone();
-
-        /** @var ErrorResponse|null $response */
-        while (($response = $call->read()) !== null) {
-            $this->throwIfError($response);
-        }
-
-        $this->assertStatusOk($call->getStatus());
     }
 
     public function beginTransaction(string $nsName): int
@@ -388,23 +411,29 @@ class GrpcClient
     {
         $call = $this->stub->AddTxItem();
 
-        foreach ($items as $item) {
-            $request = new AddTxItemRequest();
-            $request->setId($transactionId)
-                ->setMode($mode)
-                ->setEncodingType(EncodingType::JSON)
-                ->setData($this->encodeJson($item));
-            $call->write($request);
+        try {
+            foreach ($items as $item) {
+                $request = new AddTxItemRequest();
+                $request->setId($transactionId)
+                    ->setMode($mode)
+                    ->setEncodingType(EncodingType::JSON)
+                    ->setData($this->encodeJson($item));
+                $call->write($request);
+            }
+
+            $call->writesDone();
+
+            /** @var ErrorResponse|null $response */
+            while (($response = $call->read()) !== null) {
+                $this->throwIfError($response);
+            }
+
+            $this->assertStatusOk($call->getStatus());
+        } catch (\Throwable $e) {
+            $call->cancel();
+
+            throw $e;
         }
-
-        $call->writesDone();
-
-        /** @var ErrorResponse|null $response */
-        while (($response = $call->read()) !== null) {
-            $this->throwIfError($response);
-        }
-
-        $this->assertStatusOk($call->getStatus());
     }
 
     public function commitTransaction(int $transactionId): void
@@ -479,20 +508,31 @@ class GrpcClient
      */
     private function streamResults(object $call): Generator
     {
-        foreach ($call->responses() as $response) {
-            $this->throwIfError($response->getErrorResponse());
+        $completed = false;
 
-            $data = $response->getData();
-            if ($data === '') {
-                continue;
+        try {
+            foreach ($call->responses() as $response) {
+                $this->throwIfError($response->getErrorResponse());
+
+                $data = $response->getData();
+                if ($data === '') {
+                    continue;
+                }
+
+                foreach ($this->decodeJsonResults($data) as $item) {
+                    yield $item;
+                }
             }
 
-            foreach ($this->decodeJsonResults($data) as $item) {
-                yield $item;
+            $this->assertStatusOk($call->getStatus());
+            $completed = true;
+        } finally {
+            // An abandoned generator (early break) or an exception must not
+            // leave the server-side stream running.
+            if (!$completed) {
+                $call->cancel();
             }
         }
-
-        $this->assertStatusOk($call->getStatus());
     }
 
     /**

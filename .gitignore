@@ -11,3 +11,4 @@ coverage.xml
 /benchmarks/data/*
 !/benchmarks/data/sample-100.ndjson
 /.phpbench/
+.claude/

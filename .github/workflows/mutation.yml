@@ -1,0 +1,26 @@
+name: Mutation
+
+on:
+  push:
+    branches:
+    tags:
+  pull_request:
+
+jobs:
+  # Mutation testing on the Unit suite. Threshold is the achieved MSI (98%)
+  # minus a small buffer for new-code noise.
+  mutation:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+        tools: composer
+        coverage: xdebug
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-interaction --no-progress
+    - name: Run infection
+      run: vendor/bin/infection --threads=max --no-progress --min-msi=95
+      env:
+        XDEBUG_MODE: coverage

@@ -21,6 +21,8 @@
 
 declare(strict_types=1);
 
+ini_set('memory_limit', '1G');
+
 require __DIR__ . '/../../vendor/autoload.php';
 
 use Meilisearch\Client;

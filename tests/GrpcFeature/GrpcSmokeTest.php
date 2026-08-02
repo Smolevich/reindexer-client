@@ -13,7 +13,7 @@ use Reindexer\Transport\Grpc\GrpcClient;
 final class GrpcSmokeTest extends TestCase
 {
     private const DB_NAME = 'grpc_smoke_db';
-    private const NS_NAME = 'grpc_smoke';
+    private string $nsName;
 
     private GrpcClient $client;
 
@@ -28,6 +28,7 @@ final class GrpcSmokeTest extends TestCase
             $this->markTestSkipped('REINDEXER_GRPC_TARGET is not set.');
         }
 
+        $this->nsName = uniqid('grpc_smoke_');
         $this->client = new GrpcClient($target);
         $this->connectCreatingDatabase();
         $this->dropNamespaceIfExists();
@@ -44,29 +45,29 @@ final class GrpcSmokeTest extends TestCase
     {
         $client = $this->client;
 
-        $client->openNamespace(self::NS_NAME);
-        $this->assertContains(self::NS_NAME, $client->enumNamespaces());
+        $client->openNamespace($this->nsName);
+        $this->assertContains($this->nsName, $client->enumNamespaces());
 
-        $client->addIndex(self::NS_NAME, [
+        $client->addIndex($this->nsName, [
             'name' => 'id',
             'fieldType' => 'int',
             'indexType' => 'hash',
             'isPk' => true,
         ]);
-        $client->addIndex(self::NS_NAME, [
+        $client->addIndex($this->nsName, [
             'name' => 'name',
             'fieldType' => 'string',
             'indexType' => 'hash',
         ]);
 
-        $client->modifyItems(self::NS_NAME, [
+        $client->modifyItems($this->nsName, [
             ['id' => 1, 'name' => 'first'],
             ['id' => 2, 'name' => 'second'],
             ['id' => 3, 'name' => 'third'],
         ]);
 
         $items = iterator_to_array(
-            $client->execSql(sprintf('SELECT * FROM %s ORDER BY id', self::NS_NAME)),
+            $client->execSql(sprintf('SELECT * FROM %s ORDER BY id', $this->nsName)),
             false
         );
         $this->assertCount(3, $items);
@@ -75,7 +76,7 @@ final class GrpcSmokeTest extends TestCase
 
         $found = iterator_to_array(
             $client->select([
-                'namespace' => self::NS_NAME,
+                'namespace' => $this->nsName,
                 'filters' => [
                     ['field' => 'id', 'cond' => 'EQ', 'value' => 2],
                 ],
@@ -85,32 +86,32 @@ final class GrpcSmokeTest extends TestCase
         $this->assertCount(1, $found);
         $this->assertSame('second', $found[0]['name']);
 
-        $transactionId = $client->beginTransaction(self::NS_NAME);
+        $transactionId = $client->beginTransaction($this->nsName);
         $client->addTxItems($transactionId, [
             ['id' => 4, 'name' => 'fourth'],
         ]);
         $client->commitTransaction($transactionId);
 
         $afterCommit = iterator_to_array(
-            $client->execSql(sprintf('SELECT * FROM %s', self::NS_NAME)),
+            $client->execSql(sprintf('SELECT * FROM %s', $this->nsName)),
             false
         );
         $this->assertCount(4, $afterCommit);
 
-        $transactionId = $client->beginTransaction(self::NS_NAME);
+        $transactionId = $client->beginTransaction($this->nsName);
         $client->addTxItems($transactionId, [
             ['id' => 5, 'name' => 'fifth'],
         ]);
         $client->rollbackTransaction($transactionId);
 
         $afterRollback = iterator_to_array(
-            $client->execSql(sprintf('SELECT * FROM %s', self::NS_NAME)),
+            $client->execSql(sprintf('SELECT * FROM %s', $this->nsName)),
             false
         );
         $this->assertCount(4, $afterRollback);
 
-        $client->dropNamespace(self::NS_NAME);
-        $this->assertNotContains(self::NS_NAME, $client->enumNamespaces());
+        $client->dropNamespace($this->nsName);
+        $this->assertNotContains($this->nsName, $client->enumNamespaces());
     }
 
     private function connectCreatingDatabase(): void
@@ -126,7 +127,7 @@ final class GrpcSmokeTest extends TestCase
     private function dropNamespaceIfExists(): void
     {
         try {
-            $this->client->dropNamespace(self::NS_NAME);
+            $this->client->dropNamespace($this->nsName);
         } catch (GrpcException) {
             // namespace does not exist, nothing to clean up
         }

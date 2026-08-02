@@ -113,7 +113,7 @@ class GrpcClientTest extends TestCase
     {
         $call = $this->getMockBuilder(ServerStreamingCall::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['responses', 'getStatus'])
+            ->onlyMethods(['responses', 'getStatus', 'cancel'])
             ->getMock();
         $call->method('responses')->willReturnCallback(static function () use ($responses) {
             yield from $responses;
@@ -579,6 +579,49 @@ class GrpcClientTest extends TestCase
         iterator_to_array($this->client->execSql('SELECT 1'), false);
     }
 
+    public function testEarlyBreakFromResultStreamCancelsServerCall(): void
+    {
+        // regression: abandoning the generator (break) never cancelled the
+        // server-side stream
+        $this->connectClient();
+        $call = $this->streamingCall([
+            $this->queryResult('[{"id":1},{"id":2}]'),
+            $this->queryResult('[{"id":3}]'),
+        ]);
+        $call->expects($this->once())->method('cancel');
+        $this->stub->method('ExecSql')->willReturn($call);
+
+        $results = $this->client->execSql('SELECT * FROM items');
+        foreach ($results as $item) {
+            $this->assertSame(['id' => 1], $item);
+            break;
+        }
+        unset($results); // destroys the generator, must trigger cancel()
+    }
+
+    public function testFullyConsumedResultStreamIsNotCancelled(): void
+    {
+        $this->connectClient();
+        $call = $this->streamingCall([$this->queryResult('[{"id":1}]')]);
+        $call->expects($this->never())->method('cancel');
+        $this->stub->method('ExecSql')->willReturn($call);
+
+        $items = iterator_to_array($this->client->execSql('SELECT 1'), false);
+
+        $this->assertSame([['id' => 1]], $items);
+    }
+
+    public function testStreamErrorCancelsServerCall(): void
+    {
+        $this->connectClient();
+        $call = $this->streamingCall([$this->queryResult('{"broken":')]);
+        $call->expects($this->once())->method('cancel');
+        $this->stub->method('ExecSql')->willReturn($call);
+
+        $this->expectException(GrpcException::class);
+        iterator_to_array($this->client->execSql('SELECT 1'), false);
+    }
+
     public function testSelectEncodesArrayDslWithUnescapedUnicode(): void
     {
         $this->connectClient();
@@ -655,7 +698,7 @@ class GrpcClientTest extends TestCase
     {
         $call = $this->getMockBuilder(BidiStreamingCall::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['write', 'writesDone', 'read', 'getStatus'])
+            ->onlyMethods(['write', 'writesDone', 'read', 'getStatus', 'cancel'])
             ->getMock();
         $call->method('write')->willReturnCallback(function ($request) use (&$written) {
             $written[] = $request;
@@ -943,6 +986,82 @@ class GrpcClientTest extends TestCase
         $this->stub->method('ModifyItem')->willReturn($call);
 
         $this->client->modifyItems('items', [['id' => 1]]);
+    }
+
+    public function testModifyItemsCancelsStreamWhenItemsIterableThrows(): void
+    {
+        // regression: an exception mid-write left the bidi stream open
+        $this->connectClient();
+        $written = [];
+        $call = $this->bidiCall($written);
+        $call->expects($this->once())->method('cancel');
+        $call->expects($this->never())->method('writesDone');
+        $this->stub->method('ModifyItem')->willReturn($call);
+
+        $items = static function (): \Generator {
+            yield ['id' => 1];
+            throw new \RuntimeException('source failed');
+        };
+
+        try {
+            $this->client->modifyItems('items', $items());
+            $this->fail('Expected RuntimeException');
+        } catch (\RuntimeException $e) {
+            $this->assertSame('source failed', $e->getMessage());
+        }
+
+        $this->assertCount(1, $written);
+    }
+
+    public function testModifyItemsCancelsStreamOnServerError(): void
+    {
+        $this->connectClient();
+        $written = [];
+        $call = $this->bidiCall($written, [$this->failedError(ErrorCode::errCodeLogic, 'PK is missing')]);
+        $call->expects($this->once())->method('cancel');
+        $this->stub->method('ModifyItem')->willReturn($call);
+
+        $this->expectException(GrpcException::class);
+        $this->client->modifyItems('items', [['name' => 'no-pk']]);
+    }
+
+    public function testModifyItemsDoesNotCancelOnSuccess(): void
+    {
+        $this->connectClient();
+        $written = [];
+        $call = $this->bidiCall($written);
+        $call->expects($this->never())->method('cancel');
+        $this->stub->method('ModifyItem')->willReturn($call);
+
+        $this->client->modifyItems('items', [['id' => 1]]);
+    }
+
+    public function testAddTxItemsCancelsStreamWhenItemsIterableThrows(): void
+    {
+        $this->connectClient();
+        $written = [];
+        $call = $this->bidiCall($written);
+        $call->expects($this->once())->method('cancel');
+        $this->stub->method('AddTxItem')->willReturn($call);
+
+        $items = static function (): \Generator {
+            throw new \RuntimeException('source failed');
+            yield ['id' => 1]; // @phpstan-ignore-line
+        };
+
+        $this->expectException(\RuntimeException::class);
+        $this->client->addTxItems(1, $items());
+    }
+
+    public function testAddTxItemsDoesNotCancelOnSuccess(): void
+    {
+        $this->connectClient();
+        $written = [];
+        $call = $this->bidiCall($written);
+        $call->expects($this->never())->method('cancel');
+        $this->stub->method('AddTxItem')->willReturn($call);
+
+        $this->client->addTxItems(1, [['id' => 1]]);
     }
 
     public function testAddTxItemsSignalsEndOfWrites(): void

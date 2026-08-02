@@ -1,12 +1,12 @@
-ARG PHP_VERSION=8.1
-ARG COMPOSER_VERSION=2.4
+ARG PHP_VERSION=8.4
+ARG COMPOSER_VERSION=2.8
 
-FROM composer:${COMPOSER_VERSION} as composer-image
+FROM composer:${COMPOSER_VERSION} AS composer-image
 FROM php:${PHP_VERSION}-fpm-alpine
 RUN apk add --update --no-cache -t .php-build-deps \
-    autoconf cmake automake gcc g++ make
+    autoconf cmake automake gcc g++ make linux-headers
 
-RUN pecl install xdebug-3.1.5 && \
+RUN pecl install xdebug && \
     docker-php-ext-enable xdebug
 
 ADD .docker/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini

@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reindexer\Services;
 
 use Reindexer\BaseService;
+use Reindexer\Response;
 
 class Query extends BaseService
 {
-    public string $database;
+    public string $database = '';
 
     public function getDatabase(): string
     {
@@ -18,7 +21,7 @@ class Query extends BaseService
         $this->database = $database;
     }
 
-    public function createByHttpGet(string $query)
+    public function createByHttpGet(string $query): Response
     {
         $uri = sprintf('/api/%s/db/%s/query?q=%s', $this->version, $this->getDatabase(), urlencode($query));
 
@@ -30,7 +33,7 @@ class Query extends BaseService
         );
     }
 
-    public function createSqlQueryByHttpPost(string $query)
+    public function createSqlQueryByHttpPost(string $query): Response
     {
         $uri = sprintf('/api/%s/db/%s/sqlquery', $this->version, $this->getDatabase());
 
@@ -42,14 +45,17 @@ class Query extends BaseService
         );
     }
 
-    public function createSdlQueryByHttpPost(string $query)
+    /**
+     * @param array<string, mixed>|string $query Query-DSL as array or raw JSON string
+     */
+    public function createSdlQueryByHttpPost(array|string $query): Response
     {
         $uri = sprintf('/api/%s/db/%s/query', $this->version, $this->getDatabase());
 
         return $this->client->request(
             'POST',
             $uri,
-            json_encode($query),
+            is_array($query) ? json_encode($query, JSON_UNESCAPED_UNICODE) : $query,
             $this->defaultHeaders
         );
     }

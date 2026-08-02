@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reindexer\Services;
 
 use GuzzleHttp\Psr7\Uri;
@@ -30,7 +32,7 @@ class Namespaces extends BaseService
         );
 
         if (!empty($sortOrder)) {
-            $uri .= '?sort_order='. $sortOrder;
+            $uri .= '?sort_order=' . $sortOrder;
         }
 
         return $this->client->request(
@@ -46,9 +48,9 @@ class Namespaces extends BaseService
         $body = [
             'name' => $name,
             'storage' => [
-                'enabled' => true
+                'enabled' => true,
             ],
-            'indexes' => []
+            'indexes' => [],
         ];
 
         foreach ($indexes as $index) {
@@ -65,7 +67,7 @@ class Namespaces extends BaseService
         return $this->client->request(
             'POST',
             $uri,
-            json_encode($body),
+            json_encode($body, JSON_UNESCAPED_UNICODE),
             $this->defaultHeaders
         );
     }
@@ -154,6 +156,7 @@ class Namespaces extends BaseService
                 $name
             )
         );
+        $params = [];
 
         if ($limit) {
             $params['limit'] = $limit;
@@ -195,7 +198,7 @@ class Namespaces extends BaseService
         return $this->client->request(
             'PUT',
             (string)$uri,
-            json_encode(['key' => $key, 'value' => $value]),
+            json_encode(['key' => $key, 'value' => $value], JSON_UNESCAPED_UNICODE),
             $this->defaultHeaders
         );
     }
@@ -213,7 +216,7 @@ class Namespaces extends BaseService
         );
 
         return $this->client->request(
-            'PUT',
+            'GET',
             (string)$uri,
             null,
             $this->defaultHeaders
@@ -234,7 +237,7 @@ class Namespaces extends BaseService
         return $this->client->request(
             'PUT',
             (string)$uri,
-            json_encode($config),
+            json_encode($config, JSON_UNESCAPED_UNICODE),
             $this->defaultHeaders
         );
     }

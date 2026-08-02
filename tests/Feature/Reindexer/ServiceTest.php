@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Reindexer;
 
 use Reindexer\Client\Api;
 use Reindexer\Entities\Index;
+use Reindexer\Enum\CollateMode;
+use Reindexer\Enum\FieldType;
 use Reindexer\Enum\IndexType;
-use Reindexer\Response;
 use Reindexer\Services\Database;
 use Reindexer\Services\Index as ReindexerIndex;
 use Reindexer\Services\Item;
@@ -16,6 +19,8 @@ use Tests\Unit\Reindexer\BaseTest;
 
 class ServiceTest extends BaseTest
 {
+    private array $config;
+    private Api $api;
     private string $namespaceName = 'unittests_ns';
     private string $database = 'unittests';
     private Namespaces $nsService;
@@ -29,7 +34,7 @@ class ServiceTest extends BaseTest
     {
         $host = getenv('REINDEXER_HOST');
         $this->config = [
-            'host' => $host
+            'host' => $host,
         ];
         $this->api = new Api($this->config['host']);
         $this->dbService = new Database($this->api);
@@ -52,28 +57,32 @@ class ServiceTest extends BaseTest
 
     public function testCreateAndDropDatabase()
     {
+        $before = $this->dbService->getList()->getDecodedResponseBody(true);
         $response = $this->dbService->create('unittests_2');
         $this->assertSame(
             [
                 'success' => true,
                 'response_code' => 200,
-                'description' => ''
+                'description' => '',
             ],
             $response->getDecodedResponseBody(true)
         );
+        $created = $this->dbService->getList()->getDecodedResponseBody(true);
+        $this->assertContains('unittests_2', $created['items']);
         $this->dbService->drop('unittests_2');
         $databases = $this->dbService->getList()->getDecodedResponseBody(true);
-        $this->assertEquals(1, count($databases['items']));
+        $this->assertNotContains('unittests_2', $databases['items']);
+        $this->assertCount(count($before['items']), $databases['items']);
     }
 
     public function testCreateIndexes()
     {
         $indexId = (new Index())
-            ->setCollateMode('none')
+            ->setCollateMode(CollateMode::NONE)
             ->setName('id')
             ->setIsPk(true)
-            ->setIndexType(\Reindexer\Enum\IndexType::HASH)
-            ->setFieldType('int')
+            ->setIndexType(IndexType::HASH)
+            ->setFieldType(FieldType::INT)
             ->setJsonPaths(['id'])
             ->setIsDense(true);
         $this->indexService->create($indexId, $this->database, $this->namespaceName);
@@ -81,33 +90,33 @@ class ServiceTest extends BaseTest
         $this->assertEquals(1, $body['total_items']);
         $this->assertEquals($indexId->getName(), $body['items'][0]['name']);
         $this->assertEquals($indexId->isPk(), $body['items'][0]['is_pk']);
-        $this->assertEquals($indexId->getIndexType(), $body['items'][0]['index_type']);
+        $this->assertEquals($indexId->getIndexType()->value, $body['items'][0]['index_type']);
         $this->assertEquals($indexId->getJsonPaths(), $body['items'][0]['json_paths']);
         $this->assertEquals($indexId->isDense(), $body['items'][0]['is_dense']);
-        $this->assertEquals($indexId->getCollateMode(), $body['items'][0]['collate_mode']);
+        $this->assertEquals($indexId->getCollateMode()->value, $body['items'][0]['collate_mode']);
     }
 
     public function testQuery()
     {
         $items = HabrPost::DATA;
         $indexLink = (new Index())
-            ->setCollateMode('none')
+            ->setCollateMode(CollateMode::NONE)
             ->setName('link')
             ->setIndexType(IndexType::TEXT)
-            ->setFieldType('string')
+            ->setFieldType(FieldType::STRING)
             ->setJsonPaths(['link']);
         $indexUserNickname = (new Index())
-            ->setCollateMode('none')
+            ->setCollateMode(CollateMode::NONE)
             ->setName('user_nickname')
-            ->setIndexType(IndexTYpe::HASH)
-            ->setFieldType('string')
+            ->setIndexType(IndexType::HASH)
+            ->setFieldType(FieldType::STRING)
             ->setJsonPaths(['user_nickname']);
         $indexId = (new Index())
-            ->setCollateMode('none')
+            ->setCollateMode(CollateMode::NONE)
             ->setName('id')
             ->setIsPk(true)
             ->setIndexType(IndexType::HASH)
-            ->setFieldType('int')
+            ->setFieldType(FieldType::INT)
             ->setJsonPaths(['id'])
             ->setIsDense(true);
         $this->indexService->create($indexLink, $this->database, $this->namespaceName);
@@ -131,7 +140,6 @@ class ServiceTest extends BaseTest
         $this->assertEquals(3, count($response->getDecodedResponseBody()->items));
     }
 
-
     public function testAddHeaders()
     {
         $headers = ['User-Agent' => 'reindexer-php-client'];
@@ -141,7 +149,7 @@ class ServiceTest extends BaseTest
             [
                 'success' => true,
                 'response_code' => 200,
-                'description' => ''
+                'description' => '',
             ],
             $response->getDecodedResponseBody(true)
         );
@@ -162,7 +170,7 @@ class ServiceTest extends BaseTest
             [
                 'success' => true,
                 'response_code' => 200,
-                'description' => ''
+                'description' => '',
             ],
             $response->getDecodedResponseBody(true)
         );
@@ -177,17 +185,17 @@ class ServiceTest extends BaseTest
     public function testSchema()
     {
         $config = [
-            'type' =>  'namespaces',
+            'type' => 'namespaces',
             'namespaces' => [
-                'wal_size' => 5000000
-            ]
+                'wal_size' => 5000000,
+            ],
         ];
         $response = $this->nsService->schema($this->namespaceName, $config);
         $this->assertSame(
             [
                 'success' => true,
                 'response_code' => 200,
-                'description' => ''
+                'description' => '',
             ],
             $response->getDecodedResponseBody(true)
         );
@@ -200,8 +208,8 @@ class ServiceTest extends BaseTest
             'replication' => [
                 'role' => 'master',
                 'cluster_id' => 2,
-                'server_id' =>  0
-            ]
+                'server_id' => 0,
+            ],
         ];
         $this->itemService->setNamespace(urlencode('#config'));
         $response = $this->itemService->update($config);

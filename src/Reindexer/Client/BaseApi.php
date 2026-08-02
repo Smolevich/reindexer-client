@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reindexer\Client;
 
 use Reindexer\Response;
 
 abstract class BaseApi
 {
-    protected $host;
-    protected $config;
+    protected string $host;
+    protected array $config;
 
     public function __construct(string $host, array $config = [])
     {
@@ -20,10 +22,10 @@ abstract class BaseApi
         return $this->host;
     }
 
-    public function setHost(string $host)
+    public function setHost(string $host): void
     {
         $this->host = $host;
     }
 
-    abstract public function request(string $method, string $uri, string $body = null, array $headers = []): Response;
+    abstract public function request(string $method, string $uri, ?string $body = null, array $headers = []): Response;
 }

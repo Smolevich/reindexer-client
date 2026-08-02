@@ -1,0 +1,17 @@
+ARG PHP_VERSION=8.4
+ARG COMPOSER_VERSION=2.8
+
+FROM composer:${COMPOSER_VERSION} AS composer-image
+
+# Debian-based image: pecl grpc compiles noticeably easier than on alpine
+# (no linux-headers dance) and this heavy layer is cached by docker.
+FROM php:${PHP_VERSION}-cli
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends zlib1g-dev git unzip \
+    && rm -rf /var/lib/apt/lists/* \
+    && MAKEFLAGS="-j$(nproc)" pecl install grpc \
+    && docker-php-ext-enable grpc
+
+COPY --from=composer-image /usr/bin/composer /usr/local/bin/composer
+
+WORKDIR /app

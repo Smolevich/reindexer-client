@@ -1,0 +1,12 @@
+{
+    "$schema": "./vendor/phpbench/phpbench/phpbench.schema.json",
+    "runner.bootstrap": "vendor/autoload.php",
+    "runner.path": "benchmarks",
+    "runner.file_pattern": "*Bench.php",
+    "report.generators": {
+        "transport": {
+            "extends": "aggregate",
+            "cols": ["benchmark", "subject", "revs", "its", "mean", "mode", "rstdev"]
+        }
+    }
+}

@@ -1,3 +1,13 @@
 /vendor/
 .idea
 /.php_cs.cache
+/.phpunit.cache/
+composer.lock
+coverage.xml
+/build/
+.php-cs-fixer.cache
+/infection.log
+/infection-summary.log
+/benchmarks/data/*
+!/benchmarks/data/sample-100.ndjson
+/.phpbench/

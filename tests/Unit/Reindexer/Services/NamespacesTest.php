@@ -1,15 +1,19 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Tests\Unit\Reindexer\Services;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\MockObject;
 use Reindexer\Services\Namespaces;
 use Tests\Unit\Reindexer\BaseTest;
 
+#[CoversClass(Namespaces::class)]
 class NamespacesTest extends BaseTest
 {
-    /**
-     * @var Namespaces
-     */
-    private $service;
+    private MockObject $api;
+    private Namespaces $service;
 
     public function setUp(): void
     {
@@ -29,12 +33,12 @@ class NamespacesTest extends BaseTest
         $responseData = [
             'items' => [
                 [
-                    'name' => 'namespace_one'
+                    'name' => 'namespace_one',
                 ],
                 [
-                    'name' => 'namespace_two'
-                ]
-            ]
+                    'name' => 'namespace_two',
+                ],
+            ],
         ];
         $response = $this->createApiResponseMock(['getResponseBody']);
         $response->method('getResponseBody')->willReturn(json_encode($responseData));
@@ -43,34 +47,31 @@ class NamespacesTest extends BaseTest
         $this->assertEquals(json_encode($responseData), $actual->getResponseBody());
     }
 
-    /**
-     * @covers \Reindexer\Services\Namespaces
-     */
     public function testGet()
     {
         $responseData = [
             'name' => 'namespace_one',
             'storage' => [
-                'enabled' => true
+                'enabled' => true,
             ],
             'indexes' => [
                 [
-                    "name" => "id",
-                    "field_type" => "int",
-                    "index_type" => "hash",
-                    "is_pk" => true,
-                    "is_array" => false,
-                    "is_dense" => true,
-                    "is_sparse" => false,
-                    "collate_mode" => "none",
-                    "sort_order_letters" => "",
-                    "expire_after" => 0,
-                    "config" => [],
-                    "json_paths" => [
-                        "id"
-                    ]
-                ]
-            ]
+                    'name' => 'id',
+                    'field_type' => 'int',
+                    'index_type' => 'hash',
+                    'is_pk' => true,
+                    'is_array' => false,
+                    'is_dense' => true,
+                    'is_sparse' => false,
+                    'collate_mode' => 'none',
+                    'sort_order_letters' => '',
+                    'expire_after' => 0,
+                    'config' => [],
+                    'json_paths' => [
+                        'id',
+                    ],
+                ],
+            ],
         ];
         $response = $this->createApiResponseMock(['getResponseBody']);
         $response->method('getResponseBody')->willReturn(json_encode($responseData));
@@ -82,9 +83,9 @@ class NamespacesTest extends BaseTest
     public function testTruncate()
     {
         $responseData = [
-            "success" =>  true,
-            "response_code" => 0,
-            "description" => "string"
+            'success' => true,
+            'response_code' => 0,
+            'description' => 'string',
         ];
         $response = $this->createApiResponseMock(['getResponseBody']);
         $response->method('getResponseBody')->willReturn(json_encode($responseData));
@@ -96,9 +97,9 @@ class NamespacesTest extends BaseTest
     public function testRename()
     {
         $responseData = [
-            "success" =>  true,
-            "response_code" => 0,
-            "description" => "string"
+            'success' => true,
+            'response_code' => 0,
+            'description' => 'string',
         ];
         $response = $this->createApiResponseMock(['getResponseBody']);
         $response->method('getResponseBody')->willReturn(json_encode($responseData));
@@ -110,9 +111,9 @@ class NamespacesTest extends BaseTest
     public function testGetMetaDataKey()
     {
         $responseData = [
-            "success" =>  true,
-            "response_code" => 0,
-            "description" => "string"
+            'success' => true,
+            'response_code' => 0,
+            'description' => 'string',
         ];
         $response = $this->createApiResponseMock(['getResponseBody']);
         $response->method('getResponseBody')->willReturn(json_encode($responseData));
@@ -124,8 +125,8 @@ class NamespacesTest extends BaseTest
     public function testGetMetaList()
     {
         $responseData = [
-            "total_items" =>  0,
-            "meta" => [],
+            'total_items' => 0,
+            'meta' => [],
         ];
         $response = $this->createApiResponseMock(['getResponseBody']);
         $response->method('getResponseBody')->willReturn(json_encode($responseData));

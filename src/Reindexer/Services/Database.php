@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reindexer\Services;
 
 use Reindexer\BaseService;
@@ -14,8 +16,8 @@ class Database extends BaseService
             'POST',
             $uri,
             json_encode([
-                'name' => $name
-            ]),
+                'name' => $name,
+            ], JSON_UNESCAPED_UNICODE),
             $this->defaultHeaders
         );
     }

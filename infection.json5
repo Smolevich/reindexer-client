@@ -1,0 +1,20 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": ["src"],
+        "excludes": [
+            // protoc-generated code, not hand-written
+            "Grpc/Generated"
+        ]
+    },
+    "timeout": 15,
+    "logs": {
+        "text": "infection.log",
+        "summary": "infection-summary.log"
+    },
+    "testFramework": "phpunit",
+    "testFrameworkOptions": "--testsuite=Unit",
+    "mutators": {
+        "@default": true
+    }
+}

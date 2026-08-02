@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reindexer\Enum;
 
-class CollateMode
+enum CollateMode: string
 {
-    const NONE = 'none';
-    const ASCII = 'ascii';
-    const UTF8 = 'utf8';
-    const NUMERIC = 'numeric';
+    case NONE = 'none';
+    case ASCII = 'ascii';
+    case UTF8 = 'utf8';
+    case NUMERIC = 'numeric';
 }

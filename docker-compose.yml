@@ -1,4 +1,3 @@
-version: '3.6'
 
 services:
   php:
@@ -27,12 +26,13 @@ services:
       NGINX_SERVER_ROOT: /var/www/html
   reindexer:
     container_name: reindexer
-    image: reindexer/reindexer
+    image: reindexer/reindexer:v5.15.0
     volumes:
       - reindexer-data:/data
     ports:
       - 6534:6534
       - 9088:9088
+      - 16534:16534
     networks: ['app-stack']
 
 volumes:

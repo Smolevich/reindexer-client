@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Reindexer\Client;
 
 use GuzzleHttp\Client;
@@ -9,10 +11,12 @@ use Tests\Unit\Reindexer\BaseTest;
 
 class ApiTest extends BaseTest
 {
+    private array $config;
+    private Api $api;
     public function setUp(): void
     {
         $this->config = [
-            'host' => 'http://reindexer:9800'
+            'host' => 'http://reindexer:9800',
         ];
         $this->api = new Api($this->config['host']);
     }
@@ -40,7 +44,7 @@ class ApiTest extends BaseTest
             200,
             [
                 'Content-Type' => ' application/json; charset=utf-8',
-                'Date' => date('D, d M Y H:i:s T')
+                'Date' => date('D, d M Y H:i:s T'),
             ],
             '{total_items: 2, items: ["first_item"]}'
         );
@@ -48,6 +52,6 @@ class ApiTest extends BaseTest
         $this->api->setClient($this->createGuzzleClient($this->config['host'], $queue));
         $apiResponse = $this->api->request('GET', '/api/db');
         $this->assertSame($expectedResponse, $apiResponse->getResponse());
-        $this->assertEquals($this->config['host'].'/api/db', $apiResponse->getRequest()->getUri()->__toString());
+        $this->assertEquals($this->config['host'] . '/api/db', $apiResponse->getRequest()->getUri()->__toString());
     }
 }

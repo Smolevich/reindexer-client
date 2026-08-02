@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reindexer\Client;
 
 use GuzzleHttp\Client;
@@ -12,10 +14,10 @@ use Reindexer\Response;
 
 class Api extends BaseApi
 {
-    protected $client;
-    protected $info;
-    protected $logger;
-    protected $error;
+    protected Client $client;
+    protected array $info = [];
+    protected ?LoggerInterface $logger = null;
+    protected ?string $error = null;
 
     public function __construct(string $host, array $config = [])
     {
@@ -38,7 +40,7 @@ class Api extends BaseApi
         $this->client = $client;
     }
 
-    public function request(string $method, string $uri, string $body = null, array $headers = []): Response
+    public function request(string $method, string $uri, ?string $body = null, array $headers = []): Response
     {
         $instance = $this;
         $request = new Request($method, $this->host . $uri, $headers);
@@ -57,7 +59,8 @@ class Api extends BaseApi
                     'on_stats' => function (TransferStats $stats) use ($instance) {
                         $instance->info = $stats->getHandlerStats();
                         if (!$stats->hasResponse()) {
-                            $instance->error = $stats->getHandlerErrorData();
+                            $errorData = $stats->getHandlerErrorData();
+                            $instance->error = $errorData === null ? null : (string) $errorData;
                         }
                     },
                 ]

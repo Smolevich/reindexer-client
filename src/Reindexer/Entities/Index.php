@@ -1,26 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reindexer\Entities;
+
+use Reindexer\Enum\CollateMode;
+use Reindexer\Enum\FieldType;
+use Reindexer\Enum\IndexType;
 
 class Index extends Entity
 {
-    private $name;
-    private $jsonPaths;
-    private $fieldType;
-    private $indexType;
-    private $isPk = false;
-    private $isArray = false;
-    private $isDense = false;
-    private $isAppendable = false;
-    private $collateMode = 'none';
-    private $sortOrderLetters;
+    private ?string $name = null;
+    private ?array $jsonPaths = null;
+    private ?FieldType $fieldType = null;
+    private ?IndexType $indexType = null;
+    private bool $isPk = false;
+    private bool $isArray = false;
+    private bool $isDense = false;
+    private bool $isAppendable = false;
+    private CollateMode $collateMode = CollateMode::NONE;
+    private ?string $sortOrderLetters = null;
 
-    protected $mapJsonFields = [
+    protected array $mapJsonFields = [
         'name' => 'name',
-        'jsonPaths'  => 'json_paths',
-        'fieldType'  => 'field_type',
+        'jsonPaths' => 'json_paths',
+        'fieldType' => 'field_type',
         'indexType' => 'index_type',
-        'isPk'  => 'is_pk',
+        'isPk' => 'is_pk',
         'isArray' => 'is_array',
         'isDense' => 'is_dense',
         'isAppendable' => 'is_appendable',
@@ -28,12 +34,12 @@ class Index extends Entity
         'sortOrderLetters' => 'sort_order_letters',
     ];
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(string $name)
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -52,24 +58,24 @@ class Index extends Entity
         return $this;
     }
 
-    public function getFieldType(): string
+    public function getFieldType(): FieldType
     {
         return $this->fieldType;
     }
 
-    public function setFieldType($fieldType): self
+    public function setFieldType(FieldType $fieldType): self
     {
         $this->fieldType = $fieldType;
 
         return $this;
     }
 
-    public function isPk()
+    public function isPk(): bool
     {
         return $this->isPk;
     }
 
-    public function setIsPk(bool $isPk)
+    public function setIsPk(bool $isPk): self
     {
         $this->isPk = $isPk;
 
@@ -112,12 +118,12 @@ class Index extends Entity
         return $this;
     }
 
-    public function getCollateMode(): string
+    public function getCollateMode(): CollateMode
     {
         return $this->collateMode;
     }
 
-    public function setCollateMode(string $collateMode): self
+    public function setCollateMode(CollateMode $collateMode): self
     {
         $this->collateMode = $collateMode;
 
@@ -126,7 +132,7 @@ class Index extends Entity
 
     public function getSortOrderLetters(): string
     {
-        return $this->sortOrderLetters;
+        return $this->sortOrderLetters ?? '';
     }
 
     public function setSortOrderLetters(string $sortOrderLetters): self
@@ -136,12 +142,12 @@ class Index extends Entity
         return $this;
     }
 
-    public function getIndexType(): string
+    public function getIndexType(): IndexType
     {
         return $this->indexType;
     }
 
-    public function setIndexType(string $indexType): self
+    public function setIndexType(IndexType $indexType): self
     {
         $this->indexType = $indexType;
 

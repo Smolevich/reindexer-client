@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/common-part.php';
 
 use Reindexer\Entities\Index as IndexEntity;
+use Reindexer\Enum\CollateMode;
+use Reindexer\Enum\FieldType;
+use Reindexer\Enum\IndexType;
 use Reindexer\Services\Database;
 use Reindexer\Services\Namespaces;
 
@@ -25,16 +30,16 @@ try {
 
     if (!in_array($databaseName, $existDatabases)) {
         $response = $dbService->create($databaseName);
-        echo sprintf('Database %s successfully created.'.PHP_EOL, $databaseName);
+        echo sprintf('Database %s successfully created.' . PHP_EOL, $databaseName);
     }
 
     if (!array_search($namespaceName, array_column($existNamespaces, 'name'))) {
         $indexId = new IndexEntity();
-        $indexId->setCollateMode('none')
+        $indexId->setCollateMode(CollateMode::NONE)
             ->setName('id')
             ->setIsPk(true)
-            ->setIndexType(\Reindexer\Enum\IndexType::HASH)
-            ->setFieldType('int')
+            ->setIndexType(IndexType::HASH)
+            ->setFieldType(FieldType::INT)
             ->setJsonPaths(['id'])
             ->setIsDense(true)
         ;

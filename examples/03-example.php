@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/common-part.php';
 
@@ -9,14 +11,14 @@ use Reindexer\Services\Query;
 try {
     $users = [
         [
-            'id' => 1, 'name' => 'John Doe'
+            'id' => 1, 'name' => 'John Doe',
         ],
         [
-            'id' => 2, 'name' => 'Tom Soyer'
+            'id' => 2, 'name' => 'Tom Soyer',
         ],
         [
-            'id' => 3, 'name' => 'James Bond'
-        ]
+            'id' => 3, 'name' => 'James Bond',
+        ],
     ];
     $configData = file_get_contents(__DIR__ . '/config.json');
     $config = json_decode($configData, true);

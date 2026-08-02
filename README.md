@@ -12,20 +12,25 @@ Two transports:
 - **HTTP** — covers the Reindexer REST API: databases, namespaces, indexes, items, SQL and Query-DSL queries, namespace metadata. Only requires Guzzle.
 - **gRPC** (optional) — wrapper around stubs generated from `proto/reindexer.proto` (Reindexer v5.15.0): DDL, SQL/Query-DSL queries with server-streaming results, bulk item modification and transactions over bidirectional streams. Requires the `grpc` PHP extension; the HTTP transport works without it.
 
-## Choosing a search engine: Elasticsearch, Algolia or Reindexer
+## Choosing a search engine: Elasticsearch, Typesense, Meilisearch or Reindexer
 
-A common fork when you need full-text + faceted search over millions of documents from PHP:
+A common fork when you need full-text + faceted search over millions of documents from PHP. We measured all four on the same machine, same 2.96M-record dataset, same scenarios — full methodology and tables in [docs/benchmarks-engines.md](docs/benchmarks-engines.md):
 
-| | Elasticsearch / OpenSearch | Algolia | Reindexer |
-|---|---|---|---|
-| Deployment | JVM cluster to operate | SaaS, nothing to run | single C++ binary / Docker container |
-| Data location | disk + page cache | their cloud | RAM (dataset must fit in memory) |
-| Full-text search | yes, rich | yes | yes: stemming/morphology (en/ru), typo tolerance, ranking |
-| Faceted search | yes | yes | yes, `facet` aggregations |
-| Query language | JSON Query DSL | API calls | SQL + JSON DSL |
-| Cost of ownership | cluster ops | per-record / per-search pricing | one process, MIT license |
+| | Elasticsearch | Typesense | Meilisearch | Reindexer (native) |
+|---|---|---|---|---|
+| Point lookup | 377 µs | 183 µs | 164 µs | **118 µs** |
+| Filter + sort | 1.97 ms | 18.5 ms | 1.72 ms | **367 µs** |
+| Full-text search | 2.14 ms | **322 µs** | 10.9 ms | 363 µs |
+| Facet on filtered set | 1.12 ms | 686 µs | 1.28 ms | **304 µs** |
+| Bulk load (rec/s) | 53K | 24K | 61K | **135K** |
+| RSS after load | 4.7 GiB | 1.8 GiB | **1.0 GiB** | 9.8 GiB (2.2 without fulltext index) |
+| Deployment | JVM cluster | single binary | single binary | single C++ binary / Docker |
+| Data location | disk + cache | RAM | disk (LMDB) | RAM (dataset must fit) |
+| Query language | JSON DSL | API params | API params | SQL + JSON DSL |
 
-Reindexer is the lightweight corner of this triangle. If your dataset fits in RAM on one machine — which on modern hardware means datasets in the hundreds of millions of documents, given enough memory — you get sub-millisecond queries with full-text and facets from a single process, without operating a cluster or paying per record. In [our benchmarks](docs/benchmarks.md) on a 6.9M-record catalog, point lookups over HTTP take ~140 μs and filtered+sorted queries ~400 μs end-to-end from PHP. If you need horizontal scaling far beyond one node's RAM, or a fully managed service, the other two columns exist for a reason.
+The trade-offs are plain in the numbers: Reindexer wins every structured-query scenario and load speed, and pays for it in RAM (the composite fulltext index dominates — without it memory is comparable). Typesense keeps the edge in pure full-text search; Meilisearch is the most memory-frugal; Elasticsearch buys horizontal scaling beyond one node's RAM at the cost of running a JVM cluster. Managed SaaS options (e.g. Algolia) are out of this comparison on purpose: a network round-trip to their cloud isn't comparable to a local process ([why](docs/benchmarks-engines.md)).
+
+Practical ceiling for the in-memory model: on a 15.6 GiB Docker VM we loaded 6.9M documents with a fulltext index (~2.6 KiB/record); 20M+ needs RAM sized accordingly. Details: [docs/benchmarks.md](docs/benchmarks.md).
 
 ### Full-text and faceted search in five lines
 

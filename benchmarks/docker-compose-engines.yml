@@ -45,7 +45,25 @@ services:
       - meili-data:/meili_data
     networks: ['app-stack']
 
+  # Reindexer v5.15.0 built from source for the host architecture — the
+  # official image is amd64-only and runs emulated on arm64 hosts, see
+  # Dockerfile.reindexer-arm64. Point the loader/bench at it with
+  # REINDEXER_HOST=http://reindexer-native:9088.
+  reindexer-native:
+    image: reindexer-native:v5.15.0
+    build:
+      # Relative to the project dir (the repo root — compose resolves overlay
+      # paths against the first -f file); the build clones the sources
+      # itself, so the context carries nothing.
+      context: benchmarks/engines
+      dockerfile: Dockerfile.reindexer-arm64
+    profiles: ['reindexer-native']
+    volumes:
+      - reindexer-native-data:/data
+    networks: ['app-stack']
+
 volumes:
   es-data:
   typesense-data:
   meili-data:
+  reindexer-native-data:

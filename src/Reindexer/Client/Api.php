@@ -6,6 +6,7 @@ namespace Reindexer\Client;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
 use GuzzleHttp\TransferStats;
@@ -42,6 +43,8 @@ class Api extends BaseApi
 
     public function request(string $method, string $uri, ?string $body = null, array $headers = []): Response
     {
+        $this->error = null;
+        $this->info = [];
         $instance = $this;
         $request = new Request($method, $this->host . $uri, $headers);
 
@@ -75,7 +78,15 @@ class Api extends BaseApi
                 $this->logger->logResponse($apiResponse);
             }
         } catch (GuzzleException $e) {
-            $apiResponse->setError($e->getMessage());
+            $apiResponse->setRequest($request)
+                ->setInfo($this->info)
+                ->setError($e->getMessage());
+
+            // http_errors is enabled by default: 4xx/5xx surface as exceptions,
+            // but the server response (status + body) must not get lost.
+            if ($e instanceof RequestException && $e->getResponse() !== null) {
+                $apiResponse->setResponse($e->getResponse());
+            }
         }
 
         return $apiResponse;

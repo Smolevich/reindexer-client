@@ -92,6 +92,69 @@ class ApiEdgeTest extends BaseTest
         $this->assertStringContainsString('500', $response->getError());
     }
 
+    public function testErrorIsResetBetweenRequests(): void
+    {
+        // regression: a failed request used to leak its error into the next,
+        // otherwise successful, request via the shared Api instance
+        $api = $this->apiWithQueue([
+            new ConnectException('no route to host', new Request('GET', self::HOST . '/api/v1/db')),
+            new GuzzleResponse(200, [], '{"ok":true}'),
+        ]);
+
+        $failed = $api->request('GET', '/api/v1/db');
+        $this->assertStringContainsString('no route to host', $failed->getError());
+
+        $ok = $api->request('GET', '/api/v1/db');
+        $this->assertSame('', $ok->getError());
+        $this->assertSame(200, $ok->getCode());
+    }
+
+    public function testHttpErrorStatusKeepsResponseBodyAndCode(): void
+    {
+        // regression: with http_errors enabled the thrown BadResponseException
+        // used to swallow the server response entirely
+        $api = $this->apiWithQueue([
+            new GuzzleResponse(500, [], '{"description":"internal error"}'),
+        ]);
+
+        $response = $api->request('GET', '/api/v1/db');
+
+        $this->assertSame(500, $response->getCode());
+        $this->assertSame(
+            'internal error',
+            $response->getDecodedResponseBody(true)['description']
+        );
+        $this->assertSame(self::HOST . '/api/v1/db', (string) $response->getRequest()->getUri());
+    }
+
+    public function testHttpClientErrorKeepsResponseToo(): void
+    {
+        $api = $this->apiWithQueue([
+            new GuzzleResponse(404, [], '{"description":"Namespace not found"}'),
+        ]);
+
+        $response = $api->request('GET', '/api/v1/db/missing');
+
+        $this->assertSame(404, $response->getCode());
+        $this->assertStringContainsString('404', $response->getError());
+        $this->assertSame(
+            'Namespace not found',
+            $response->getDecodedResponseBody(true)['description']
+        );
+    }
+
+    public function testConnectErrorStillExposesTheRequest(): void
+    {
+        $api = $this->apiWithQueue([
+            new ConnectException('no route to host', new Request('GET', self::HOST . '/api/v1/db')),
+        ]);
+
+        $response = $api->request('POST', '/api/v1/db', '{"name":"db"}');
+
+        $this->assertSame('POST', $response->getRequest()->getMethod());
+        $this->assertSame('{"name":"db"}', $response->getRequestParams());
+    }
+
     public function testNon2xxIsReturnedAsResponseWhenHttpErrorsDisabled(): void
     {
         $api = new Api(self::HOST);

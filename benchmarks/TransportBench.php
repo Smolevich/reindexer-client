@@ -59,7 +59,7 @@ class TransportBench
         $this->db = getenv('BENCH_DB') !== false ? (string) getenv('BENCH_DB') : HfModels::DEFAULT_DB;
         $this->ns = getenv('BENCH_NS') !== false ? (string) getenv('BENCH_NS') : HfModels::DEFAULT_NS;
 
-        $this->api = new Api($host, ['http_errors' => false]);
+        $this->api = new Api($host, ['http_errors' => false, 'timeout' => 120]);
         $this->query = new Query($this->api);
         $this->query->setDatabase($this->db);
 
@@ -239,7 +239,47 @@ class TransportBench
         $this->grpcSelect($this->fulltextSql());
     }
 
+    // -- facet aggregation --------------------------------------------------
+
+    #[Bench\Revs(10)]
+    #[Bench\Iterations(5)]
+    #[Bench\Warmup(1)]
+    public function benchFacetPipelineTagHttp(): void
+    {
+        $response = $this->query->createByHttpGet($this->facetSql());
+        if ($response->getCode() !== 200) {
+            throw new \RuntimeException("Facet query failed ({$response->getCode()}): {$response->getResponseBody()}");
+        }
+        $decoded = json_decode((string) $response->getResponseBody(), true);
+        if (!isset($decoded['aggregations'][0]['facets'])) {
+            throw new \RuntimeException('Facet aggregation missing in HTTP response');
+        }
+    }
+
+    #[Bench\Revs(10)]
+    #[Bench\Iterations(5)]
+    #[Bench\Warmup(1)]
+    public function benchFacetPipelineTagGrpc(): void
+    {
+        $rows = iterator_to_array($this->grpc->execSql($this->facetSql()), false);
+        $found = false;
+        foreach ($rows as $row) {
+            if (isset($row['aggregations'][0]['facets'])) {
+                $found = true;
+                break;
+            }
+        }
+        if (!$found) {
+            throw new \RuntimeException('Facet aggregation missing in gRPC response');
+        }
+    }
+
     // -- query builders (shared between transports) -------------------------
+
+    private function facetSql(): string
+    {
+        return sprintf('SELECT FACET(pipeline_tag) FROM %s', $this->ns);
+    }
 
     private function pointSelectSql(): string
     {

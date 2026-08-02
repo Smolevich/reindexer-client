@@ -60,7 +60,7 @@
         "proto-gen": "protoc --proto_path=proto --php_out=src/Grpc/Generated --grpc_out=src/Grpc/Generated --plugin=protoc-gen-grpc=$(which grpc_php_plugin) proto/reindexer.proto",
         "style-fix": "php-cs-fixer fix",
         "check-fix": "php-cs-fixer fix --dry-run",
-        "bench-seed": "php benchmarks/seed.php",
+        "bench-seed": "php -d memory_limit=1G benchmarks/seed.php",
         "bench-load": "php benchmarks/load.php",
         "bench": "phpbench run --report=transport"
     },

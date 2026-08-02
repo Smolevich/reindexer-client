@@ -4,13 +4,16 @@
  * Loads the seeded Hugging Face model catalog (NDJSON) into reindexer.
  *
  * Usage:
- *   php benchmarks/load.php --transport=http [--file=...] [--db=bench_db] [--ns=hf_models] [--batch=1000]
+ *   php benchmarks/load.php --transport=http [--file=...] [--db=bench_db] [--ns=hf_models]
+ *                           [--batch=5000] [--limit=N] [--offset=N] [--append]
  *   php benchmarks/load.php --transport=grpc
  *
  * HTTP:  batched POST /items (multiple JSON documents per request body).
  * gRPC:  ModifyItem bidirectional stream, one stream per batch.
  *
- * The namespace is dropped and recreated with the full index schema on every run.
+ * By default the namespace is dropped and recreated with the full index schema.
+ * With --append the namespace is left as is and records are inserted on top —
+ * used for incremental scale-up runs (combine with --offset/--limit).
  */
 
 declare(strict_types=1);
@@ -21,12 +24,17 @@ use Reindexer\Benchmarks\Support\HfModels;
 use Reindexer\Client\Api;
 use Reindexer\Transport\Grpc\GrpcClient;
 
-$options = getopt('', ['transport:', 'file::', 'db::', 'ns::', 'batch::']);
+const PROGRESS_STEP = 100_000;
+
+$options = getopt('', ['transport:', 'file::', 'db::', 'ns::', 'batch::', 'limit::', 'offset::', 'append']);
 $transport = (string) ($options['transport'] ?? 'http');
 $file = (string) ($options['file'] ?? HfModels::DEFAULT_DATA_FILE);
 $db = (string) ($options['db'] ?? HfModels::DEFAULT_DB);
 $ns = (string) ($options['ns'] ?? HfModels::DEFAULT_NS);
-$batchSize = max(1, (int) ($options['batch'] ?? 1000));
+$batchSize = max(1, (int) ($options['batch'] ?? 5000));
+$limit = isset($options['limit']) ? max(1, (int) $options['limit']) : PHP_INT_MAX;
+$offset = max(0, (int) ($options['offset'] ?? 0));
+$append = array_key_exists('append', $options);
 
 if (!in_array($transport, ['http', 'grpc'], true)) {
     fwrite(STDERR, "--transport must be 'http' or 'grpc'\n");
@@ -40,6 +48,15 @@ if (!is_file($file)) {
 
 $startedAt = microtime(true);
 $loaded = 0;
+$nextProgressAt = PROGRESS_STEP;
+
+$progress = static function (int $loaded) use (&$nextProgressAt, $startedAt): void {
+    if ($loaded >= $nextProgressAt) {
+        $elapsed = microtime(true) - $startedAt;
+        printf("loaded %d records (%.0fs, %.0f rec/s)\n", $loaded, $elapsed, $loaded / max($elapsed, 0.001));
+        $nextProgressAt += PROGRESS_STEP;
+    }
+};
 
 if ($transport === 'http') {
     $host = (string) getenv('REINDEXER_HOST');
@@ -48,9 +65,12 @@ if ($transport === 'http') {
         exit(1);
     }
 
-    $api = new Api($host, ['http_errors' => false]);
+    // Generous timeout: large batches against a loaded server can be slow.
+    $api = new Api($host, ['http_errors' => false, 'timeout' => 300, 'connect_timeout' => 10]);
     HfModels::ensureDatabaseHttp($api, $db);
-    HfModels::recreateNamespaceHttp($api, $db, $ns);
+    if (!$append) {
+        HfModels::recreateNamespaceHttp($api, $db, $ns);
+    }
 
     $batch = [];
     $flush = static function (array $batch) use ($api, $db, $ns): int {
@@ -70,11 +90,12 @@ if ($transport === 'http') {
         return (int) ($decoded['updated'] ?? 0);
     };
 
-    foreach (HfModels::readNdjson($file) as $line) {
+    foreach (HfModels::readNdjson($file, $limit, $offset) as $line) {
         $batch[] = $line;
         if (count($batch) >= $batchSize) {
             $loaded += $flush($batch);
             $batch = [];
+            $progress($loaded);
         }
     }
     if ($batch !== []) {
@@ -94,15 +115,18 @@ if ($transport === 'http') {
         $client->createDatabase($db);
         $client->connect($db);
     }
-    HfModels::recreateNamespaceGrpc($client, $ns);
+    if (!$append) {
+        HfModels::recreateNamespaceGrpc($client, $ns);
+    }
 
     $batch = [];
-    foreach (HfModels::readNdjson($file) as $line) {
+    foreach (HfModels::readNdjson($file, $limit, $offset) as $line) {
         $batch[] = $line;
         if (count($batch) >= $batchSize) {
             $client->modifyItems($ns, $batch);
             $loaded += count($batch);
             $batch = [];
+            $progress($loaded);
         }
     }
     if ($batch !== []) {
@@ -113,12 +137,14 @@ if ($transport === 'http') {
 
 $elapsed = microtime(true) - $startedAt;
 printf(
-    "Loaded %d records into %s/%s via %s in %.1fs (%.0f rec/s, batch=%d)\n",
+    "Loaded %d records into %s/%s via %s in %.1fs (%.0f rec/s, batch=%d%s%s)\n",
     $loaded,
     $db,
     $ns,
     $transport,
     $elapsed,
     $loaded / max($elapsed, 0.001),
-    $batchSize
+    $batchSize,
+    $offset > 0 ? ", offset=$offset" : '',
+    $append ? ', append' : ''
 );

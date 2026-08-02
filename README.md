@@ -25,7 +25,7 @@ A common fork when you need full-text + faceted search over millions of document
 | Query language | JSON Query DSL | API calls | SQL + JSON DSL |
 | Cost of ownership | cluster ops | per-record / per-search pricing | one process, MIT license |
 
-Reindexer is the lightweight corner of this triangle. If your dataset fits in RAM on one machine — which on modern hardware means datasets in the hundreds of millions of documents, given enough memory — you get sub-millisecond queries with full-text and facets from a single process, without operating a cluster or paying per record. In [our benchmarks](docs/benchmarks.md) point lookups over HTTP take ~150 μs and filtered+sorted queries ~400 μs end-to-end from PHP. If you need horizontal scaling far beyond one node's RAM, or a fully managed service, the other two columns exist for a reason.
+Reindexer is the lightweight corner of this triangle. If your dataset fits in RAM on one machine — which on modern hardware means datasets in the hundreds of millions of documents, given enough memory — you get sub-millisecond queries with full-text and facets from a single process, without operating a cluster or paying per record. In [our benchmarks](docs/benchmarks.md) on a 6.9M-record catalog, point lookups over HTTP take ~140 μs and filtered+sorted queries ~400 μs end-to-end from PHP. If you need horizontal scaling far beyond one node's RAM, or a fully managed service, the other two columns exist for a reason.
 
 ### Full-text and faceted search in five lines
 
@@ -182,7 +182,7 @@ Integration suites read `REINDEXER_HOST` / `REINDEXER_GRPC_TARGET` from the envi
 
 ## Benchmarks
 
-`benchmarks/` contains a phpbench suite comparing the two transports on the Hugging Face Hub model catalog (20 000 records). Results and methodology: [docs/benchmarks.md](docs/benchmarks.md).
+`benchmarks/` contains a phpbench suite comparing the two transports on a snapshot of the public [Hugging Face Hub models catalog](https://huggingface.co/models) (2 958 985 records as of 2026-08-02, fetched via the [public API](https://huggingface.co/api/models); benchmarked at 20K, 2.96M and — with synthetic amplification — 6.92M records). Results and methodology: [docs/benchmarks.md](docs/benchmarks.md).
 
 Summary: on this setup HTTP is faster in every scenario — gRPC adds ~60–90 μs of per-call overhead and its bidirectional bulk stream is synchronous in PHP. The practical benefit of the gRPC transport is streaming semantics (results are yielded as a generator without buffering the whole payload), not latency.
 

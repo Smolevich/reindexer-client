@@ -122,9 +122,10 @@ final class HfModels
     /**
      * Streams raw NDJSON lines (one JSON document per line).
      *
+     * @param int $offset number of leading lines to skip
      * @return \Generator<int, string>
      */
-    public static function readNdjson(string $file, int $limit = PHP_INT_MAX): \Generator
+    public static function readNdjson(string $file, int $limit = PHP_INT_MAX, int $offset = 0): \Generator
     {
         $handle = fopen($file, 'rb');
         if ($handle === false) {
@@ -132,6 +133,11 @@ final class HfModels
         }
 
         try {
+            $skipped = 0;
+            while ($skipped < $offset && fgets($handle) !== false) {
+                $skipped++;
+            }
+
             $count = 0;
             while ($count < $limit && ($line = fgets($handle)) !== false) {
                 $line = trim($line);

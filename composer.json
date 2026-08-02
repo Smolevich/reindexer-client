@@ -28,7 +28,10 @@
         "grpc/grpc": "^1.57",
         "google/protobuf": "^4.26 || ^5.0",
         "infection/infection": "^0.29 || ^0.34",
-        "phpbench/phpbench": "^1.7"
+        "phpbench/phpbench": "^1.7",
+        "elasticsearch/elasticsearch": "^9.4",
+        "typesense/typesense-php": "^6.0",
+        "meilisearch/meilisearch-php": "^1.16"
     },
     "suggest": {
         "ext-grpc": "Required for the gRPC transport (install via pecl/pie, >= 1.42)",
@@ -62,11 +65,12 @@
         "check-fix": "php-cs-fixer fix --dry-run",
         "bench-seed": "php -d memory_limit=1G benchmarks/seed.php",
         "bench-load": "php benchmarks/load.php",
-        "bench": "phpbench run --report=transport"
+        "bench": "phpbench run benchmarks/TransportBench.php --report=transport"
     },
     "config": {
         "allow-plugins": {
-            "infection/extension-installer": true
+            "infection/extension-installer": true,
+            "php-http/discovery": true
         },
         "process-timeout": 0
     }

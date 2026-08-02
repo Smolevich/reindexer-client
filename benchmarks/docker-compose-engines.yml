@@ -1,0 +1,51 @@
+# Engine-comparison overlay: merge with the base test compose file, e.g.
+#
+#   docker compose -f docker-compose-tests.yml -f benchmarks/docker-compose-engines.yml \
+#       --profile es up -d elasticsearch
+#
+# Engines are behind profiles so regular test/bench runs never start them.
+# Run ONE engine at a time (see docs/benchmarks-engines.md): the point of the
+# comparison is per-engine RSS on the same VM, so engines must not share it.
+
+services:
+  php-grpc:
+    environment:
+      ELASTICSEARCH_HOST: http://elasticsearch:9200
+      TYPESENSE_HOST: http://typesense:8108
+      TYPESENSE_API_KEY: bench
+      MEILISEARCH_HOST: http://meilisearch:7700
+      MEILISEARCH_API_KEY: bench
+
+  elasticsearch:
+    image: elasticsearch:9.4.4
+    profiles: ['es']
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: 'false'
+      ES_JAVA_OPTS: -Xms4g -Xmx4g
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    networks: ['app-stack']
+
+  typesense:
+    image: typesense/typesense:30.2
+    profiles: ['typesense']
+    command: '--data-dir /data --api-key=bench'
+    volumes:
+      - typesense-data:/data
+    networks: ['app-stack']
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.51.0
+    profiles: ['meili']
+    environment:
+      MEILI_MASTER_KEY: bench
+      MEILI_NO_ANALYTICS: 'true'
+    volumes:
+      - meili-data:/meili_data
+    networks: ['app-stack']
+
+volumes:
+  es-data:
+  typesense-data:
+  meili-data:

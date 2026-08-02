@@ -186,6 +186,8 @@ Integration suites read `REINDEXER_HOST` / `REINDEXER_GRPC_TARGET` from the envi
 
 Summary: on this setup HTTP is faster in every scenario — gRPC adds ~60–90 μs of per-call overhead and its bidirectional bulk stream is synchronous in PHP. The practical benefit of the gRPC transport is streaming semantics (results are yielded as a generator without buffering the whole payload), not latency.
 
+There is also a cross-engine comparison — Reindexer vs Elasticsearch vs Typesense vs Meilisearch on the same 2.96M-record dataset and scenarios: [docs/benchmarks-engines.md](docs/benchmarks-engines.md).
+
 ## API coverage
 
 The SDK covers the everyday surface (databases, namespaces, indexes, items, SQL and DSL queries, aggregations, metadata over HTTP; DDL, streaming queries, bulk writes and transactions over gRPC), but not yet 100% of the server API: roughly 42% of REST endpoints and 20 of 27 gRPC RPCs as of v3.0.0. The full endpoint-by-endpoint audit — including known gaps such as HTTP transactions, precepts (`serial()`/`now()`), TTL/RTree index types and DSL builder drift — lives in [docs/api-coverage.md](docs/api-coverage.md) and doubles as the 3.1 roadmap.

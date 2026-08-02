@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Reindexer\Services;
 
 use Reindexer\BaseService;
+use Reindexer\Entities\SdlQuery;
 use Reindexer\Response;
 
 class Query extends BaseService
@@ -46,16 +47,20 @@ class Query extends BaseService
     }
 
     /**
-     * @param array<string, mixed>|string $query Query-DSL as array or raw JSON string
+     * @param SdlQuery|array<string, mixed>|string $query Query-DSL entity, array or raw JSON string
      */
-    public function createSdlQueryByHttpPost(array|string $query): Response
+    public function createSdlQueryByHttpPost(SdlQuery|array|string $query): Response
     {
         $uri = sprintf('/api/%s/db/%s/query', $this->version, $this->encodePathSegment($this->getDatabase()));
+
+        if ($query instanceof SdlQuery) {
+            $query = $query->getBody();
+        }
 
         return $this->client->request(
             'POST',
             $uri,
-            is_array($query) ? json_encode($query, JSON_UNESCAPED_UNICODE) : $query,
+            is_array($query) ? json_encode($query, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR) : $query,
             $this->defaultHeaders
         );
     }

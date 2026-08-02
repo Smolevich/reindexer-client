@@ -44,7 +44,7 @@ class Item extends BaseService
         return $this->client->request(
             'POST',
             $uri,
-            json_encode($data, JSON_UNESCAPED_UNICODE),
+            json_encode($data, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
             $this->defaultHeaders
         );
     }
@@ -61,7 +61,7 @@ class Item extends BaseService
         return $this->client->request(
             'PUT',
             $uri,
-            json_encode($data, JSON_UNESCAPED_UNICODE),
+            json_encode($data, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
             $this->defaultHeaders
         );
     }
@@ -78,7 +78,7 @@ class Item extends BaseService
         return $this->client->request(
             'DELETE',
             $uri,
-            json_encode($data, JSON_UNESCAPED_UNICODE),
+            json_encode($data, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
             $this->defaultHeaders
         );
     }

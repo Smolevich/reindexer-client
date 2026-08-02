@@ -67,7 +67,7 @@ class Namespaces extends BaseService
         return $this->client->request(
             'POST',
             $uri,
-            json_encode($body, JSON_UNESCAPED_UNICODE),
+            json_encode($body, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
             $this->defaultHeaders
         );
     }
@@ -198,7 +198,7 @@ class Namespaces extends BaseService
         return $this->client->request(
             'PUT',
             (string)$uri,
-            json_encode(['key' => $key, 'value' => $value], JSON_UNESCAPED_UNICODE),
+            json_encode(['key' => $key, 'value' => $value], JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
             $this->defaultHeaders
         );
     }
@@ -237,7 +237,7 @@ class Namespaces extends BaseService
         return $this->client->request(
             'PUT',
             (string)$uri,
-            json_encode($config, JSON_UNESCAPED_UNICODE),
+            json_encode($config, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
             $this->defaultHeaders
         );
     }

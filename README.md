@@ -1,4 +1,6 @@
-[![CI](https://github.com/Smolevich/reindexer-client/actions/workflows/ci.yml/badge.svg)](https://github.com/Smolevich/reindexer-client/actions/workflows/ci.yml)
+[![Tests](https://github.com/Smolevich/reindexer-client/actions/workflows/tests.yml/badge.svg)](https://github.com/Smolevich/reindexer-client/actions/workflows/tests.yml)
+[![Mutation](https://github.com/Smolevich/reindexer-client/actions/workflows/mutation.yml/badge.svg)](https://github.com/Smolevich/reindexer-client/actions/workflows/mutation.yml)
+[![Lint](https://github.com/Smolevich/reindexer-client/actions/workflows/lint.yml/badge.svg)](https://github.com/Smolevich/reindexer-client/actions/workflows/lint.yml)
 [![codecov](https://codecov.io/gh/Smolevich/reindexer-client/graph/badge.svg?token=61non7vjiK)](https://codecov.io/gh/Smolevich/reindexer-client)
 
 # reindexer-client

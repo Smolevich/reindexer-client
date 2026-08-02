@@ -4,6 +4,7 @@ namespace Tests\Unit\Reindexer\Indexes;
 
 use Reindexer\Client\Api;
 use Reindexer\Entities\Index;
+use Reindexer\Enum\CollateMode;
 use Reindexer\Enum\FieldType;
 use Reindexer\Enum\IndexType;
 use Tests\Unit\Reindexer\BaseTest;
@@ -59,8 +60,8 @@ class IndexTest extends BaseTest
 
     public function testGetAndSetCollateMode()
     {
-        $this->index->setCollateMode('none');
-        $this->assertEquals('none', $this->index->getCollateMode());
+        $this->index->setCollateMode(CollateMode::NONE);
+        $this->assertEquals(CollateMode::NONE, $this->index->getCollateMode());
     }
 
     public function testGetAndSetJsonPath()

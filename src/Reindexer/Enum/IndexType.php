@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reindexer\Enum;
 
-class IndexType
+enum IndexType: string
 {
-    const HASH = 'hash';
-    const TREE = 'tree';
-    const TEXT = 'text';
-    const COLUMN = '-';
+    case HASH = 'hash';
+    case TREE = 'tree';
+    case TEXT = 'text';
+    case COLUMN = '-';
 }

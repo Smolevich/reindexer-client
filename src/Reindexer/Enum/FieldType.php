@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reindexer\Enum;
 
-class FieldType
+enum FieldType: string
 {
-    const INT = 'int';
-    const INT64 = 'int64';
-    const DOUBLE = 'double';
-    const STRING = 'string';
-    const BOOL = 'bool';
-    const COMPOSITE = 'composite';
+    case INT = 'int';
+    case INT64 = 'int64';
+    case DOUBLE = 'double';
+    case STRING = 'string';
+    case BOOL = 'bool';
+    case COMPOSITE = 'composite';
 }

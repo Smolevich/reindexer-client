@@ -25,7 +25,9 @@ abstract class Entity
                 continue;
             }
 
-            if (is_object($value)) {
+            if ($value instanceof \BackedEnum) {
+                $value = $value->value;
+            } elseif (is_object($value)) {
                 $value = $this->parseValue($value);
             }
 

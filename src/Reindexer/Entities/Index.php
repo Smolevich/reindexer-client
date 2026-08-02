@@ -2,6 +2,10 @@
 
 namespace Reindexer\Entities;
 
+use Reindexer\Enum\CollateMode;
+use Reindexer\Enum\FieldType;
+use Reindexer\Enum\IndexType;
+
 class Index extends Entity
 {
     private $name;
@@ -12,7 +16,7 @@ class Index extends Entity
     private $isArray = false;
     private $isDense = false;
     private $isAppendable = false;
-    private $collateMode = 'none';
+    private $collateMode = CollateMode::NONE;
     private $sortOrderLetters;
 
     protected $mapJsonFields = [
@@ -52,12 +56,12 @@ class Index extends Entity
         return $this;
     }
 
-    public function getFieldType(): string
+    public function getFieldType(): FieldType
     {
         return $this->fieldType;
     }
 
-    public function setFieldType($fieldType): self
+    public function setFieldType(FieldType $fieldType): self
     {
         $this->fieldType = $fieldType;
 
@@ -112,12 +116,12 @@ class Index extends Entity
         return $this;
     }
 
-    public function getCollateMode(): string
+    public function getCollateMode(): CollateMode
     {
         return $this->collateMode;
     }
 
-    public function setCollateMode(string $collateMode): self
+    public function setCollateMode(CollateMode $collateMode): self
     {
         $this->collateMode = $collateMode;
 
@@ -136,12 +140,12 @@ class Index extends Entity
         return $this;
     }
 
-    public function getIndexType(): string
+    public function getIndexType(): IndexType
     {
         return $this->indexType;
     }
 
-    public function setIndexType(string $indexType): self
+    public function setIndexType(IndexType $indexType): self
     {
         $this->indexType = $indexType;
 

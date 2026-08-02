@@ -4,6 +4,8 @@ namespace Tests\Feature\Reindexer;
 
 use Reindexer\Client\Api;
 use Reindexer\Entities\Index;
+use Reindexer\Enum\CollateMode;
+use Reindexer\Enum\FieldType;
 use Reindexer\Enum\IndexType;
 use Reindexer\Response;
 use Reindexer\Services\Database;
@@ -69,11 +71,11 @@ class ServiceTest extends BaseTest
     public function testCreateIndexes()
     {
         $indexId = (new Index())
-            ->setCollateMode('none')
+            ->setCollateMode(CollateMode::NONE)
             ->setName('id')
             ->setIsPk(true)
-            ->setIndexType(\Reindexer\Enum\IndexType::HASH)
-            ->setFieldType('int')
+            ->setIndexType(IndexType::HASH)
+            ->setFieldType(FieldType::INT)
             ->setJsonPaths(['id'])
             ->setIsDense(true);
         $this->indexService->create($indexId, $this->database, $this->namespaceName);
@@ -81,33 +83,33 @@ class ServiceTest extends BaseTest
         $this->assertEquals(1, $body['total_items']);
         $this->assertEquals($indexId->getName(), $body['items'][0]['name']);
         $this->assertEquals($indexId->isPk(), $body['items'][0]['is_pk']);
-        $this->assertEquals($indexId->getIndexType(), $body['items'][0]['index_type']);
+        $this->assertEquals($indexId->getIndexType()->value, $body['items'][0]['index_type']);
         $this->assertEquals($indexId->getJsonPaths(), $body['items'][0]['json_paths']);
         $this->assertEquals($indexId->isDense(), $body['items'][0]['is_dense']);
-        $this->assertEquals($indexId->getCollateMode(), $body['items'][0]['collate_mode']);
+        $this->assertEquals($indexId->getCollateMode()->value, $body['items'][0]['collate_mode']);
     }
 
     public function testQuery()
     {
         $items = HabrPost::DATA;
         $indexLink = (new Index())
-            ->setCollateMode('none')
+            ->setCollateMode(CollateMode::NONE)
             ->setName('link')
             ->setIndexType(IndexType::TEXT)
-            ->setFieldType('string')
+            ->setFieldType(FieldType::STRING)
             ->setJsonPaths(['link']);
         $indexUserNickname = (new Index())
-            ->setCollateMode('none')
+            ->setCollateMode(CollateMode::NONE)
             ->setName('user_nickname')
-            ->setIndexType(IndexTYpe::HASH)
-            ->setFieldType('string')
+            ->setIndexType(IndexType::HASH)
+            ->setFieldType(FieldType::STRING)
             ->setJsonPaths(['user_nickname']);
         $indexId = (new Index())
-            ->setCollateMode('none')
+            ->setCollateMode(CollateMode::NONE)
             ->setName('id')
             ->setIsPk(true)
             ->setIndexType(IndexType::HASH)
-            ->setFieldType('int')
+            ->setFieldType(FieldType::INT)
             ->setJsonPaths(['id'])
             ->setIsDense(true);
         $this->indexService->create($indexLink, $this->database, $this->namespaceName);

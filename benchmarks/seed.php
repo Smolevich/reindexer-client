@@ -6,9 +6,14 @@
  *
  * Usage:
  *   php benchmarks/seed.php [--count=20000] [--out=benchmarks/data/models.ndjson]
+ *   php benchmarks/seed.php --count=all   # full catalog, until the cursor is exhausted
  *
  * Uses the public API https://huggingface.co/api/models with cursor pagination
  * (the cursor comes back in the Link response header). Retries on 429/5xx.
+ *
+ * Records are written to the NDJSON file as they arrive; memory stays flat
+ * regardless of the target size. Duplicate ids are possible across page
+ * boundaries and are deduplicated server-side by the primary key on load.
  */
 
 declare(strict_types=1);
@@ -23,7 +28,8 @@ const MAX_RETRIES = 5;
 const USER_AGENT = 'reindexer-client-bench/3.0 (+https://github.com/Smolevich/reindexer-client)';
 
 $options = getopt('', ['count::', 'out::']);
-$target = max(1, (int) ($options['count'] ?? 20000));
+$countOption = (string) ($options['count'] ?? '20000');
+$target = $countOption === 'all' ? PHP_INT_MAX : max(1, (int) $countOption);
 $outFile = (string) ($options['out'] ?? __DIR__ . '/data/models.ndjson');
 
 $outDir = dirname($outFile);
@@ -125,9 +131,9 @@ if ($out === false) {
     exit(1);
 }
 
-$seen = [];
 $written = 0;
 $page = 0;
+$nextProgressAt = 100_000;
 $url = API_URL . '?' . http_build_query([
     'limit' => min(PAGE_LIMIT, $target),
     'sort' => 'downloads',
@@ -155,10 +161,9 @@ while ($url !== null && $written < $target) {
             continue;
         }
         $record = mapModel($raw);
-        if ($record === null || isset($seen[$record['id']])) {
+        if ($record === null) {
             continue;
         }
-        $seen[$record['id']] = true;
         fwrite($out, json_encode($record, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n");
         $written++;
         if ($written >= $target) {
@@ -166,8 +171,17 @@ while ($url !== null && $written < $target) {
         }
     }
 
-    $elapsed = microtime(true) - $startedAt;
-    printf("page %d: total %d/%d records (%.1fs)\n", $page, $written, $target, $elapsed);
+    if ($written >= $nextProgressAt || $written >= $target) {
+        $elapsed = microtime(true) - $startedAt;
+        printf(
+            "page %d: %d records (%.0fs, %.0f rec/s)\n",
+            $page,
+            $written,
+            $elapsed,
+            $written / max($elapsed, 0.001)
+        );
+        $nextProgressAt += 100_000;
+    }
 
     $url = nextUrlFromLinkHeader($response->getHeaderLine('Link'));
 }
@@ -176,6 +190,6 @@ fclose($out);
 
 printf("Done: %d records written to %s in %.1fs\n", $written, $outFile, microtime(true) - $startedAt);
 
-if ($written < $target) {
+if ($countOption !== 'all' && $written < $target) {
     fwrite(STDERR, "Warning: API exhausted before reaching target ($written < $target)\n");
 }

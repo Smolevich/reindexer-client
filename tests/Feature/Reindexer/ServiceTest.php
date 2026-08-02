@@ -211,7 +211,7 @@ class ServiceTest extends BaseTest
                 'server_id' => 0,
             ],
         ];
-        $this->itemService->setNamespace(urlencode('#config'));
+        $this->itemService->setNamespace('#config');
         $response = $this->itemService->update($config);
         $this->assertSame(
             [

@@ -28,6 +28,9 @@ Benchmarks: `composer bench-seed` / `bench-load` / `bench` (run in `php-grpc`), 
 
 ## Constraints
 
+- **Releases: tag only a fully green master** — after merging, wait for ALL post-merge
+  workflow runs (`Tests`, `Mutation`, `Lint`) to succeed on `master`, then tag that SHA.
+  A green PR is not sufficient. Full checklist: [docs/RELEASING.md](docs/RELEASING.md).
 - Never hand-edit `src/Grpc/Generated/` — edit `proto/reindexer.proto` and run `composer proto-gen`.
 - The HTTP code path must not reference grpc classes: gRPC deps are `suggest`-only, `GrpcClient` has a runtime guard.
 - Three test suites (Unit / Feature / GrpcFeature) + Infection on Unit; keep MSI above 95.

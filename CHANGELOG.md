@@ -5,6 +5,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-08-03
+
+### Added
+
+- HTTP transactions: new service `Reindexer\Services\Transaction` —
+  `begin()` (returns `tx_id`), `addItem`/`updateItem`/`upsertItem`/`deleteItem`
+  (with optional precepts), `sqlQuery()` (UPDATE/DELETE SQL inside the
+  transaction), `deleteQuery()` (Query-DSL delete inside the transaction),
+  `commit()`/`rollback()`. Mirrors the gRPC transaction flow for HTTP-only
+  setups.
+- Precepts (`id=serial()`, `updated_at=now()`) on every `Item` write method:
+  `add`, `update`, `delete` gain an optional `array $precepts` parameter
+  (sent as exploded `precepts=...` query pairs).
+- `Item::upsert()` — `PATCH /items`, the upsert write mode.
+- Index management: `Services\Index::update()` (`PUT /indexes`, in-place
+  index update), `IndexType::RTREE`/`IndexType::TTL`, `FieldType::POINT`,
+  new `Enum\RtreeType` (linear/quadratic/greene/rstar); `Entities\Index`
+  gains `is_sparse`, `expire_after`, `rtree_type` and `config`
+  (fulltext/float-vector config as a raw array) with fluent setters.
+- Query-DSL writes over HTTP: `Query::updateSdlQueryByHttpPut()`
+  (`PUT /query`, `update_fields`/`drop_fields`) and
+  `Query::deleteSdlQueryByHttpDelete()` (`DELETE /query`).
+- `Entities\SdlQuery` brought up to the current server DSL: new keys `type`,
+  `merge_queries`, `drop_fields`, `update_fields`, `explain`; `req_total`
+  now emits the server enum (`disabled`/`enabled`/`cached`, booleans are
+  normalized); fluent setters for every field. Legacy `joined`/`merged`
+  keys are kept but deprecated.
+- gRPC: the remaining 7 RPCs are wrapped — `getMeta`/`putMeta`/`enumMeta`/
+  `deleteMeta`, `setSchema`, `getProtobufSchema` and `addNamespace` (full
+  namespace definition with an index list). All 27 proto RPCs are now
+  exposed.
+- `Namespaces::deleteMetaDataKey()` — `DELETE /metabykey/{key}`.
+- `examples/transactions.php` — runnable HTTP transaction + precepts demo.
+
+### Infrastructure
+
+- Test suites grew from 349 to 460 tests (344 Unit, 73 Feature,
+  43 GrpcFeature); Infection MSI 97% (gate `--min-msi=95`).
+- REST endpoint coverage 42% → 67% directly (82% counting system
+  namespaces), gRPC 74% → 100%; see `docs/api-coverage.md`.
+
 ## [3.0.0] - 2026-08-02
 
 ### Added

@@ -223,6 +223,26 @@ class Namespaces extends BaseService
         );
     }
 
+    public function deleteMetaDataKey(string $name, string $key): Response
+    {
+        $uri = new Uri(
+            sprintf(
+                '/api/%s/db/%s/namespaces/%s/metabykey/%s',
+                $this->version,
+                $this->encodePathSegment($this->getDatabase()),
+                $this->encodePathSegment($name),
+                $this->encodePathSegment($key)
+            )
+        );
+
+        return $this->client->request(
+            'DELETE',
+            (string)$uri,
+            null,
+            $this->defaultHeaders
+        );
+    }
+
     public function schema(string $name, array $config): Response
     {
         $uri = new Uri(

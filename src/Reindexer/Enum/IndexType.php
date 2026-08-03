@@ -9,5 +9,7 @@ enum IndexType: string
     case HASH = 'hash';
     case TREE = 'tree';
     case TEXT = 'text';
+    case RTREE = 'rtree';
+    case TTL = 'ttl';
     case COLUMN = '-';
 }

@@ -9,7 +9,7 @@ PHP SDK for [Reindexer](https://github.com/Restream/reindexer) — a fast, embed
 
 Two transports:
 
-- **HTTP** — covers the Reindexer REST API: databases, namespaces, indexes, items, SQL and Query-DSL queries, namespace metadata. Only requires Guzzle.
+- **HTTP** — covers the Reindexer REST API: databases, namespaces, indexes, items (with precepts and upsert), SQL and Query-DSL queries (select/update/delete), transactions, namespace metadata. Only requires Guzzle.
 - **gRPC** (optional) — wrapper around stubs generated from `proto/reindexer.proto` (Reindexer v5.15.0): DDL, SQL/Query-DSL queries with server-streaming results, bulk item modification and transactions over bidirectional streams. Requires the `grpc` PHP extension; the HTTP transport works without it.
 
 ## Choosing a search engine: Elasticsearch, Typesense, Meilisearch or Reindexer
@@ -120,6 +120,19 @@ $queryService = new Query($api);
 $queryService->setDatabase('mydb');
 $response = $queryService->createByHttpGet('SELECT * FROM users WHERE id = 1');
 $items = $response->getDecodedResponseBody(true)['items'];
+
+// Precepts: let the server assign auto-increment ids and timestamps
+$itemService->add(['name' => 'No Id Needed'], ['id=serial()', 'updated_at=now()']);
+
+// Transactions: atomic multi-item writes over HTTP
+use Reindexer\Services\Transaction;
+
+$txService = new Transaction($api);
+$txService->setDatabase('mydb');
+$txId = $txService->begin('users')->getDecodedResponseBody(true)['tx_id'];
+$txService->addItem($txId, ['id' => 10, 'name' => 'Atomic 1']);
+$txService->addItem($txId, ['id' => 11, 'name' => 'Atomic 2']);
+$txService->commit($txId); // or ->rollback($txId)
 ```
 
 The second `Api` constructor argument is passed to the Guzzle client as-is (timeouts, `http_errors`, auth, etc.). Every service method returns a `Reindexer\Response` exposing the HTTP code, raw and decoded body, headers and the underlying PSR-7 request. See `examples/` for runnable scripts.
@@ -158,7 +171,7 @@ foreach ($client->execSql('SELECT * FROM users ORDER BY id') as $item) {
 }
 ```
 
-Also available: `select()` / `update()` / `delete()` (Query-DSL, streaming results), `enumDatabases()` / `enumNamespaces()`, `updateIndex()` / `dropIndex()`, `truncateNamespace()` / `dropNamespace()`, and transactions (`beginTransaction()` → `addTxItems()` → `commitTransaction()` / `rollbackTransaction()`). Server errors are raised as `Reindexer\Exceptions\GrpcException` carrying the Reindexer error code or gRPC status. See `examples/grpc.php`.
+Also available: `select()` / `update()` / `delete()` (Query-DSL, streaming results), `enumDatabases()` / `enumNamespaces()`, `updateIndex()` / `dropIndex()`, `truncateNamespace()` / `dropNamespace()`, `addNamespace()` (full definition with indexes), namespace metadata (`getMeta()` / `putMeta()` / `enumMeta()` / `deleteMeta()`), schemas (`setSchema()`, `getProtobufSchema()`) and transactions (`beginTransaction()` → `addTxItems()` → `commitTransaction()` / `rollbackTransaction()`) — all 27 proto RPCs are wrapped. Server errors are raised as `Reindexer\Exceptions\GrpcException` carrying the Reindexer error code or gRPC status. See `examples/grpc.php`.
 
 Generated stubs live in `src/Grpc/Generated/` and are committed; regenerate them with `composer proto-gen` (requires `protoc` and `grpc_php_plugin`).
 
@@ -195,7 +208,7 @@ There is also a cross-engine comparison — Reindexer vs Elasticsearch vs Typese
 
 ## API coverage
 
-The SDK covers the everyday surface (databases, namespaces, indexes, items, SQL and DSL queries, aggregations, metadata over HTTP; DDL, streaming queries, bulk writes and transactions over gRPC), but not yet 100% of the server API: roughly 42% of REST endpoints and 20 of 27 gRPC RPCs as of v3.0.0. The full endpoint-by-endpoint audit — including known gaps such as HTTP transactions, precepts (`serial()`/`now()`), TTL/RTree index types and DSL builder drift — lives in [docs/api-coverage.md](docs/api-coverage.md) and doubles as the 3.1 roadmap.
+The SDK covers the everyday surface on both transports: databases, namespaces, indexes (including TTL/RTree/sparse and fulltext config), items with precepts and upsert, SQL and DSL queries (select/update/delete), transactions, namespace metadata and schemas. As of v3.1.0 that is 67% of REST endpoints directly (82% counting system namespaces reachable through `Item::get`) and all 27 gRPC RPCs. The endpoint-by-endpoint audit with the remaining gaps (mostly admin/ops endpoints, protobuf/msgpack response formats and KNN vector indexes) lives in [docs/api-coverage.md](docs/api-coverage.md).
 
 ## Upgrading from 2.x
 

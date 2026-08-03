@@ -57,6 +57,37 @@ class IndexServiceTest extends TestCase
         );
     }
 
+    public function testUpdatePutsSerializedEntity(): void
+    {
+        $entity = $this->makeEntity()->setIsDense(true);
+        $this->service->update($entity, 'db', 'ns');
+
+        $call = $this->api->lastCall();
+        $this->assertSame('PUT', $call['method']);
+        $this->assertSame('/api/v1/db/db/namespaces/ns/indexes', $call['uri']);
+        $decoded = json_decode($call['body'], true);
+        $this->assertSame('id', $decoded['name']);
+        $this->assertTrue($decoded['is_dense']);
+    }
+
+    public function testUpdateKeepsUnicodeUnescaped(): void
+    {
+        $entity = $this->makeEntity()->setName('поле_名前');
+        $this->service->update($entity, 'db', 'ns');
+
+        $this->assertStringContainsString('"поле_名前"', $this->api->lastCall()['body']);
+    }
+
+    public function testUpdateEncodesDatabaseAndNamespace(): void
+    {
+        $this->service->update($this->makeEntity(), 'my db', 'ns/evil');
+
+        $this->assertSame(
+            '/api/v1/db/my%20db/namespaces/ns%2Fevil/indexes',
+            $this->api->lastCall()['uri']
+        );
+    }
+
     public function testGetBuildsUriFromDatabaseAndNamespace(): void
     {
         $this->service->get('mydb', 'myns');

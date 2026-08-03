@@ -179,6 +179,26 @@ class NamespacesRequestTest extends TestCase
         $this->assertNull($call['body']);
     }
 
+    public function testDeleteMetaDataKeyUsesDeleteWithKeyInUri(): void
+    {
+        $this->service->deleteMetaDataKey('ns', 'meta_key');
+
+        $call = $this->api->lastCall();
+        $this->assertSame('DELETE', $call['method']);
+        $this->assertSame('/api/v1/db/db/namespaces/ns/metabykey/meta_key', $call['uri']);
+        $this->assertNull($call['body']);
+    }
+
+    public function testDeleteMetaDataKeyEncodesSegments(): void
+    {
+        $this->service->deleteMetaDataKey('ns/evil', 'key?x=1');
+
+        $this->assertSame(
+            '/api/v1/db/db/namespaces/ns%2Fevil/metabykey/key%3Fx%3D1',
+            $this->api->lastCall()['uri']
+        );
+    }
+
     public function testSchemaSendsPutWithJsonConfig(): void
     {
         $config = ['type' => 'namespaces', 'namespaces' => ['wal_size' => 5000000]];

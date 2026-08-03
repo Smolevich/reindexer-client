@@ -12,4 +12,5 @@ enum FieldType: string
     case STRING = 'string';
     case BOOL = 'bool';
     case COMPOSITE = 'composite';
+    case POINT = 'point';
 }

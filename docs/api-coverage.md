@@ -1,4 +1,4 @@
-# API coverage audit: reindexer-client (PHP, v3.0.0) vs Reindexer v5.15.0
+# API coverage audit: reindexer-client (PHP, v3.1.0) vs Reindexer v5.15.0
 
 Sources:
 - REST: `cpp_src/server/contrib/server.yml` (Restream/reindexer, master, 7066 lines) — 55 endpoint+method pairs.
@@ -24,16 +24,16 @@ Legend: ✅ covered directly; 🟡 reachable indirectly (same URL via a generic 
 | `/db/{db}/namespaces/{name}/rename/{newname}` | GET | ✅ | `Namespaces::rename` |
 | `/db/{db}/namespaces/{name}/metalist` | GET | ✅ | `Namespaces::getMetaList` |
 | `/db/{db}/namespaces/{name}/metabykey/{key}` | GET | ✅ | `Namespaces::getMetaDataKey` |
-| `/db/{db}/namespaces/{name}/metabykey/{key}` | DELETE | ❌ | no meta deletion |
+| `/db/{db}/namespaces/{name}/metabykey/{key}` | DELETE | ✅ | `Namespaces::deleteMetaDataKey` (implemented in v3.1.0) |
 | `/db/{db}/namespaces/{name}/metabykey` | PUT | ✅ | `Namespaces::addMetaDataKey` |
 | `/db/{db}/namespaces/{name}/items` | GET | ✅ | `Item::get` (limit/offset/sort only; no filter, fields, format, sharding, with_vectors, with_columns) |
-| `/db/{db}/namespaces/{name}/items` | PUT | ✅ | `Item::update` (no precepts, format) |
-| `/db/{db}/namespaces/{name}/items` | POST | ✅ | `Item::add` (no precepts, format) |
-| `/db/{db}/namespaces/{name}/items` | DELETE | ✅ | `Item::delete` (no precepts) |
-| `/db/{db}/namespaces/{name}/items` | PATCH (upsert) | ❌ | no upsert over HTTP |
+| `/db/{db}/namespaces/{name}/items` | PUT | ✅ | `Item::update` (precepts since v3.1.0; no format) |
+| `/db/{db}/namespaces/{name}/items` | POST | ✅ | `Item::add` (precepts since v3.1.0; no format) |
+| `/db/{db}/namespaces/{name}/items` | DELETE | ✅ | `Item::delete` (precepts since v3.1.0) |
+| `/db/{db}/namespaces/{name}/items` | PATCH (upsert) | ✅ | `Item::upsert` (implemented in v3.1.0) |
 | `/db/{db}/namespaces/{name}/indexes` | GET | ✅ | `Index::get` |
 | `/db/{db}/namespaces/{name}/indexes` | POST | ✅ | `Index::create` |
-| `/db/{db}/namespaces/{name}/indexes` | PUT (update index) | ❌ | no way to update an index, only drop+create |
+| `/db/{db}/namespaces/{name}/indexes` | PUT (update index) | ✅ | `Index::update` (implemented in v3.1.0) |
 | `/db/{db}/namespaces/{name}/indexes/{indexname}` | DELETE | ✅ | `Index::delete` |
 | `/db/{db}/namespaces/{name}/schema` | GET | ❌ | no JSON-schema read |
 | `/db/{db}/namespaces/{name}/schema` | PUT | ✅ | `Namespaces::schema` |
@@ -41,18 +41,18 @@ Legend: ✅ covered directly; 🟡 reachable indirectly (same URL via a generic 
 | `/query/convert/sql` | POST (SQL→DSL) | ❌ | |
 | `/query/convert/dsl` | POST (DSL→SQL) | ❌ | |
 | `/db/{db}/query` | GET (SQL select) | ✅ | `Query::createByHttpGet` (no with_columns/width/format) |
-| `/db/{db}/query` | PUT (DSL update) | ❌ | no update query via DSL |
+| `/db/{db}/query` | PUT (DSL update) | ✅ | `Query::updateSdlQueryByHttpPut` (implemented in v3.1.0) |
 | `/db/{db}/query` | POST (DSL select) | ✅ | `Query::createSdlQueryByHttpPost` |
-| `/db/{db}/query` | DELETE (SQL delete) | ❌ | |
-| `/db/{db}/namespaces/{name}/transactions/begin` | POST | ❌ | no HTTP transactions at all |
-| `/db/{db}/transactions/{tx_id}/commit` | POST | ❌ | |
-| `/db/{db}/transactions/{tx_id}/rollback` | POST | ❌ | |
-| `/db/{db}/transactions/{tx_id}/items` | PUT | ❌ | |
-| `/db/{db}/transactions/{tx_id}/items` | POST | ❌ | |
-| `/db/{db}/transactions/{tx_id}/items` | DELETE | ❌ | |
-| `/db/{db}/transactions/{tx_id}/items` | PATCH | ❌ | |
-| `/db/{db}/transactions/{tx_id}/query` | GET (SQL in tx) | ❌ | |
-| `/db/{db}/transactions/{tx_id}/query` | DELETE | ❌ | |
+| `/db/{db}/query` | DELETE (DSL delete) | ✅ | `Query::deleteSdlQueryByHttpDelete` (implemented in v3.1.0) |
+| `/db/{db}/namespaces/{name}/transactions/begin` | POST | ✅ | `Transaction::begin` (implemented in v3.1.0) |
+| `/db/{db}/transactions/{tx_id}/commit` | POST | ✅ | `Transaction::commit` (implemented in v3.1.0) |
+| `/db/{db}/transactions/{tx_id}/rollback` | POST | ✅ | `Transaction::rollback` (implemented in v3.1.0) |
+| `/db/{db}/transactions/{tx_id}/items` | PUT | ✅ | `Transaction::updateItem` (implemented in v3.1.0) |
+| `/db/{db}/transactions/{tx_id}/items` | POST | ✅ | `Transaction::addItem` (implemented in v3.1.0) |
+| `/db/{db}/transactions/{tx_id}/items` | DELETE | ✅ | `Transaction::deleteItem` (implemented in v3.1.0) |
+| `/db/{db}/transactions/{tx_id}/items` | PATCH | ✅ | `Transaction::upsertItem` (implemented in v3.1.0) |
+| `/db/{db}/transactions/{tx_id}/query` | GET (SQL in tx) | ✅ | `Transaction::sqlQuery` (implemented in v3.1.0) |
+| `/db/{db}/transactions/{tx_id}/query` | DELETE | ✅ | `Transaction::deleteQuery` (implemented in v3.1.0) |
 | `/db/{db}/suggest` | GET (SQL autocompletion) | ❌ | |
 | `/db/{db}/sqlquery` | POST (SQL) | ✅ | `Query::createSqlQueryByHttpPost` |
 | `/check` | GET (health/server version) | ❌ | |
@@ -69,7 +69,7 @@ Legend: ✅ covered directly; 🟡 reachable indirectly (same URL via a generic 
 | `/db/{db}/namespaces/#config/items` | PUT | 🟡 | `Item::update` with namespace `#config` |
 | `/db/default_configs` | GET | ❌ | |
 
-REST total: **23/55 directly = 42%**; counting indirectly reachable system namespaces — 31/55 = 56%. 24 endpoints are entirely missing.
+REST total: **37/55 directly = 67%**; counting indirectly reachable system namespaces — 45/55 = 82%. 10 endpoints are entirely missing.
 
 ## 2. gRPC coverage (`GrpcClient.php` vs `proto/reindexer.proto`, 27 RPCs)
 
@@ -78,14 +78,14 @@ REST total: **23/55 directly = 42%**; counting indirectly reachable system names
 | Connect | ✅ | `connect` |
 | CreateDatabase | ✅ | `createDatabase` |
 | OpenNamespace | ✅ | `openNamespace` |
-| AddNamespace | ❌ | (Open only; Add with a full NamespaceDefinition is not exposed) |
+| AddNamespace | ✅ | `addNamespace` (implemented in v3.1.0) |
 | CloseNamespace | ✅ | `closeNamespace` |
 | DropNamespace | ✅ | `dropNamespace` |
 | TruncateNamespace | ✅ | `truncateNamespace` |
 | AddIndex | ✅ | `addIndex` |
 | UpdateIndex | ✅ | `updateIndex` |
 | DropIndex | ✅ | `dropIndex` |
-| SetSchema | ❌ | |
+| SetSchema | ✅ | `setSchema` (implemented in v3.1.0) |
 | EnumNamespaces | ✅ | `enumNamespaces` (onlyNames+hideSystems are hardcoded → full NamespaceDefinition is unavailable) |
 | EnumDatabases | ✅ | `enumDatabases` |
 | ModifyItem (bidi stream) | ✅ | `modifyItems` |
@@ -93,17 +93,17 @@ REST total: **23/55 directly = 42%**; counting indirectly reachable system names
 | Select (stream) | ✅ | `select` |
 | Update (stream) | ✅ | `update` |
 | Delete (stream) | ✅ | `delete` |
-| GetMeta | ❌ | |
-| PutMeta | ❌ | |
-| EnumMeta | ❌ | |
-| DeleteMeta | ❌ | |
-| GetProtobufSchema | ❌ | |
+| GetMeta | ✅ | `getMeta` (implemented in v3.1.0) |
+| PutMeta | ✅ | `putMeta` (implemented in v3.1.0) |
+| EnumMeta | ✅ | `enumMeta` (implemented in v3.1.0) |
+| DeleteMeta | ✅ | `deleteMeta` (implemented in v3.1.0) |
+| GetProtobufSchema | ✅ | `getProtobufSchema` (implemented in v3.1.0) |
 | BeginTransaction | ✅ | `beginTransaction` |
 | AddTxItem (bidi stream) | ✅ | `addTxItems` |
 | CommitTransaction | ✅ | `commitTransaction` |
 | RollbackTransaction | ✅ | `rollbackTransaction` |
 
-gRPC total: **20/27 = 74%**. 7 RPCs are not exposed: AddNamespace, SetSchema, GetMeta, PutMeta, EnumMeta, DeleteMeta, GetProtobufSchema.
+gRPC total: **27/27 = 100%** (since v3.1.0).
 
 Limitations within the exposed RPCs:
 - `buildIndex()` ignores the proto fields `IndexOptions.collateMode`, `rtreeType`, `sortOrdersTable`, `config` (fulltext/float-vector config) — even though the proto supports them.
@@ -113,44 +113,44 @@ Limitations within the exposed RPCs:
 
 | Capability | Spec v5.15 | Client | Verdict |
 |---|---|---|---|
-| precepts (`serial()`, `now()`) | query param on items POST/PUT/DELETE/PATCH and tx items | absent from `Item::*`; the proto `ModifyItemRequest` has no precepts field at all | **not supported in either transport** |
-| IndexType | `hash, tree, text, rtree, ttl, '-'` | enum: `hash, tree, text, '-'` | **no `rtree`, `ttl`** |
-| FieldType | `int, int64, double, string, bool, composite, point` | no `point` | **no `point`** (geo) |
-| Index entity fields | + `is_sparse`, `is_no_column`, `expire_after`, `rtree_type`, `is_simple_tag`, `config` (FulltextConfig / FloatVectorConfig) | only name/json_paths/types/is_pk/is_array/is_dense/is_appendable/collate/sort_order | **TTL, rtree, sparse, fulltext config and vectors are unreachable through the typed API** (and `Index::create` accepts only `IndexEntity` → a raw array workaround is not possible over HTTP) |
-| Fulltext config (FulltextConfig) | `config` in IndexDef | neither in the HTTP entity nor in gRPC `buildIndex` | not supported |
+| precepts (`serial()`, `now()`) | query param on items POST/PUT/DELETE/PATCH and tx items | ✅ HTTP since v3.1.0 (`Item::*` and `Transaction::*Item`); the proto `ModifyItemRequest` has no precepts field at all | **supported over HTTP; unavailable over gRPC by proto design** |
+| IndexType | `hash, tree, text, rtree, ttl, '-'` | full set since v3.1.0 | ✅ |
+| FieldType | `int, int64, double, string, bool, composite, point` | full set since v3.1.0 | ✅ |
+| Index entity fields | + `is_sparse`, `is_no_column`, `expire_after`, `rtree_type`, `is_simple_tag`, `config` (FulltextConfig / FloatVectorConfig) | v3.1.0 adds `is_sparse`, `expire_after`, `rtree_type` (enum `RtreeType`), `config` (raw array) | **mostly supported**; `is_no_column` and `is_simple_tag` are still absent |
+| Fulltext config (FulltextConfig) | `config` in IndexDef | HTTP: `Index::setConfig(array)` since v3.1.0; gRPC `buildIndex` still ignores `config` | supported over HTTP (untyped array) |
 | KNN / float_vector (hnsw/ivf, KNN filters, `with_vectors`) | present in the master spec | not reflected anywhere | not supported |
 | Aggregations, joined queries, explain | in Query DSL (`aggregations`, `filters[].join_query`, `explain`) | pass-through: `Query::createSdlQueryByHttpPost` and `GrpcClient::select` accept a raw array/JSON → works | ✅ works, but untyped |
-| `SdlQuery` entity | current DSL: `merge_queries`, join inside `filters`, `explain`, `req_total: disabled/enabled/cached`, `update_fields`, `drop_fields`, `type` | keys `joined`/`merged` (legacy DSL), `reqTotal` bool, no explain/update_fields/drop_fields | **drift from the spec**: the typed builder partially generates invalid/legacy DSL |
+| `SdlQuery` entity | current DSL: `merge_queries`, join inside `filters`, `explain`, `req_total: disabled/enabled/cached`, `update_fields`, `drop_fields`, `type` | v3.1.0: all listed keys + fluent setters; `req_total` emits the server enum (booleans normalized); legacy `joined`/`merged` kept but deprecated | ✅ up to date |
 | Protobuf schemas | `GET /db/{db}/protobuf_schema`, RPC GetProtobufSchema, `schema` GET | only `schema` PUT | not supported |
 | Response formats (json/msgpack/protobuf/csv-file), `with_columns`, `width`, `sharding` | query params on items/query | not exposed | not supported |
 
 ## 4. Prioritized gaps
 
-### (a) Important for real users
-1. **HTTP transactions** (9 endpoints) — atomic bulk writes; available over gRPC, but HTTP-only users (most PHP hostings lack ext-grpc) are left without them entirely.
-2. **precepts** — `serial()`/`now()` is the standard way to get auto-increment and timestamps in Reindexer; currently unreachable altogether.
-3. **`PUT /indexes` (update index) + the `ttl`/`rtree` types + `is_sparse`/`expire_after`/fulltext `config`** — without these one can neither update an index without losing it nor create a TTL/geo/tuned fulltext index.
-4. **`PATCH /items` (upsert)** — the most used write mode in Reindexer clients for other languages.
-5. **`PUT /query` and `DELETE /query`** — conditional update/delete without a select; currently only via raw SQL `sqlquery`.
-6. **Bringing `SdlQuery` up to date** — the legacy keys `joined`/`merged` instead of `merge_queries`/`filters[].join_query` produce silently ignored DSL.
-7. **gRPC meta (GetMeta/PutMeta/EnumMeta/DeleteMeta) + HTTP `DELETE metabykey`** — an asymmetry: meta can be written/read over HTTP but not deleted; over gRPC — nothing at all.
+### (a) Important for real users — all closed in v3.1.0
+1. ~~HTTP transactions (9 endpoints)~~ — `Services\Transaction` (begin, item ops with precepts, SQL/DSL queries in tx, commit/rollback).
+2. ~~precepts~~ — `serial()`/`now()` on every `Item` write method and on transaction item ops.
+3. ~~`PUT /indexes` + `ttl`/`rtree` types + `is_sparse`/`expire_after`/fulltext `config`~~ — `Index::update`, full `IndexType`/`FieldType` enums, new `RtreeType` enum, entity fields.
+4. ~~`PATCH /items` (upsert)~~ — `Item::upsert`.
+5. ~~`PUT /query` and `DELETE /query`~~ — `Query::updateSdlQueryByHttpPut` / `Query::deleteSdlQueryByHttpDelete`.
+6. ~~Bringing `SdlQuery` up to date~~ — current DSL keys + fluent setters; legacy `joined`/`merged` deprecated but kept.
+7. ~~gRPC meta + HTTP `DELETE metabykey`~~ — `GrpcClient::{get,put,enum,delete}Meta`, `Namespaces::deleteMetaDataKey`.
 
-### (b) Niche
+### (b) Niche (still open)
 1. `GET /check`, `GET /db/{db}/namespaces/#memstats` etc. — monitoring; partially reachable via `Item::get('#memstats')`, but convenient typed helpers would be useful for ops.
 2. `GET /db/{db}/suggest`, `/query/convert/*` — needed by admin panels/IDE-like tools, not applications.
-3. `GET schema` / `protobuf_schema` / gRPC SetSchema+GetProtobufSchema — needed only by those running the protobuf encoding.
-4. KNN / float_vector indexes — new v5 functionality; demand for vector search from PHP is still sporadic (and it partially works via raw DSL select).
+3. `GET schema` / `GET protobuf_schema` over HTTP — the gRPC counterparts (SetSchema, GetProtobufSchema) are exposed since v3.1.0; the HTTP reads are not.
+4. KNN / float_vector indexes — new v5 functionality; demand for vector search from PHP is still sporadic (and it partially works via raw DSL select; the index `config` can now at least be passed as an array).
 5. The msgpack/protobuf/csv formats and `with_columns`/`width` — traffic optimization and console output.
-6. gRPC `AddNamespace` (with a full NamespaceDefinition) and non-JSON EncodingType in gRPC.
+6. Non-JSON EncodingType and `OutputFlags` variants in gRPC; `config`/`collateMode`/`sortOrdersTable` in gRPC `buildIndex`.
+7. `Index` entity: `is_no_column`, `is_simple_tag`.
 
 ### (c) Deliberately skippable
 1. `/allocator/drop_cache`, `/allocator/info` — low-level tcmalloc tuning; a job for ops tools, not a client library.
 2. `/user/role` — introspection of the current user's permissions, needed only by the admin UI (face).
 3. `/db/default_configs` — default configs for the UI configuration editor.
 4. System `#...stats` as dedicated methods — already reachable via the generic `Item::get`; dedicated wrappers would duplicate the URL.
-5. `GET /db/{db}/transactions/{tx_id}/query` (SQL inside a tx over HTTP) — if HTTP transactions get implemented, items+commit/rollback is enough: SQL-in-tx is rarely used even in the official clients.
 
 ## 5. Summary
 
-- **REST: 42%** (23/55 directly; 56% counting indirectly reachable system namespaces).
-- **gRPC: 74%** (20/27 RPCs).
+- **REST: 67%** (37/55 directly; 82% counting indirectly reachable system namespaces) — up from 42%/56% in v3.0.0.
+- **gRPC: 100%** (27/27 RPCs) — up from 74% in v3.0.0.

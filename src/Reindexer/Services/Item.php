@@ -32,41 +32,42 @@ class Item extends BaseService
         $this->namespace = $namespace;
     }
 
-    public function add(array $data = []): Response
+    /**
+     * @param string[] $precepts e.g. ['id=serial()', 'updated_at=now()']
+     */
+    public function add(array $data = [], array $precepts = []): Response
     {
-        $uri = sprintf(
-            '/api/%s/db/%s/namespaces/%s/items',
-            $this->version,
-            $this->encodePathSegment($this->getDatabase()),
-            $this->encodePathSegment($this->getNamespace())
-        );
-
-        return $this->client->request(
-            'POST',
-            $uri,
-            json_encode($data, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
-            $this->defaultHeaders
-        );
+        return $this->write('POST', $data, $precepts);
     }
 
-    public function update(array $data = []): Response
+    /**
+     * @param string[] $precepts e.g. ['id=serial()', 'updated_at=now()']
+     */
+    public function update(array $data = [], array $precepts = []): Response
     {
-        $uri = sprintf(
-            '/api/%s/db/%s/namespaces/%s/items',
-            $this->version,
-            $this->encodePathSegment($this->getDatabase()),
-            $this->encodePathSegment($this->getNamespace())
-        );
-
-        return $this->client->request(
-            'PUT',
-            $uri,
-            json_encode($data, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
-            $this->defaultHeaders
-        );
+        return $this->write('PUT', $data, $precepts);
     }
 
-    public function delete(array $data = []): Response
+    /**
+     * @param string[] $precepts e.g. ['id=serial()', 'updated_at=now()']
+     */
+    public function upsert(array $data = [], array $precepts = []): Response
+    {
+        return $this->write('PATCH', $data, $precepts);
+    }
+
+    /**
+     * @param string[] $precepts e.g. ['id=serial()', 'updated_at=now()']
+     */
+    public function delete(array $data = [], array $precepts = []): Response
+    {
+        return $this->write('DELETE', $data, $precepts);
+    }
+
+    /**
+     * @param string[] $precepts
+     */
+    private function write(string $method, array $data, array $precepts): Response
     {
         $uri = sprintf(
             '/api/%s/db/%s/namespaces/%s/items',
@@ -75,8 +76,17 @@ class Item extends BaseService
             $this->encodePathSegment($this->getNamespace())
         );
 
+        if ($precepts !== []) {
+            // The server expects the precepts array in exploded form
+            // (precepts=a&precepts=b), which http_build_query cannot produce.
+            $uri .= '?' . implode('&', array_map(
+                static fn (string $precept): string => 'precepts=' . rawurlencode($precept),
+                $precepts
+            ));
+        }
+
         return $this->client->request(
-            'DELETE',
+            $method,
             $uri,
             json_encode($data, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
             $this->defaultHeaders

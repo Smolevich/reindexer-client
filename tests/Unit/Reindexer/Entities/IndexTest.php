@@ -10,6 +10,7 @@ use Reindexer\Entities\Index;
 use Reindexer\Enum\CollateMode;
 use Reindexer\Enum\FieldType;
 use Reindexer\Enum\IndexType;
+use Reindexer\Enum\RtreeType;
 use Tests\Unit\Reindexer\BaseTest;
 
 class IndexTest extends BaseTest
@@ -90,6 +91,33 @@ class IndexTest extends BaseTest
         $this->assertEquals(IndexType::HASH, $this->index->getIndexType());
     }
 
+    public function testGetAndSetIsSparse()
+    {
+        $this->index->setIsSparse(true);
+        $this->assertTrue($this->index->isSparse());
+        $this->index->setIsSparse(false);
+        $this->assertFalse($this->index->isSparse());
+    }
+
+    public function testGetAndSetExpireAfter()
+    {
+        $this->index->setExpireAfter(3600);
+        $this->assertSame(3600, $this->index->getExpireAfter());
+    }
+
+    public function testGetAndSetRtreeType()
+    {
+        $this->index->setRtreeType(RtreeType::QUADRATIC);
+        $this->assertSame(RtreeType::QUADRATIC, $this->index->getRtreeType());
+    }
+
+    public function testGetAndSetConfig()
+    {
+        $config = ['enable_translit' => true, 'max_typos' => 2];
+        $this->index->setConfig($config);
+        $this->assertSame($config, $this->index->getConfig());
+    }
+
     public function testDefaults(): void
     {
         $index = new Index();
@@ -99,6 +127,10 @@ class IndexTest extends BaseTest
         $this->assertFalse($index->isArray());
         $this->assertFalse($index->isDense());
         $this->assertFalse($index->isAppendable());
+        $this->assertFalse($index->isSparse());
+        $this->assertNull($index->getExpireAfter());
+        $this->assertNull($index->getRtreeType());
+        $this->assertSame([], $index->getConfig());
         $this->assertSame(CollateMode::NONE, $index->getCollateMode());
         $this->assertSame('', $index->getSortOrderLetters());
     }
@@ -116,6 +148,60 @@ class IndexTest extends BaseTest
         $this->assertSame($index, $index->setIsAppendable(true));
         $this->assertSame($index, $index->setCollateMode(CollateMode::UTF8));
         $this->assertSame($index, $index->setSortOrderLetters('абв'));
+        $this->assertSame($index, $index->setIsSparse(true));
+        $this->assertSame($index, $index->setExpireAfter(60));
+        $this->assertSame($index, $index->setRtreeType(RtreeType::RSTAR));
+        $this->assertSame($index, $index->setConfig(['bm25_boost' => 1.5]));
+    }
+
+    public function testGetBodySerializesTtlIndexFields(): void
+    {
+        $index = (new Index())
+            ->setName('expires')
+            ->setJsonPaths(['expires'])
+            ->setFieldType(FieldType::INT64)
+            ->setIndexType(IndexType::TTL)
+            ->setExpireAfter(86400)
+            ->setIsSparse(true);
+
+        $body = $index->getBody();
+        $this->assertSame('ttl', $body['index_type']);
+        $this->assertSame('int64', $body['field_type']);
+        $this->assertSame(86400, $body['expire_after']);
+        $this->assertTrue($body['is_sparse']);
+    }
+
+    public function testGetBodySerializesRtreeIndexFields(): void
+    {
+        $index = (new Index())
+            ->setName('location')
+            ->setJsonPaths(['location'])
+            ->setFieldType(FieldType::POINT)
+            ->setIndexType(IndexType::RTREE)
+            ->setRtreeType(RtreeType::GREENE);
+
+        $body = $index->getBody();
+        $this->assertSame('rtree', $body['index_type']);
+        $this->assertSame('point', $body['field_type']);
+        $this->assertSame('greene', $body['rtree_type']);
+    }
+
+    public function testGetBodySerializesConfigAsIs(): void
+    {
+        $config = ['enable_translit' => false, 'stemmers' => ['en', 'ru']];
+        $body = (new Index())->setName('body')->setConfig($config)->getBody();
+
+        $this->assertSame($config, $body['config']);
+    }
+
+    public function testGetBodyOmitsNewNullableFieldsWhenUnset(): void
+    {
+        $body = (new Index())->setName('plain')->getBody();
+
+        $this->assertArrayNotHasKey('is_sparse', $body);
+        $this->assertArrayNotHasKey('expire_after', $body);
+        $this->assertArrayNotHasKey('rtree_type', $body);
+        $this->assertArrayNotHasKey('config', $body);
     }
 
     public function testGetBodySerializesAllSetFields(): void

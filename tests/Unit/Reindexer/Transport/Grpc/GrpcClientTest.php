@@ -864,6 +864,267 @@ class GrpcClientTest extends TestCase
         $this->client->commitTransaction(999);
     }
 
+    // ---- meta / schema / addNamespace -------------------------------------
+
+    public function testAddNamespaceBuildsFullDefinition(): void
+    {
+        $this->connectClient();
+        $captured = null;
+        $this->stub->method('AddNamespace')
+            ->willReturnCallback(function (\Reindexer\Grpc\AddNamespaceRequest $request) use (&$captured) {
+                $captured = $request;
+
+                return $this->unaryCall($this->okError());
+            });
+
+        $this->client->addNamespace('items', ['enabled' => false], [
+            ['name' => 'id', 'fieldType' => 'int', 'indexType' => 'hash', 'isPk' => true],
+            ['name' => 'title', 'fieldType' => 'string', 'indexType' => 'text'],
+        ]);
+
+        $this->assertSame('testdb', $captured->getDbName());
+        $namespace = $captured->getNamespace();
+        $this->assertSame('testdb', $namespace->getDbName());
+        $this->assertSame('items', $namespace->getName());
+        $this->assertFalse($namespace->getStorageOptions()->getEnabled());
+        $this->assertTrue($namespace->getStorageOptions()->getCreateIfMissing());
+        $definitions = iterator_to_array($namespace->getIndexesDefinitions(), false);
+        $this->assertCount(2, $definitions);
+        $this->assertSame('id', $definitions[0]->getName());
+        $this->assertTrue($definitions[0]->getOptions()->getIsPk());
+        $this->assertSame('text', $definitions[1]->getIndexType());
+    }
+
+    public function testAddNamespaceWithoutIndexesSendsEmptyDefinitions(): void
+    {
+        $this->connectClient();
+        $captured = null;
+        $this->stub->method('AddNamespace')
+            ->willReturnCallback(function ($request) use (&$captured) {
+                $captured = $request;
+
+                return $this->unaryCall($this->okError());
+            });
+
+        $this->client->addNamespace('items');
+
+        $namespace = $captured->getNamespace();
+        $storage = $namespace->getStorageOptions();
+        $this->assertTrue($storage->getEnabled());
+        $this->assertTrue($storage->getCreateIfMissing());
+        $this->assertFalse($storage->getDropOnFileFormatError());
+        $this->assertSame('items', $storage->getNsName());
+        $this->assertCount(0, $namespace->getIndexesDefinitions());
+    }
+
+    public function testAddNamespaceRespectsStorageOverrides(): void
+    {
+        $this->connectClient();
+        $captured = null;
+        $this->stub->method('AddNamespace')
+            ->willReturnCallback(function ($request) use (&$captured) {
+                $captured = $request;
+
+                return $this->unaryCall($this->okError());
+            });
+
+        $this->client->addNamespace('items', [
+            'enabled' => true,
+            'createIfMissing' => false,
+            'dropOnFileFormatError' => true,
+        ]);
+
+        $storage = $captured->getNamespace()->getStorageOptions();
+        $this->assertTrue($storage->getEnabled());
+        $this->assertFalse($storage->getCreateIfMissing());
+        $this->assertTrue($storage->getDropOnFileFormatError());
+    }
+
+    public function testAddNamespaceValidatesIndexDefinitions(): void
+    {
+        $this->connectClient();
+        $this->stub->expects($this->never())->method($this->anything());
+
+        $this->expectException(GrpcException::class);
+        $this->expectExceptionMessage('Index definition requires a non-empty "name"');
+        $this->client->addNamespace('items', [], [['fieldType' => 'int']]);
+    }
+
+    public function testSetSchemaEncodesArraySchema(): void
+    {
+        $this->connectClient();
+        $captured = null;
+        $this->stub->method('SetSchema')
+            ->willReturnCallback(function (\Reindexer\Grpc\SetSchemaRequest $request) use (&$captured) {
+                $captured = $request;
+
+                return $this->unaryCall($this->okError());
+            });
+
+        $this->client->setSchema('items', ['type' => 'object', 'properties' => ['id' => ['type' => 'number']]]);
+
+        $this->assertSame('testdb', $captured->getDbName());
+        $definition = $captured->getSchemaDefinitionRequest();
+        $this->assertSame('items', $definition->getNsName());
+        $this->assertSame(
+            '{"type":"object","properties":{"id":{"type":"number"}}}',
+            $definition->getJsonData()
+        );
+    }
+
+    public function testSetSchemaPassesRawJsonStringThrough(): void
+    {
+        $this->connectClient();
+        $captured = null;
+        $this->stub->method('SetSchema')
+            ->willReturnCallback(function ($request) use (&$captured) {
+                $captured = $request;
+
+                return $this->unaryCall($this->okError());
+            });
+
+        $raw = '{"type":"object"}';
+        $this->client->setSchema('items', $raw);
+
+        $this->assertSame($raw, $captured->getSchemaDefinitionRequest()->getJsonData());
+    }
+
+    public function testGetProtobufSchemaReturnsProtoText(): void
+    {
+        $this->connectClient();
+        $captured = null;
+        $response = (new \Reindexer\Grpc\ProtobufSchemaResponse())
+            ->setProto('syntax = "proto3";')
+            ->setErrorResponse($this->okError());
+        $this->stub->method('GetProtobufSchema')
+            ->willReturnCallback(function (\Reindexer\Grpc\GetProtobufSchemaRequest $request) use (&$captured, $response) {
+                $captured = $request;
+
+                return $this->unaryCall($response);
+            });
+
+        $proto = $this->client->getProtobufSchema(['items', 'users']);
+
+        $this->assertSame('syntax = "proto3";', $proto);
+        $this->assertSame('testdb', $captured->getDbName());
+        $this->assertSame(['items', 'users'], iterator_to_array($captured->getNamespaces(), false));
+    }
+
+    public function testGetProtobufSchemaPropagatesServerError(): void
+    {
+        $this->connectClient();
+        $response = (new \Reindexer\Grpc\ProtobufSchemaResponse())
+            ->setErrorResponse($this->failedError(ErrorCode::errCodeParams, 'no schema'));
+        $this->stub->method('GetProtobufSchema')->willReturn($this->unaryCall($response));
+
+        $this->expectException(GrpcException::class);
+        $this->expectExceptionMessage('no schema');
+        $this->client->getProtobufSchema();
+    }
+
+    public function testGetMetaReturnsValueAndBuildsRequest(): void
+    {
+        $this->connectClient();
+        $captured = null;
+        $response = (new \Reindexer\Grpc\MetadataResponse())
+            ->setMetadata('meta value')
+            ->setErrorResponse($this->okError());
+        $this->stub->method('GetMeta')
+            ->willReturnCallback(function (\Reindexer\Grpc\GetMetaRequest $request) use (&$captured, $response) {
+                $captured = $request;
+
+                return $this->unaryCall($response);
+            });
+
+        $value = $this->client->getMeta('items', 'the_key');
+
+        $this->assertSame('meta value', $value);
+        $this->assertSame('testdb', $captured->getDbName());
+        $this->assertSame('items', $captured->getMetadata()->getNsName());
+        $this->assertSame('the_key', $captured->getMetadata()->getKey());
+        $this->assertSame('', $captured->getMetadata()->getValue());
+    }
+
+    public function testGetMetaPropagatesServerError(): void
+    {
+        $this->connectClient();
+        $response = (new \Reindexer\Grpc\MetadataResponse())
+            ->setErrorResponse($this->failedError(ErrorCode::errCodeNotFound, 'no key'));
+        $this->stub->method('GetMeta')->willReturn($this->unaryCall($response));
+
+        $this->expectException(GrpcException::class);
+        $this->expectExceptionCode(ErrorCode::errCodeNotFound);
+        $this->client->getMeta('items', 'missing');
+    }
+
+    public function testPutMetaSendsKeyAndValue(): void
+    {
+        $this->connectClient();
+        $captured = null;
+        $this->stub->method('PutMeta')
+            ->willReturnCallback(function (\Reindexer\Grpc\PutMetaRequest $request) use (&$captured) {
+                $captured = $request;
+
+                return $this->unaryCall($this->okError());
+            });
+
+        $this->client->putMeta('items', 'the_key', 'значение');
+
+        $this->assertSame('testdb', $captured->getDbName());
+        $this->assertSame('items', $captured->getMetadata()->getNsName());
+        $this->assertSame('the_key', $captured->getMetadata()->getKey());
+        $this->assertSame('значение', $captured->getMetadata()->getValue());
+    }
+
+    public function testEnumMetaReturnsKeys(): void
+    {
+        $this->connectClient();
+        $captured = null;
+        $response = (new \Reindexer\Grpc\MetadataKeysResponse())
+            ->setKeys(['a', 'b'])
+            ->setErrorResponse($this->okError());
+        $this->stub->method('EnumMeta')
+            ->willReturnCallback(function (\Reindexer\Grpc\EnumMetaRequest $request) use (&$captured, $response) {
+                $captured = $request;
+
+                return $this->unaryCall($response);
+            });
+
+        $this->assertSame(['a', 'b'], $this->client->enumMeta('items'));
+        $this->assertSame('testdb', $captured->getDbName());
+        $this->assertSame('items', $captured->getNsName());
+    }
+
+    public function testEnumMetaPropagatesServerError(): void
+    {
+        $this->connectClient();
+        $response = (new \Reindexer\Grpc\MetadataKeysResponse())
+            ->setErrorResponse($this->failedError(ErrorCode::errCodeNotFound, 'no ns'));
+        $this->stub->method('EnumMeta')->willReturn($this->unaryCall($response));
+
+        $this->expectException(GrpcException::class);
+        $this->client->enumMeta('missing');
+    }
+
+    public function testDeleteMetaSendsKeyWithEmptyValue(): void
+    {
+        $this->connectClient();
+        $captured = null;
+        $this->stub->method('DeleteMeta')
+            ->willReturnCallback(function (\Reindexer\Grpc\DeleteMetaRequest $request) use (&$captured) {
+                $captured = $request;
+
+                return $this->unaryCall($this->okError());
+            });
+
+        $this->client->deleteMeta('items', 'the_key');
+
+        $this->assertSame('testdb', $captured->getDbName());
+        $this->assertSame('items', $captured->getMetadata()->getNsName());
+        $this->assertSame('the_key', $captured->getMetadata()->getKey());
+        $this->assertSame('', $captured->getMetadata()->getValue());
+    }
+
     // ---- low level guards -------------------------------------------------
 
     public function testUnaryNullResponseThrows(): void
@@ -974,6 +1235,10 @@ class GrpcClientTest extends TestCase
             'dropIndex' => ['DropIndex', static fn (GrpcClient $c) => $c->dropIndex('ns', ['name' => 'i'])],
             'commitTransaction' => ['CommitTransaction', static fn (GrpcClient $c) => $c->commitTransaction(1)],
             'rollbackTransaction' => ['RollbackTransaction', static fn (GrpcClient $c) => $c->rollbackTransaction(1)],
+            'addNamespace' => ['AddNamespace', static fn (GrpcClient $c) => $c->addNamespace('ns')],
+            'setSchema' => ['SetSchema', static fn (GrpcClient $c) => $c->setSchema('ns', '{}')],
+            'putMeta' => ['PutMeta', static fn (GrpcClient $c) => $c->putMeta('ns', 'k', 'v')],
+            'deleteMeta' => ['DeleteMeta', static fn (GrpcClient $c) => $c->deleteMeta('ns', 'k')],
         ];
     }
 
@@ -1172,6 +1437,13 @@ class GrpcClientTest extends TestCase
             'delete' => [static fn (GrpcClient $c) => $c->delete('{}')],
             'modifyItems' => [static fn (GrpcClient $c) => $c->modifyItems('ns', [['id' => 1]])],
             'beginTransaction' => [static fn (GrpcClient $c) => $c->beginTransaction('ns')],
+            'addNamespace' => [static fn (GrpcClient $c) => $c->addNamespace('ns')],
+            'setSchema' => [static fn (GrpcClient $c) => $c->setSchema('ns', '{}')],
+            'getProtobufSchema' => [static fn (GrpcClient $c) => $c->getProtobufSchema()],
+            'getMeta' => [static fn (GrpcClient $c) => $c->getMeta('ns', 'k')],
+            'putMeta' => [static fn (GrpcClient $c) => $c->putMeta('ns', 'k', 'v')],
+            'enumMeta' => [static fn (GrpcClient $c) => $c->enumMeta('ns')],
+            'deleteMeta' => [static fn (GrpcClient $c) => $c->deleteMeta('ns', 'k')],
         ];
     }
 }

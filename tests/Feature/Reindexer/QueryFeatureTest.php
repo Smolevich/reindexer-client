@@ -167,4 +167,41 @@ class QueryFeatureTest extends FeatureCase
         // rating >= 20 leaves alice ×2 (30, 50) and bob ×2 (20, 40)
         $this->assertSame(['alice' => 2, 'bob' => 2], $facets);
     }
+
+    public function testUpdateByDslViaHttpPut(): void
+    {
+        $response = $this->queryService->updateSdlQueryByHttpPut([
+            'namespace' => $this->ns,
+            'type' => 'update',
+            'filters' => [['field' => 'author', 'cond' => 'EQ', 'value' => 'alice']],
+            'update_fields' => [['name' => 'rating', 'type' => 'value', 'values' => [0]]],
+        ]);
+        $this->assertSame(200, $response->getCode(), $response->getResponseBody());
+
+        $found = $this->queryService
+            ->createByHttpGet("SELECT * FROM {$this->ns} WHERE author = 'alice'")
+            ->getDecodedResponseBody(true);
+        $this->assertSame([0, 0, 0], array_column($found['items'], 'rating'));
+
+        // untouched rows keep their values
+        $found = $this->queryService
+            ->createByHttpGet("SELECT * FROM {$this->ns} WHERE author = 'bob' ORDER BY id")
+            ->getDecodedResponseBody(true);
+        $this->assertSame([20, 40], array_column($found['items'], 'rating'));
+    }
+
+    public function testDeleteByDslViaHttpDelete(): void
+    {
+        $response = $this->queryService->deleteSdlQueryByHttpDelete([
+            'namespace' => $this->ns,
+            'type' => 'delete',
+            'filters' => [['field' => 'rating', 'cond' => 'GT', 'value' => 20]],
+        ]);
+        $this->assertSame(200, $response->getCode(), $response->getResponseBody());
+
+        $found = $this->queryService
+            ->createByHttpGet("SELECT * FROM {$this->ns} ORDER BY id")
+            ->getDecodedResponseBody(true);
+        $this->assertSame([1, 2], array_column($found['items'], 'id'));
+    }
 }

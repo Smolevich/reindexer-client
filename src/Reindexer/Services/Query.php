@@ -51,6 +51,35 @@ class Query extends BaseService
      */
     public function createSdlQueryByHttpPost(SdlQuery|array|string $query): Response
     {
+        return $this->sendSdlQuery('POST', $query);
+    }
+
+    /**
+     * Updates documents by a Query-DSL query (PUT /query). The DSL should
+     * contain update_fields and/or drop_fields.
+     *
+     * @param SdlQuery|array<string, mixed>|string $query Query-DSL entity, array or raw JSON string
+     */
+    public function updateSdlQueryByHttpPut(SdlQuery|array|string $query): Response
+    {
+        return $this->sendSdlQuery('PUT', $query);
+    }
+
+    /**
+     * Deletes documents matching a Query-DSL query (DELETE /query).
+     *
+     * @param SdlQuery|array<string, mixed>|string $query Query-DSL entity, array or raw JSON string
+     */
+    public function deleteSdlQueryByHttpDelete(SdlQuery|array|string $query): Response
+    {
+        return $this->sendSdlQuery('DELETE', $query);
+    }
+
+    /**
+     * @param SdlQuery|array<string, mixed>|string $query
+     */
+    private function sendSdlQuery(string $method, SdlQuery|array|string $query): Response
+    {
         $uri = sprintf('/api/%s/db/%s/query', $this->version, $this->encodePathSegment($this->getDatabase()));
 
         if ($query instanceof SdlQuery) {
@@ -58,7 +87,7 @@ class Query extends BaseService
         }
 
         return $this->client->request(
-            'POST',
+            $method,
             $uri,
             is_array($query) ? json_encode($query, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR) : $query,
             $this->defaultHeaders

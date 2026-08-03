@@ -168,6 +168,63 @@ class QueryFeatureTest extends FeatureCase
         $this->assertSame(['alice' => 2, 'bob' => 2], $facets);
     }
 
+    public function testSdlQueryEntityViaPost(): void
+    {
+        $query = (new \Reindexer\Entities\SdlQuery())
+            ->setNamespace($this->ns)
+            ->setFilters([['field' => 'rating', 'cond' => 'GE', 'value' => 30]])
+            ->setSort(['field' => 'rating', 'desc' => true])
+            ->setLimit(2)
+            ->setReqTotal(true);
+
+        $body = $this->queryService->createSdlQueryByHttpPost($query)->getDecodedResponseBody(true);
+
+        $this->assertSame([50, 40], array_column($body['items'], 'rating'));
+        $this->assertSame(3, $body['total_items'], 'req_total=enabled must report the full match count');
+    }
+
+    public function testSdlQueryEntityExplainAndMergeQueries(): void
+    {
+        $query = (new \Reindexer\Entities\SdlQuery())
+            ->setNamespace($this->ns)
+            ->setFilters([['field' => 'author', 'cond' => 'EQ', 'value' => 'bob']])
+            ->setMergeQueries([[
+                'namespace' => $this->ns,
+                'filters' => [['field' => 'rating', 'cond' => 'EQ', 'value' => 50]],
+            ]])
+            ->setExplain(true);
+
+        $body = $this->queryService->createSdlQueryByHttpPost($query)->getDecodedResponseBody(true);
+
+        // bob (20, 40) merged with the rating=50 query
+        $ratings = array_column($body['items'], 'rating');
+        sort($ratings);
+        $this->assertSame([20, 40, 50], $ratings);
+        $this->assertArrayHasKey('explain', $body, 'explain=true must attach the execution plan');
+    }
+
+    public function testSdlQueryEntityUpdateWithDropFields(): void
+    {
+        // drop_fields works for non-index (or sparse) fields only
+        $items = $this->itemService($this->ns);
+        $items->upsert(['id' => 1, 'rating' => 10, 'author' => 'alice', 'note' => 'temp']);
+
+        $query = (new \Reindexer\Entities\SdlQuery())
+            ->setNamespace($this->ns)
+            ->setType('update')
+            ->setFilters([['field' => 'id', 'cond' => 'EQ', 'value' => 1]])
+            ->setDropFields(['note']);
+
+        $response = $this->queryService->updateSdlQueryByHttpPut($query);
+        $this->assertSame(200, $response->getCode(), $response->getResponseBody());
+
+        $found = $this->queryService
+            ->createByHttpGet("SELECT * FROM {$this->ns} WHERE id = 1")
+            ->getDecodedResponseBody(true);
+        $this->assertArrayNotHasKey('note', $found['items'][0]);
+        $this->assertSame('alice', $found['items'][0]['author']);
+    }
+
     public function testUpdateByDslViaHttpPut(): void
     {
         $response = $this->queryService->updateSdlQueryByHttpPut([

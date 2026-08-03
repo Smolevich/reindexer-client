@@ -7,6 +7,7 @@ namespace Reindexer\Transport\Grpc;
 use Generator;
 use Reindexer\Exceptions\GrpcException;
 use Reindexer\Grpc\AddIndexRequest;
+use Reindexer\Grpc\AddNamespaceRequest;
 use Reindexer\Grpc\AddTxItemRequest;
 use Reindexer\Grpc\BeginTransactionRequest;
 use Reindexer\Grpc\CloseNamespaceRequest;
@@ -14,24 +15,33 @@ use Reindexer\Grpc\CommitTransactionRequest;
 use Reindexer\Grpc\ConnectOptions;
 use Reindexer\Grpc\ConnectRequest;
 use Reindexer\Grpc\CreateDatabaseRequest;
+use Reindexer\Grpc\DeleteMetaRequest;
 use Reindexer\Grpc\DeleteRequest;
 use Reindexer\Grpc\DropIndexRequest;
 use Reindexer\Grpc\DropNamespaceRequest;
 use Reindexer\Grpc\EncodingType;
 use Reindexer\Grpc\EnumDatabasesRequest;
+use Reindexer\Grpc\EnumMetaRequest;
 use Reindexer\Grpc\EnumNamespacesOptions;
 use Reindexer\Grpc\EnumNamespacesRequest;
 use Reindexer\Grpc\ErrorResponse;
+use Reindexer\Grpc\GetMetaRequest;
+use Reindexer\Grpc\GetProtobufSchemaRequest;
 use Reindexer\Grpc\Index;
 use Reindexer\Grpc\IndexOptions;
+use Reindexer\Grpc\Metadata;
 use Reindexer\Grpc\ModifyItemRequest;
 use Reindexer\Grpc\ModifyMode;
 use Reindexer\Grpc\OpenNamespaceRequest;
 use Reindexer\Grpc\OutputFlags;
+use Reindexer\Grpc\PBNamespace;
+use Reindexer\Grpc\PutMetaRequest;
 use Reindexer\Grpc\Query;
 use Reindexer\Grpc\ReindexerClient;
 use Reindexer\Grpc\RollbackTransactionRequest;
+use Reindexer\Grpc\SchemaDefinition;
 use Reindexer\Grpc\SelectRequest;
+use Reindexer\Grpc\SetSchemaRequest;
 use Reindexer\Grpc\SqlRequest;
 use Reindexer\Grpc\StorageOptions;
 use Reindexer\Grpc\TruncateNamespaceRequest;
@@ -179,6 +189,40 @@ class GrpcClient
 
         /** @var ErrorResponse $response */
         $response = $this->unary($this->stub->OpenNamespace($request));
+        $this->throwIfError($response);
+    }
+
+    /**
+     * Creates a namespace from a full definition: storage options plus index
+     * definitions in one call (unlike openNamespace + addIndex per index).
+     *
+     * @param array{enabled?: bool, createIfMissing?: bool, dropOnFileFormatError?: bool} $storage
+     * @param array<int, array<string, mixed>> $indexes index definitions, see addIndex()
+     */
+    public function addNamespace(string $nsName, array $storage = [], array $indexes = []): void
+    {
+        $dbName = $this->requireDbName();
+
+        $storageOptions = new StorageOptions();
+        $storageOptions->setNsName($nsName)
+            ->setEnabled($storage['enabled'] ?? true)
+            ->setCreateIfMissing($storage['createIfMissing'] ?? true)
+            ->setDropOnFileFormatError($storage['dropOnFileFormatError'] ?? false);
+
+        $namespace = new PBNamespace();
+        $namespace->setDbName($dbName)
+            ->setName($nsName)
+            ->setStorageOptions($storageOptions)
+            ->setIndexesDefinitions(array_map(
+                fn (array $definition): Index => $this->buildIndex($definition),
+                $indexes
+            ));
+
+        $request = new AddNamespaceRequest();
+        $request->setDbName($dbName)->setNamespace($namespace);
+
+        /** @var ErrorResponse $response */
+        $response = $this->unary($this->stub->AddNamespace($request));
         $this->throwIfError($response);
     }
 
@@ -434,6 +478,97 @@ class GrpcClient
 
             throw $e;
         }
+    }
+
+    /**
+     * Sets the JSON schema of a namespace.
+     *
+     * @param array<string, mixed>|string $schema JSON schema as array or raw JSON string
+     */
+    public function setSchema(string $nsName, array|string $schema): void
+    {
+        $definition = new SchemaDefinition();
+        $definition->setNsName($nsName)->setJsonData($this->encodeJson($schema));
+
+        $request = new SetSchemaRequest();
+        $request->setDbName($this->requireDbName())
+            ->setSchemaDefinitionRequest($definition);
+
+        /** @var ErrorResponse $response */
+        $response = $this->unary($this->stub->SetSchema($request));
+        $this->throwIfError($response);
+    }
+
+    /**
+     * Returns the text of a .proto file describing the given namespaces.
+     *
+     * @param string[] $namespaces namespaces to include in the schema
+     */
+    public function getProtobufSchema(array $namespaces = []): string
+    {
+        $request = new GetProtobufSchemaRequest();
+        $request->setDbName($this->requireDbName())->setNamespaces($namespaces);
+
+        $response = $this->unary($this->stub->GetProtobufSchema($request));
+        $this->throwIfError($response->getErrorResponse());
+
+        return $response->getProto();
+    }
+
+    public function getMeta(string $nsName, string $key): string
+    {
+        $request = new GetMetaRequest();
+        $request->setDbName($this->requireDbName())
+            ->setMetadata($this->buildMetadata($nsName, $key));
+
+        $response = $this->unary($this->stub->GetMeta($request));
+        $this->throwIfError($response->getErrorResponse());
+
+        return $response->getMetadata();
+    }
+
+    public function putMeta(string $nsName, string $key, string $value): void
+    {
+        $request = new PutMetaRequest();
+        $request->setDbName($this->requireDbName())
+            ->setMetadata($this->buildMetadata($nsName, $key, $value));
+
+        /** @var ErrorResponse $response */
+        $response = $this->unary($this->stub->PutMeta($request));
+        $this->throwIfError($response);
+    }
+
+    /**
+     * @return string[] metadata keys of the namespace
+     */
+    public function enumMeta(string $nsName): array
+    {
+        $request = new EnumMetaRequest();
+        $request->setDbName($this->requireDbName())->setNsName($nsName);
+
+        $response = $this->unary($this->stub->EnumMeta($request));
+        $this->throwIfError($response->getErrorResponse());
+
+        return iterator_to_array($response->getKeys(), false);
+    }
+
+    public function deleteMeta(string $nsName, string $key): void
+    {
+        $request = new DeleteMetaRequest();
+        $request->setDbName($this->requireDbName())
+            ->setMetadata($this->buildMetadata($nsName, $key));
+
+        /** @var ErrorResponse $response */
+        $response = $this->unary($this->stub->DeleteMeta($request));
+        $this->throwIfError($response);
+    }
+
+    private function buildMetadata(string $nsName, string $key, string $value = ''): Metadata
+    {
+        $metadata = new Metadata();
+        $metadata->setNsName($nsName)->setKey($key)->setValue($value);
+
+        return $metadata;
     }
 
     public function commitTransaction(int $transactionId): void

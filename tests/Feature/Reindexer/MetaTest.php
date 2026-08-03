@@ -45,6 +45,18 @@ class MetaTest extends FeatureCase
         $this->assertSame('v2', $body['value']);
     }
 
+    public function testDeleteMetaKeyRemovesIt(): void
+    {
+        $this->nsService->addMetaDataKey($this->ns, 'doomed', 'x');
+        $this->assertSame('x', $this->nsService->getMetaDataKey($this->ns, 'doomed')->getDecodedResponseBody(true)['value']);
+
+        $response = $this->nsService->deleteMetaDataKey($this->ns, 'doomed');
+        $this->assertSame(200, $response->getCode(), $response->getResponseBody());
+
+        $body = $this->nsService->getMetaList($this->ns)->getDecodedResponseBody(true);
+        $this->assertSame(0, $body['total_items']);
+    }
+
     public function testMetaListWithoutValues(): void
     {
         $this->nsService->addMetaDataKey($this->ns, 'alpha', '1');

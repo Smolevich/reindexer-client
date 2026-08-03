@@ -151,6 +151,19 @@ class TransactionTest extends TestCase
         );
     }
 
+    public function testDeleteQueryKeepsUnicodeUnescaped(): void
+    {
+        $this->service->deleteQuery('tx1', [
+            'namespace' => 'ns',
+            'filters' => [['field' => 'name', 'cond' => 'EQ', 'value' => 'значение']],
+        ]);
+
+        $this->assertSame(
+            '{"namespace":"ns","filters":[{"field":"name","cond":"EQ","value":"значение"}]}',
+            $this->api->lastCall()['body']
+        );
+    }
+
     public function testDeleteQueryPassesRawJsonStringThrough(): void
     {
         $raw = '{"namespace":"ns"}';

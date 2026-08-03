@@ -70,6 +70,14 @@ class IndexServiceTest extends TestCase
         $this->assertTrue($decoded['is_dense']);
     }
 
+    public function testUpdateKeepsUnicodeUnescaped(): void
+    {
+        $entity = $this->makeEntity()->setName('поле_名前');
+        $this->service->update($entity, 'db', 'ns');
+
+        $this->assertStringContainsString('"поле_名前"', $this->api->lastCall()['body']);
+    }
+
     public function testUpdateEncodesDatabaseAndNamespace(): void
     {
         $this->service->update($this->makeEntity(), 'my db', 'ns/evil');

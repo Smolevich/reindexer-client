@@ -909,9 +909,35 @@ class GrpcClientTest extends TestCase
         $this->client->addNamespace('items');
 
         $namespace = $captured->getNamespace();
-        $this->assertTrue($namespace->getStorageOptions()->getEnabled());
-        $this->assertSame('items', $namespace->getStorageOptions()->getNsName());
+        $storage = $namespace->getStorageOptions();
+        $this->assertTrue($storage->getEnabled());
+        $this->assertTrue($storage->getCreateIfMissing());
+        $this->assertFalse($storage->getDropOnFileFormatError());
+        $this->assertSame('items', $storage->getNsName());
         $this->assertCount(0, $namespace->getIndexesDefinitions());
+    }
+
+    public function testAddNamespaceRespectsStorageOverrides(): void
+    {
+        $this->connectClient();
+        $captured = null;
+        $this->stub->method('AddNamespace')
+            ->willReturnCallback(function ($request) use (&$captured) {
+                $captured = $request;
+
+                return $this->unaryCall($this->okError());
+            });
+
+        $this->client->addNamespace('items', [
+            'enabled' => true,
+            'createIfMissing' => false,
+            'dropOnFileFormatError' => true,
+        ]);
+
+        $storage = $captured->getNamespace()->getStorageOptions();
+        $this->assertTrue($storage->getEnabled());
+        $this->assertFalse($storage->getCreateIfMissing());
+        $this->assertTrue($storage->getDropOnFileFormatError());
     }
 
     public function testAddNamespaceValidatesIndexDefinitions(): void

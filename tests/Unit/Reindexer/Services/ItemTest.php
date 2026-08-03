@@ -65,6 +65,61 @@ class ItemTest extends TestCase
         $this->assertSame(['id' => 1], json_decode($call['body'], true));
     }
 
+    public function testUpsertSendsPatch(): void
+    {
+        $this->service->upsert(['id' => 1, 'name' => 'upserted']);
+
+        $call = $this->api->lastCall();
+        $this->assertSame('PATCH', $call['method']);
+        $this->assertSame('/api/v1/db/db/namespaces/ns/items', $call['uri']);
+        $this->assertSame(['id' => 1, 'name' => 'upserted'], json_decode($call['body'], true));
+    }
+
+    /**
+     * @param callable(Item): \Reindexer\Response $invoker
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('writeMethodProvider')]
+    public function testWriteMethodsAppendExplodedPrecepts(callable $invoker, string $httpMethod): void
+    {
+        $invoker($this->service);
+
+        $call = $this->api->lastCall();
+        $this->assertSame($httpMethod, $call['method']);
+        $this->assertSame(
+            '/api/v1/db/db/namespaces/ns/items?precepts=id%3Dserial%28%29&precepts=updated_at%3Dnow%28%29',
+            $call['uri']
+        );
+    }
+
+    public static function writeMethodProvider(): array
+    {
+        $precepts = ['id=serial()', 'updated_at=now()'];
+
+        return [
+            'add' => [static fn (Item $s) => $s->add(['name' => 'x'], $precepts), 'POST'],
+            'update' => [static fn (Item $s) => $s->update(['id' => 1], $precepts), 'PUT'],
+            'upsert' => [static fn (Item $s) => $s->upsert(['id' => 1], $precepts), 'PATCH'],
+            'delete' => [static fn (Item $s) => $s->delete(['id' => 1], $precepts), 'DELETE'],
+        ];
+    }
+
+    public function testSinglePreceptProducesSinglePair(): void
+    {
+        $this->service->add(['name' => 'x'], ['id=serial()']);
+
+        $this->assertSame(
+            '/api/v1/db/db/namespaces/ns/items?precepts=id%3Dserial%28%29',
+            $this->api->lastCall()['uri']
+        );
+    }
+
+    public function testEmptyPreceptsAddNoQueryString(): void
+    {
+        $this->service->add(['id' => 1], []);
+
+        $this->assertSame('/api/v1/db/db/namespaces/ns/items', $this->api->lastCall()['uri']);
+    }
+
     public function testEmptyPayloadSerializesToEmptyJsonArray(): void
     {
         $this->service->add();

@@ -27,6 +27,26 @@ class Index extends BaseService
         );
     }
 
+    /**
+     * Updates an existing index in place (PUT /indexes) without dropping it.
+     */
+    public function update(IndexEntity $index, string $database, string $namespace): Response
+    {
+        $uri = sprintf(
+            '/api/%s/db/%s/namespaces/%s/indexes',
+            $this->version,
+            $this->encodePathSegment($database),
+            $this->encodePathSegment($namespace)
+        );
+
+        return $this->client->request(
+            'PUT',
+            $uri,
+            json_encode($index->getBody(), JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
+            $this->defaultHeaders
+        );
+    }
+
     public function get(string $database, string $namespace): Response
     {
         $uri = sprintf(

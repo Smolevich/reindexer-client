@@ -8,6 +8,7 @@ use Reindexer\Entities\Index;
 use Reindexer\Enum\CollateMode;
 use Reindexer\Enum\FieldType;
 use Reindexer\Enum\IndexType;
+use Reindexer\Enum\RtreeType;
 
 /**
  * Every index type the client can express, created against a real server and
@@ -164,6 +165,85 @@ class IndexTypesTest extends FeatureCase
             $onServer = $this->findIndexDefinition('collate_' . $mode->value);
             $this->assertSame($mode->value, $onServer['collate_mode']);
         }
+    }
+
+    public function testTtlIndexWithExpireAfter(): void
+    {
+        $index = $this->index('expires_at', FieldType::INT64, IndexType::TTL)
+            ->setExpireAfter(3600);
+        $response = $this->indexService->create($index, $this->database, $this->ns);
+        $this->assertSame(200, $response->getCode(), $response->getResponseBody());
+
+        $onServer = $this->findIndexDefinition('expires_at');
+        $this->assertNotNull($onServer);
+        $this->assertSame('ttl', $onServer['index_type']);
+        $this->assertSame(3600, $onServer['expire_after']);
+    }
+
+    public function testRtreeIndexSupportsDwithinQuery(): void
+    {
+        $index = $this->index('location', FieldType::POINT, IndexType::RTREE)
+            ->setRtreeType(RtreeType::RSTAR);
+        $response = $this->indexService->create($index, $this->database, $this->ns);
+        $this->assertSame(200, $response->getCode(), $response->getResponseBody());
+
+        $onServer = $this->findIndexDefinition('location');
+        $this->assertNotNull($onServer);
+        $this->assertSame('rtree', $onServer['index_type']);
+        $this->assertSame('point', $onServer['field_type']);
+        $this->assertSame('rstar', $onServer['rtree_type']);
+
+        $items = $this->itemService($this->ns);
+        $items->add(['id' => 1, 'location' => [0.0, 0.0]]);
+        $items->add(['id' => 2, 'location' => [10.0, 10.0]]);
+
+        $found = $this->queryService
+            ->createByHttpGet(
+                "SELECT * FROM {$this->ns} WHERE ST_DWithin(location, ST_GeomFromText('point(1 1)'), 2.0)"
+            )
+            ->getDecodedResponseBody(true);
+
+        $this->assertSame([1], array_column($found['items'], 'id'));
+    }
+
+    public function testSparseIndexIsAccepted(): void
+    {
+        $index = $this->index('optional_field', FieldType::STRING, IndexType::HASH)
+            ->setIsSparse(true);
+        $response = $this->indexService->create($index, $this->database, $this->ns);
+        $this->assertSame(200, $response->getCode(), $response->getResponseBody());
+
+        $onServer = $this->findIndexDefinition('optional_field');
+        $this->assertTrue($onServer['is_sparse']);
+    }
+
+    public function testFulltextConfigIsStoredOnServer(): void
+    {
+        $index = $this->index('description', FieldType::STRING, IndexType::TEXT)
+            ->setConfig(['enable_translit' => false]);
+        $response = $this->indexService->create($index, $this->database, $this->ns);
+        $this->assertSame(200, $response->getCode(), $response->getResponseBody());
+
+        $onServer = $this->findIndexDefinition('description');
+        $this->assertFalse($onServer['config']['enable_translit']);
+    }
+
+    public function testUpdateIndexInPlace(): void
+    {
+        $this->indexService->create(
+            $this->index('mutable', FieldType::INT, IndexType::HASH),
+            $this->database,
+            $this->ns
+        );
+        $this->assertIndexOnServer('mutable', 'hash', 'int');
+
+        $updated = $this->index('mutable', FieldType::INT, IndexType::TREE)->setIsDense(true);
+        $response = $this->indexService->update($updated, $this->database, $this->ns);
+        $this->assertSame(200, $response->getCode(), $response->getResponseBody());
+
+        $onServer = $this->findIndexDefinition('mutable');
+        $this->assertSame('tree', $onServer['index_type']);
+        $this->assertTrue($onServer['is_dense']);
     }
 
     public function testDeleteIndex(): void

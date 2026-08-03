@@ -9,16 +9,25 @@ use PHPUnit\Framework\TestCase;
 use Reindexer\Enum\CollateMode;
 use Reindexer\Enum\FieldType;
 use Reindexer\Enum\IndexType;
+use Reindexer\Enum\RtreeType;
 
 #[CoversClass(CollateMode::class)]
 #[CoversClass(FieldType::class)]
 #[CoversClass(IndexType::class)]
+#[CoversClass(RtreeType::class)]
 class EnumTest extends TestCase
 {
     public function testIndexTypeValues(): void
     {
         $this->assertSame(
-            ['hash' => IndexType::HASH, 'tree' => IndexType::TREE, 'text' => IndexType::TEXT, '-' => IndexType::COLUMN],
+            [
+                'hash' => IndexType::HASH,
+                'tree' => IndexType::TREE,
+                'text' => IndexType::TEXT,
+                'rtree' => IndexType::RTREE,
+                'ttl' => IndexType::TTL,
+                '-' => IndexType::COLUMN,
+            ],
             array_column(array_map(
                 static fn (IndexType $c) => ['k' => $c->value, 'v' => $c],
                 IndexType::cases()
@@ -29,8 +38,16 @@ class EnumTest extends TestCase
     public function testFieldTypeValues(): void
     {
         $this->assertSame(
-            ['int', 'int64', 'double', 'string', 'bool', 'composite'],
+            ['int', 'int64', 'double', 'string', 'bool', 'composite', 'point'],
             array_map(static fn (FieldType $c) => $c->value, FieldType::cases())
+        );
+    }
+
+    public function testRtreeTypeValues(): void
+    {
+        $this->assertSame(
+            ['linear', 'quadratic', 'greene', 'rstar'],
+            array_map(static fn (RtreeType $c) => $c->value, RtreeType::cases())
         );
     }
 
@@ -53,14 +70,17 @@ class EnumTest extends TestCase
         foreach (CollateMode::cases() as $case) {
             $this->assertSame($case, CollateMode::from($case->value));
         }
+        foreach (RtreeType::cases() as $case) {
+            $this->assertSame($case, RtreeType::from($case->value));
+        }
     }
 
     public function testTryFromUnknownValueReturnsNull(): void
     {
-        $this->assertNull(IndexType::tryFrom('ttl'));
-        $this->assertNull(IndexType::tryFrom('rtree'));
+        $this->assertNull(IndexType::tryFrom('fulltext'));
         $this->assertNull(FieldType::tryFrom('uuid'));
         $this->assertNull(CollateMode::tryFrom('custom'));
+        $this->assertNull(RtreeType::tryFrom('kdtree'));
     }
 
     public function testFromUnknownValueThrows(): void
